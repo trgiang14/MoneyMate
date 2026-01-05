@@ -110,3 +110,92 @@ export default function LoginPage() {
               Vui lòng nhập thông tin để truy cập tài khoản của bạn
             </p>
           </div>
+
+          <Card className="border-none shadow-xl bg-white/70 backdrop-blur-sm">
+            <CardContent className="pt-6">
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-slate-700">Email</FormLabel>
+                        <FormControl>
+                          <Input 
+                            {...field} 
+                            placeholder="abc@example.com" 
+                            type="email" 
+                            disabled={isPending}
+                            className="bg-white/50 border-slate-200 focus:bg-white transition-all"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <div className="flex items-center justify-between">
+                          <FormLabel className="text-slate-700">Mật khẩu</FormLabel>
+                          <Link href="#" className="text-xs text-primary hover:underline font-medium">
+                            Quên mật khẩu?
+                          </Link>
+                        </div>
+                        <FormControl>
+                          <Input 
+                            {...field} 
+                            placeholder="******" 
+                            type="password" 
+                            disabled={isPending}
+                            className="bg-white/50 border-slate-200 focus:bg-white transition-all"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button type="submit" className="w-full py-6 text-lg font-semibold shadow-lg shadow-primary/20" disabled={isPending}>
+                    {isPending ? (
+                      <div className="flex items-center gap-2">
+                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                        Đang xử lý...
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        Đăng nhập <ArrowRight className="h-5 w-5" />
+                      </div>
+                    )}
+                  </Button>
+                </form>
+              </Form>
+            </CardContent>
+            <CardFooter className="flex flex-col space-y-4 pb-8">
+              <div className="relative w-full">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t border-slate-200" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-white px-2 text-slate-500 font-medium">Hoặc</span>
+                </div>
+              </div>
+              <p className="text-center text-sm text-slate-600">
+                Chưa có tài khoản?{" "}
+                <Link href="/register" className="font-bold text-primary hover:text-primary/80 transition-colors">
+                  Đăng ký ngay
+                </Link>
+              </p>
+            </CardFooter>
+          </Card>
+          
+          <p className="text-center text-xs text-slate-400">
+            &copy; {new Date().getFullYear()} MoneyMate. Bảo mật và riêng tư tuyệt đối.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}

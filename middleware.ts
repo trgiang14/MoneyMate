@@ -26,6 +26,11 @@ export default auth((req) => {
     return Response.redirect(new URL("/login", nextUrl));
   }
 
+  // Redirect to dashboard if logged in and trying to access landing page
+  if (isLoggedIn && nextUrl.pathname === "/") {
+    return Response.redirect(new URL("/dashboard", nextUrl));
+  }
+
   return;
 });
 

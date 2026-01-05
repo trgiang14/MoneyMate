@@ -58,15 +58,14 @@ export default function RegisterPage() {
 
   return (
     <div className="flex min-h-screen bg-white">
-      {/* Left Side: Illustration */}
-      <div className="hidden lg:flex flex-1 relative bg-slate-900 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-primary" />
+      {/* Left Side: Decoration/Marketing */}
+      <div className="hidden lg:flex flex-1 relative bg-primary overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/90 to-blue-600" />
         
-        {/* Animated Background Decoration */}
-        <div className="absolute inset-0 opacity-20">
-          <svg className="h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-            <path d="M0 100 C 20 0 50 0 100 100 Z" fill="currentColor" className="text-primary" />
-          </svg>
+        {/* Abstract Shapes */}
+        <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-white blur-3xl animate-pulse" />
+          <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-white blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
         </div>
 
         <AuthFeatures type="register" />
@@ -75,10 +74,10 @@ export default function RegisterPage() {
       {/* Right Side: Form */}
       <div className="flex-1 flex flex-col justify-center items-center px-4 sm:px-6 lg:px-8 bg-slate-50/50">
         <div className="w-full max-w-md space-y-8">
-          <div className="flex flex-col items-center lg:items-end lg:text-right">
+          <div className="flex flex-col items-center lg:items-start">
             <Link href="/" className="flex items-center gap-2 mb-8">
-              <span className="text-2xl font-bold text-primary tracking-tight">MoneyMate</span>
               <Wallet className="h-10 w-10 text-primary" />
+              <span className="text-2xl font-bold text-primary tracking-tight">MoneyMate</span>
             </Link>
             <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">Tạo tài khoản mới</h2>
             <p className="mt-2 text-sm text-slate-600">

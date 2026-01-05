@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Quản lý tài chính cá nhân MoneyMate
 
-## Getting Started
+## Giới thiệu
+**Quản lý tài chính cá nhân MoneyMate** là một hệ thống web giúp người dùng quản lý thu – chi cá nhân một cách hiệu quả.  
+Hệ thống hỗ trợ theo dõi tình hình tài chính, lập kế hoạch chi tiêu, phân tích thói quen chi tiêu và cá nhân hóa trải nghiệm người dùng.
 
-First, run the development server:
+Dự án được thực hiện trong khuôn khổ học phần, nhằm áp dụng các kiến thức về phân tích yêu cầu, thiết kế hệ thống và phát triển ứng dụng web.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Mục tiêu dự án
+- Quản lý các khoản thu – chi cá nhân một cách khoa học
+- Hỗ trợ người dùng kiểm soát ngân sách và tiết kiệm
+- Cung cấp báo cáo, thống kê trực quan về tình hình tài chính
+- Áp dụng kiến thức đã học vào một sản phẩm thực tế
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Tính năng chính
 
-## Learn More
+### I. Tính năng cơ bản
+- **Quản lý người dùng**
+  - Đăng ký, đăng nhập, đăng xuất
+  - Quên / đổi mật khẩu
+  - Cập nhật thông tin cá nhân
 
-To learn more about Next.js, take a look at the following resources:
+- **Quản lý thu – chi**
+  - Thêm, sửa, xoá các khoản thu và chi
+  - Nhập số tiền, ngày, ghi chú
+  - Phân loại theo danh mục
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Quản lý danh mục**
+  - Danh mục mặc định (ăn uống, đi lại, học tập, …)
+  - Tạo, chỉnh sửa, xoá danh mục cá nhân
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Theo dõi & thống kê**
+  - Thống kê tổng thu – chi theo ngày, tháng, năm
+  - Biểu đồ tròn, biểu đồ cột/đường
 
-## Deploy on Vercel
+- **Tìm kiếm & lọc**
+  - Lọc theo thời gian, danh mục
+  - Tìm kiếm theo ghi chú
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Xuất báo cáo**
+  - Xuất báo cáo thu – chi
+  - Định dạng PDF / Excel
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+### II. Tính năng nâng cao
+- **Lập kế hoạch tài chính**
+  - Thiết lập ngân sách theo tháng hoặc danh mục
+  - Cảnh báo khi sắp hoặc đã vượt ngân sách
+  - Mục tiêu tiết kiệm và theo dõi tiến độ
+
+- **Tự động hoá**
+  - Thu – chi định kỳ (hàng tháng, hàng tuần)
+  - Nhắc nhở nhập chi tiêu
+  - Nhắc hoá đơn cố định (điện, nước, tiền trọ…)
+
+- **Phân tích chi tiêu**
+  - So sánh chi tiêu giữa các tháng
+  - Phát hiện chi tiêu bất thường
+
+- **Cá nhân hoá**
+  - Giao diện sáng / tối
+  - Hỗ trợ đa ngôn ngữ
+  - Thay đổi đơn vị tiền tệ
+
+---

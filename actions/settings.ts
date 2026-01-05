@@ -6,15 +6,7 @@ import bcrypt from "bcryptjs";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
-
-export const ProfileSchema = z.object({
-  name: z.string().min(1, "Tên là bắt buộc"),
-});
-
-export const PasswordSchema = z.object({
-  currentPassword: z.string().min(1, "Mật khẩu hiện tại là bắt buộc"),
-  newPassword: z.string().min(6, "Mật khẩu mới tối thiểu 6 ký tự"),
-});
+import { ProfileSchema, PasswordSchema } from "@/schemas";
 
 export const updateProfile = async (values: z.infer<typeof ProfileSchema>) => {
   const session = await auth();

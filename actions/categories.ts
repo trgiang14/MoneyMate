@@ -6,13 +6,7 @@ import { db } from "@/lib/db";
 import { DEFAULT_CATEGORIES } from "@/lib/constants";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-
-export const CategorySchema = z.object({
-  name: z.string().min(1, "Tên danh mục là bắt buộc"),
-  type: z.enum(["INCOME", "EXPENSE"]),
-  icon: z.string().optional(),
-  color: z.string().optional(),
-});
+import { CategorySchema } from "@/schemas";
 
 export const getCategories = async () => {
   const session = await auth();

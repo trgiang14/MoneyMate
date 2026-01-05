@@ -18,8 +18,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
-import { LoginSchema } from "@/auth.config";
 import { login } from "@/actions/login";
+import { LoginSchema } from "@/schemas";
 
 export default function LoginPage() {
   const [isPending, setIsPending] = useState(false);

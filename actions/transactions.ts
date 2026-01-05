@@ -5,16 +5,7 @@ import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-
-export const TransactionSchema = z.object({
-  amount: z.coerce.number().positive("Số tiền phải lớn hơn 0"),
-  description: z.string().optional(),
-  date: z.date({
-    required_error: "Ngày là bắt buộc",
-  }),
-  type: z.enum(["INCOME", "EXPENSE"]),
-  categoryId: z.string().min(1, "Danh mục là bắt buộc"),
-});
+import { TransactionSchema } from "@/schemas";
 
 export const getTransactions = async (filters?: {
   month?: number;

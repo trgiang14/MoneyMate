@@ -40,7 +40,8 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { CategorySchema, createCategory, deleteCategory, getCategories } from "@/actions/categories";
+import { createCategory, deleteCategory, getCategories } from "@/actions/categories";
+import { CategorySchema } from "@/schemas";
 import { Badge } from "@/components/ui/badge";
 
 export default function CategoriesPage() {

@@ -19,7 +19,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
-import { RegisterSchema, register } from "@/actions/register";
+import { register } from "@/actions/register";
+import { RegisterSchema } from "@/schemas";
 
 export default function RegisterPage() {
   const [isPending, setIsPending] = useState(false);

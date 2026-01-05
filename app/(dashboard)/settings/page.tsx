@@ -25,7 +25,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ProfileSchema, PasswordSchema, updateProfile, updatePassword } from "@/actions/settings";
+import { updateProfile, updatePassword } from "@/actions/settings";
+import { ProfileSchema, PasswordSchema } from "@/schemas";
 
 export default function SettingsPage() {
   const [isPending, setIsPending] = useState(false);

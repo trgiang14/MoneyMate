@@ -4,18 +4,7 @@
 import bcrypt from "bcryptjs";
 import { db } from "@/lib/db";
 import { z } from "zod";
-
-export const RegisterSchema = z.object({
-  email: z.string().email({
-    message: "Email không hợp lệ",
-  }),
-  password: z.string().min(6, {
-    message: "Mật khẩu tối thiểu 6 ký tự",
-  }),
-  name: z.string().min(1, {
-    message: "Tên là bắt buộc",
-  }),
-});
+import { RegisterSchema } from "@/schemas";
 
 export const register = async (values: z.infer<typeof RegisterSchema>) => {
   const validatedFields = RegisterSchema.safeParse(values);

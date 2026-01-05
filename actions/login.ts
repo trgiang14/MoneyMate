@@ -3,7 +3,7 @@
 
 import { z } from "zod";
 import { signIn } from "@/auth";
-import { LoginSchema } from "@/auth.config";
+import { LoginSchema } from "@/schemas";
 import { AuthError } from "next-auth";
 
 export const login = async (values: z.infer<typeof LoginSchema>) => {

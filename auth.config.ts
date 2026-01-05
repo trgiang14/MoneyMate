@@ -2,12 +2,7 @@ import type { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { db } from "@/lib/db";
 import bcrypt from "bcryptjs";
-import { z } from "zod";
-
-export const LoginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(1),
-});
+import { LoginSchema } from "@/schemas";
 
 export default {
   providers: [

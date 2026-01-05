@@ -23,6 +23,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { RegisterSchema } from "@/schemas";
 import { register } from "@/actions/register";
 import { cn } from "@/lib/utils";
+import { AuthFeatures } from "@/components/shared/auth-features";
 
 export default function RegisterPage() {
   const [isPending, setIsPending] = useState(false);
@@ -68,44 +69,7 @@ export default function RegisterPage() {
           </svg>
         </div>
 
-        <div className="relative z-10 flex flex-col justify-center px-16 text-white max-w-2xl">
-          <div className="bg-white/10 w-fit p-3 rounded-2xl backdrop-blur-sm mb-8">
-            <UserPlus className="h-10 w-10 text-primary-foreground" />
-          </div>
-          <h2 className="text-5xl font-bold leading-tight mb-8">
-            Tham gia cộng đồng <br /> quản lý tài chính <br /> hiệu quả nhất
-          </h2>
-          
-          <div className="space-y-8">
-            <div className="flex gap-4">
-              <div className="bg-primary/20 h-12 w-12 rounded-xl flex items-center justify-center shrink-0">
-                <span className="text-xl font-bold text-primary-foreground">1</span>
-              </div>
-              <div>
-                <h4 className="text-xl font-bold mb-1">Đăng ký nhanh chóng</h4>
-                <p className="text-slate-400">Chỉ mất 30 giây để bắt đầu hành trình mới.</p>
-              </div>
-            </div>
-            <div className="flex gap-4">
-              <div className="bg-primary/20 h-12 w-12 rounded-xl flex items-center justify-center shrink-0">
-                <span className="text-xl font-bold text-primary-foreground">2</span>
-              </div>
-              <div>
-                <h4 className="text-xl font-bold mb-1">Cá nhân hóa danh mục</h4>
-                <p className="text-slate-400">Tự tạo các loại thu chi phù hợp với lối sống của bạn.</p>
-              </div>
-            </div>
-            <div className="flex gap-4">
-              <div className="bg-primary/20 h-12 w-12 rounded-xl flex items-center justify-center shrink-0">
-                <span className="text-xl font-bold text-primary-foreground">3</span>
-              </div>
-              <div>
-                <h4 className="text-xl font-bold mb-1">Kiểm soát dòng tiền</h4>
-                <p className="text-slate-400">Xem báo cáo chi tiết mọi lúc mọi nơi ngay trên điện thoại.</p>
-              </div>
-            </div>
-          </div>
-        </div>
+        <AuthFeatures type="register" />
       </div>
 
       {/* Right Side: Form */}

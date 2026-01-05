@@ -22,6 +22,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { LoginSchema } from "@/schemas";
 import { login } from "@/actions/login";
 import { cn } from "@/lib/utils";
+import { AuthFeatures } from "@/components/shared/auth-features";
 
 export default function LoginPage() {
   const [isPending, setIsPending] = useState(false);
@@ -61,40 +62,7 @@ export default function LoginPage() {
           <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-white blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
         </div>
 
-        <div className="relative z-10 flex flex-col justify-center px-16 text-white max-w-2xl">
-          <h2 className="text-5xl font-bold leading-tight mb-8">
-            Bắt đầu hành trình <br /> quản lý tài chính <br /> thông minh hơn
-          </h2>
-          
-          <ul className="space-y-6">
-            {[
-              "Theo dõi dòng tiền hàng ngày chính xác",
-              "Phân tích biểu đồ chi tiêu trực quan",
-              "Lập kế hoạch tiết kiệm hiệu quả",
-              "Truy cập mọi lúc, mọi nơi"
-            ].map((text, i) => (
-              <li key={i} className="flex items-center gap-4 text-lg text-primary-foreground/90">
-                <div className="bg-white/20 p-1 rounded-full shrink-0">
-                  <CheckCircle2 className="h-6 w-6" />
-                </div>
-                {text}
-              </li>
-            ))}
-          </ul>
-
-          <div className="mt-16 p-6 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20">
-            <p className="italic text-lg text-primary-foreground/80 leading-relaxed">
-              "MoneyMate đã giúp mình tiết kiệm được 20% thu nhập hàng tháng chỉ bằng cách theo dõi các khoản chi nhỏ lẻ thường bị bỏ quên."
-            </p>
-            <div className="mt-4 flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full bg-white/20" />
-              <div>
-                <p className="font-bold text-sm">Minh Anh</p>
-                <p className="text-xs text-primary-foreground/60">Người dùng tại Hà Nội</p>
-              </div>
-            </div>
-          </div>
-        </div>
+        <AuthFeatures type="login" />
       </div>
 
       {/* Right Side: Form */}

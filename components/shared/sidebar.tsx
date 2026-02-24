@@ -12,7 +12,8 @@ import {
   ChevronRight, 
   Wallet,
   LogOut,
-  Menu
+  Menu,
+  BarChart3
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -51,6 +52,12 @@ export const Sidebar = ({ userName }: SidebarProps) => {
       icon: Tag,
       href: "/categories",
       active: pathname === "/categories",
+    },
+    {
+      label: "Thống kê",
+      icon: BarChart3,
+      href: "/statistics",
+      active: pathname === "/statistics",
     },
     {
       label: "Cài đặt",

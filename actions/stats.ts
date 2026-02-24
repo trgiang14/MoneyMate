@@ -1,0 +1,109 @@
+"use server";
+
+import { auth } from "@/auth";
+import { db } from "@/lib/db";
+import { startOfDay, endOfDay, startOfMonth, endOfMonth, startOfYear, endOfYear, subYears, format, eachDayOfInterval, eachMonthOfInterval, eachYearOfInterval } from "date-fns";
+import { vi } from "date-fns/locale";
+
+export type Period = "day" | "month" | "year";
+
+export async function getStats(period: Period, date: Date) {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    return { error: "Bạn cần đăng nhập!" };
+  }
+
+  const userId = session.user.id;
+  let startDate: Date;
+  let endDate: Date;
+  let dateFormat: string;
+
+  // Determine date range based on period
+  switch (period) {
+    case "day":
+      startDate = startOfMonth(date);
+      endDate = endOfMonth(date);
+      dateFormat = "dd";
+      break;
+    case "month":
+      startDate = startOfYear(date);
+      endDate = endOfYear(date);
+      dateFormat = "MM";
+      break;
+    case "year":
+      startDate = startOfYear(subYears(date, 4)); // Last 5 years
+      endDate = endOfYear(date);
+      dateFormat = "yyyy";
+      break;
+    default:
+      startDate = startOfMonth(date);
+      endDate = endOfMonth(date);
+      dateFormat = "dd";
+  }
+
+  // Fetch transactions
+  const transactions = await db.transaction.findMany({
+    where: {
+      userId,
+      date: {
+        gte: startDate,
+        lte: endDate,
+      },
+    },
+    select: {
+      date: true,
+      amount: true,
+      type: true,
+    },
+  });
+
+  // Group data
+  const groupedData: Record<string, { income: number; expense: number }> = {};
+
+  // Initialize all periods with 0
+  let periods: Date[] = [];
+  if (period === "day") {
+    periods = eachDayOfInterval({ start: startDate, end: endDate });
+  } else if (period === "month") {
+    periods = eachMonthOfInterval({ start: startDate, end: endDate });
+  } else if (period === "year") {
+    periods = eachYearOfInterval({ start: startDate, end: endDate });
+  }
+
+  periods.forEach((p) => {
+    const key = format(p, dateFormat);
+    groupedData[key] = { income: 0, expense: 0 };
+  });
+
+  // Aggregate transactions
+  transactions.forEach((t) => {
+    const key = format(t.date, dateFormat);
+    if (groupedData[key]) {
+      if (t.type === "INCOME") {
+        groupedData[key].income += t.amount;
+      } else {
+        groupedData[key].expense += t.amount;
+      }
+    }
+  });
+
+  // Format for chart
+  const chartData = periods.map((p) => {
+    const key = format(p, dateFormat);
+    let label = key;
+    
+    if (period === "day") label = format(p, "dd/MM", { locale: vi });
+    if (period === "month") label = format(p, "MM/yyyy", { locale: vi });
+    if (period === "year") label = format(p, "yyyy", { locale: vi });
+
+    return {
+      label,
+      income: groupedData[key].income,
+      expense: groupedData[key].expense,
+      date: p.toISOString(),
+    };
+  });
+
+  return { data: chartData };
+}

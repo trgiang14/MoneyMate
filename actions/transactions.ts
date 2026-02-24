@@ -10,6 +10,10 @@ import { TransactionSchema } from "@/schemas";
 export const getTransactions = async (filters?: {
   month?: number;
   year?: number;
+  startDate?: Date;
+  endDate?: Date;
+  categoryId?: string;
+  search?: string;
 }) => {
   const session = await auth();
 
@@ -21,12 +25,30 @@ export const getTransactions = async (filters?: {
   
   let where: any = { userId };
 
-  if (filters?.month !== undefined && filters?.year !== undefined) {
+  // Date filtering logic
+  if (filters?.startDate && filters?.endDate) {
+    where.date = {
+      gte: filters.startDate,
+      lte: filters.endDate,
+    };
+  } else if (filters?.month !== undefined && filters?.year !== undefined) {
     const startDate = new Date(filters.year, filters.month, 1);
     const endDate = new Date(filters.year, filters.month + 1, 0, 23, 59, 59);
     where.date = {
       gte: startDate,
       lte: endDate,
+    };
+  }
+
+  // Category filtering
+  if (filters?.categoryId && filters.categoryId !== "all") {
+    where.categoryId = filters.categoryId;
+  }
+
+  // Search filtering (by description/note)
+  if (filters?.search) {
+    where.description = {
+      contains: filters.search,
     };
   }
 
@@ -92,4 +114,3 @@ export const deleteTransaction = async (id: string) => {
     return { error: "Không thể xóa giao dịch này!" };
   }
 };
-

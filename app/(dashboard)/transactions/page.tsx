@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus, Trash2, Receipt, CalendarIcon } from "lucide-react";
+import { Plus, Trash2, Receipt, CalendarIcon, Search, Filter, X } from "lucide-react";
 import { toast } from "sonner";
-import { format } from "date-fns";
+import { format, subDays } from "date-fns";
 import { vi } from "date-fns/locale";
+import { DateRange } from "react-day-picker";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -56,6 +57,14 @@ export default function TransactionsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+  // Filter states
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [dateRange, setDateRange] = useState<DateRange | undefined>({
+    from: subDays(new Date(), 30),
+    to: new Date(),
+  });
+
   const form = useForm<z.infer<typeof TransactionSchema>>({
     resolver: zodResolver(TransactionSchema),
     defaultValues: {
@@ -71,7 +80,12 @@ export default function TransactionsPage() {
     setIsLoading(true);
     try {
       const [transData, catData] = await Promise.all([
-        getTransactions(),
+        getTransactions({
+          startDate: dateRange?.from,
+          endDate: dateRange?.to,
+          categoryId: selectedCategory,
+          search: searchQuery,
+        }),
         getCategories()
       ]);
       setTransactions(transData);
@@ -84,8 +98,13 @@ export default function TransactionsPage() {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    // Debounce search
+    const timer = setTimeout(() => {
+      fetchData();
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery, selectedCategory, dateRange]);
 
   const onSubmit = async (values: z.infer<typeof TransactionSchema>) => {
     const result = await createTransaction(values);
@@ -111,6 +130,15 @@ export default function TransactionsPage() {
     }
   };
 
+  const resetFilters = () => {
+    setSearchQuery("");
+    setSelectedCategory("all");
+    setDateRange({
+      from: subDays(new Date(), 30),
+      to: new Date(),
+    });
+  };
+
   // Filter categories by selected type in form
   const filteredCategories = categories.filter(
     (cat) => cat.type === form.watch("type")
@@ -118,11 +146,11 @@ export default function TransactionsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Giao dịch</h1>
           <p className="text-muted-foreground">
-            Lịch sử thu nhập và chi tiêu của bạn
+            Quản lý và tìm kiếm lịch sử giao dịch
           </p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -270,6 +298,95 @@ export default function TransactionsPage() {
         </Dialog>
       </div>
 
+      {/* Filters Section */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base font-medium flex items-center gap-2">
+            <Filter className="h-4 w-4" />
+            Bộ lọc & Tìm kiếm
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-4 md:grid-cols-4">
+            {/* Search Input */}
+            <div className="relative md:col-span-1">
+              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Tìm theo ghi chú..."
+                className="pl-8"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+
+            {/* Category Select */}
+            <div className="md:col-span-1">
+              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Tất cả danh mục" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Tất cả danh mục</SelectItem>
+                  {categories.map((cat) => (
+                    <SelectItem key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Date Range Picker */}
+            <div className="md:col-span-1">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    id="date"
+                    variant={"outline"}
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !dateRange && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {dateRange?.from ? (
+                      dateRange.to ? (
+                        <>
+                          {format(dateRange.from, "dd/MM/yyyy")} -{" "}
+                          {format(dateRange.to, "dd/MM/yyyy")}
+                        </>
+                      ) : (
+                        format(dateRange.from, "dd/MM/yyyy")
+                      )
+                    ) : (
+                      <span>Chọn khoảng thời gian</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    initialFocus
+                    mode="range"
+                    defaultMonth={dateRange?.from}
+                    selected={dateRange}
+                    onSelect={setDateRange}
+                    numberOfMonths={2}
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+
+            {/* Reset Button */}
+            <div className="md:col-span-1">
+              <Button variant="ghost" onClick={resetFilters} className="w-full justify-start md:justify-center">
+                <X className="mr-2 h-4 w-4" />
+                Xóa bộ lọc
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       <Card>
         <CardHeader>
           <CardTitle>Danh sách giao dịch</CardTitle>
@@ -278,7 +395,12 @@ export default function TransactionsPage() {
           {isLoading ? (
             <p className="text-center py-4">Đang tải...</p>
           ) : transactions.length === 0 ? (
-            <p className="text-center py-4 text-muted-foreground">Chưa có giao dịch nào.</p>
+            <div className="text-center py-8 text-muted-foreground">
+              <p>Không tìm thấy giao dịch nào phù hợp.</p>
+              <Button variant="link" onClick={resetFilters} className="mt-2">
+                Xóa bộ lọc để xem tất cả
+              </Button>
+            </div>
           ) : (
             <Table>
               <TableHeader>
@@ -334,4 +456,3 @@ export default function TransactionsPage() {
     </div>
   );
 }
-

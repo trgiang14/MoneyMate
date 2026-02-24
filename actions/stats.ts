@@ -107,3 +107,71 @@ export async function getStats(period: Period, date: Date) {
 
   return { data: chartData };
 }
+
+export async function getCategoryStats(period: Period, date: Date) {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    return { error: "Bạn cần đăng nhập!" };
+  }
+
+  const userId = session.user.id;
+  let startDate: Date;
+  let endDate: Date;
+
+  // Determine date range based on period
+  switch (period) {
+    case "day":
+      startDate = startOfMonth(date);
+      endDate = endOfMonth(date);
+      break;
+    case "month":
+      startDate = startOfYear(date);
+      endDate = endOfYear(date);
+      break;
+    case "year":
+      startDate = startOfYear(subYears(date, 4));
+      endDate = endOfYear(date);
+      break;
+    default:
+      startDate = startOfMonth(date);
+      endDate = endOfMonth(date);
+  }
+
+  const stats = await db.transaction.groupBy({
+    by: ['categoryId', 'type'],
+    where: {
+      userId,
+      date: {
+        gte: startDate,
+        lte: endDate,
+      },
+    },
+    _sum: {
+      amount: true,
+    },
+  });
+
+  const categories = await db.category.findMany({
+    where: {
+      id: {
+        in: stats.map((s) => s.categoryId),
+      },
+    },
+  });
+
+  const data = stats.map((s) => {
+    const category = categories.find((c) => c.id === s.categoryId);
+    return {
+      name: category?.name || "Unknown",
+      value: s._sum.amount || 0,
+      color: category?.color || "#94a3b8",
+      type: s.type,
+    };
+  });
+
+  return { 
+    income: data.filter((d) => d.type === "INCOME").sort((a, b) => b.value - a.value),
+    expense: data.filter((d) => d.type === "EXPENSE").sort((a, b) => b.value - a.value),
+  };
+}

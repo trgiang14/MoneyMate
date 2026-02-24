@@ -20,6 +20,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getStats, Period } from "@/actions/stats";
 import { cn } from "@/lib/utils";
+import { CategoryPieChart } from "./CategoryPieChart";
 
 export function StatsChart() {
   const [period, setPeriod] = useState<Period>("day");
@@ -77,6 +78,30 @@ export function StatsChart() {
 
   return (
     <div className="space-y-6">
+      {/* Controls */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-card p-4 rounded-lg border shadow-sm">
+        <Tabs value={period} onValueChange={(v) => setPeriod(v as Period)} className="w-full sm:w-auto">
+          <TabsList className="grid w-full grid-cols-3 sm:w-auto">
+            <TabsTrigger value="day">Ngày</TabsTrigger>
+            <TabsTrigger value="month">Tháng</TabsTrigger>
+            <TabsTrigger value="year">Năm</TabsTrigger>
+          </TabsList>
+        </Tabs>
+        
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="icon" onClick={handlePrevious}>
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <span className="font-medium min-w-[150px] text-center">
+            {getTitle()}
+          </span>
+          <Button variant="outline" size="icon" onClick={handleNext}>
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+
+      {/* Summary Cards */}
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -86,9 +111,6 @@ export function StatsChart() {
             <div className="text-2xl font-bold text-emerald-600">
               {formatCurrency(totalIncome)}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              Trong {period === "day" ? "tháng" : period === "month" ? "năm" : "giai đoạn"} này
-            </p>
           </CardContent>
         </Card>
         <Card>
@@ -99,9 +121,6 @@ export function StatsChart() {
             <div className="text-2xl font-bold text-destructive">
               {formatCurrency(totalExpense)}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              Trong {period === "day" ? "tháng" : period === "month" ? "năm" : "giai đoạn"} này
-            </p>
           </CardContent>
         </Card>
         <Card>
@@ -115,36 +134,14 @@ export function StatsChart() {
             )}>
               {formatCurrency(totalIncome - totalExpense)}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              Thu nhập - Chi tiêu
-            </p>
           </CardContent>
         </Card>
       </div>
 
+      {/* Main Bar Chart */}
       <Card className="col-span-4">
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle>Biểu đồ thống kê</CardTitle>
-            <Tabs value={period} onValueChange={(v) => setPeriod(v as Period)}>
-              <TabsList>
-                <TabsTrigger value="day">Ngày</TabsTrigger>
-                <TabsTrigger value="month">Tháng</TabsTrigger>
-                <TabsTrigger value="year">Năm</TabsTrigger>
-              </TabsList>
-            </Tabs>
-          </div>
-          <div className="flex items-center justify-center gap-4 py-4">
-            <Button variant="outline" size="icon" onClick={handlePrevious}>
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <span className="font-medium min-w-[150px] text-center">
-              {getTitle()}
-            </span>
-            <Button variant="outline" size="icon" onClick={handleNext}>
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
+          <CardTitle>Biểu đồ thu chi</CardTitle>
         </CardHeader>
         <CardContent className="pl-2">
           <div className="h-[400px] w-full">
@@ -185,6 +182,12 @@ export function StatsChart() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Pie Charts */}
+      <div className="grid gap-4 md:grid-cols-2">
+        <CategoryPieChart period={period} date={date} type="INCOME" />
+        <CategoryPieChart period={period} date={date} type="EXPENSE" />
+      </div>
     </div>
   );
 }

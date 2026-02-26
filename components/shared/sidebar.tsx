@@ -13,7 +13,9 @@ import {
   Wallet,
   LogOut,
   Menu,
-  BarChart3
+  BarChart3,
+  PieChart,
+  Target
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -58,6 +60,18 @@ export const Sidebar = ({ userName }: SidebarProps) => {
       icon: BarChart3,
       href: "/statistics",
       active: pathname === "/statistics",
+    },
+    {
+      label: "Ngân sách",
+      icon: PieChart,
+      href: "/budgets",
+      active: pathname === "/budgets",
+    },
+    {
+      label: "Mục tiêu",
+      icon: Target,
+      href: "/saving-goals",
+      active: pathname === "/saving-goals",
     },
     {
       label: "Cài đặt",

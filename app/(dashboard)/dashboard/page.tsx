@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { TrendingUp, TrendingDown, Wallet, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { TrendingUp, TrendingDown, Wallet, ArrowUpRight, ArrowDownRight, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
@@ -14,17 +14,24 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { getTransactions } from "@/actions/transactions";
+import { getBudgets } from "@/actions/budgets";
 import { cn } from "@/lib/utils";
 
 export default function DashboardPage() {
   const [transactions, setTransactions] = useState<any[]>([]);
+  const [budgets, setBudgets] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const data = await getTransactions();
-      setTransactions(data);
+      const now = new Date();
+      const [transactionsData, budgetsData] = await Promise.all([
+        getTransactions(),
+        getBudgets(now.getMonth() + 1, now.getFullYear()),
+      ]);
+      setTransactions(transactionsData);
+      setBudgets(budgetsData);
     } catch (error) {
       toast.error("Không thể tải dữ liệu");
     } finally {
@@ -51,6 +58,7 @@ export default function DashboardPage() {
   };
 
   const recentTransactions = transactions.slice(0, 5);
+  const overBudgets = budgets.filter(b => b.percent >= 80);
 
   return (
     <div className="space-y-8">
@@ -60,6 +68,35 @@ export default function DashboardPage() {
           Theo dõi tình hình tài chính của bạn
         </p>
       </div>
+
+      {overBudgets.length > 0 && (
+        <div className="space-y-3">
+          {overBudgets.map(budget => (
+            <div 
+              key={budget.id} 
+              className={cn(
+                "flex items-center justify-between p-4 rounded-lg border shadow-sm animate-in fade-in slide-in-from-top-2",
+                budget.percent >= 100 ? "bg-destructive/10 border-destructive/20 text-destructive" : "bg-yellow-50 border-yellow-200 text-yellow-700"
+              )}
+            >
+              <div className="flex items-center gap-3">
+                <AlertTriangle className="h-5 w-5" />
+                <div>
+                  <p className="text-sm font-bold">
+                    {budget.percent >= 100 ? "Vượt ngân sách!" : "Sắp chạm hạn mức!"}
+                  </p>
+                  <p className="text-xs opacity-90">
+                    Danh mục {budget.category.name} đã dùng {budget.percent}% hạn mức tháng này.
+                  </p>
+                </div>
+              </div>
+              <div className="text-sm font-bold">
+                {formatCurrency(budget.spent)} / {formatCurrency(budget.amount)}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       <div className="grid gap-4 md:grid-cols-3">
         <Card className="shadow-sm">

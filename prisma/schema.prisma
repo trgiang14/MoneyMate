@@ -20,6 +20,8 @@ model User {
   updatedAt     DateTime  @updatedAt
   transactions  Transaction[]
   categories    Category[]
+  budgets       Budget[]
+  savingGoals   SavingGoal[]
 }
 
 model Category {
@@ -31,6 +33,7 @@ model Category {
   userId        String?
   user          User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
   transactions  Transaction[]
+  budgets       Budget[]
   isDefault     Boolean   @default(false)
 
   @@index([userId])
@@ -56,4 +59,34 @@ model Transaction {
 
   @@index([userId])
   @@index([categoryId])
+}
+
+model Budget {
+  id          String   @id @default(cuid())
+  amount      Float
+  month       Int      // 1-12
+  year        Int
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, categoryId, month, year])
+  @@index([userId])
+}
+
+model SavingGoal {
+  id            String   @id @default(cuid())
+  name          String
+  targetAmount  Float
+  currentAmount Float    @default(0)
+  deadline      DateTime?
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([userId])
 }

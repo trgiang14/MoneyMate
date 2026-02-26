@@ -206,7 +206,7 @@ export function StatsChart() {
                     }
                   />
                   <Tooltip 
-                    formatter={(value: number) => formatCurrency(value)}
+                    formatter={(value: number | undefined) => [formatCurrency(value ?? 0), "VND"]}
                     labelStyle={{ color: "#333" }}
                   />
                   <Legend />

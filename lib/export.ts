@@ -1,13 +1,8 @@
 import jsPDF from "jspdf";
-import "jspdf-autotable";
+import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
-
-// Mở rộng kiểu cho jsPDF để hỗ trợ autoTable
-interface jsPDFWithAutoTable extends jsPDF {
-  autoTable: (options: any) => jsPDF;
-}
 
 export const exportToExcel = (data: any[], fileName: string) => {
   const worksheet = XLSX.utils.json_to_sheet(
@@ -24,7 +19,7 @@ export const exportToExcel = (data: any[], fileName: string) => {
 };
 
 export const exportToPDF = (data: any[], fileName: string, title: string) => {
-  const doc = new jsPDF() as jsPDFWithAutoTable;
+  const doc = new jsPDF();
 
   // Thêm tiêu đề (sử dụng font mặc định, lưu ý tiếng Việt có thể bị lỗi nếu không nhúng font)
   // Để đơn giản nhất, ta sẽ dùng các ký tự không dấu hoặc chấp nhận font mặc định
@@ -43,7 +38,7 @@ export const exportToPDF = (data: any[], fileName: string, title: string) => {
     new Intl.NumberFormat("vi-VN").format(item.income - item.expense),
   ]);
 
-  doc.autoTable({
+  autoTable(doc, {
     head: [tableColumn],
     body: tableRows,
     startY: 45,

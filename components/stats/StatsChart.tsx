@@ -13,14 +13,21 @@ import {
 } from "recharts";
 import { format, addMonths, subMonths, addYears, subYears } from "date-fns";
 import { vi } from "date-fns/locale";
-import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2, Download } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { getStats, Period } from "@/actions/stats";
 import { cn } from "@/lib/utils";
 import { CategoryPieChart } from "./CategoryPieChart";
+import { exportToExcel, exportToPDF } from "@/lib/export";
 
 export function StatsChart() {
   const [period, setPeriod] = useState<Period>("day");
@@ -76,17 +83,46 @@ export function StatsChart() {
   const totalIncome = data.reduce((acc, curr) => acc + curr.income, 0);
   const totalExpense = data.reduce((acc, curr) => acc + curr.expense, 0);
 
+  const handleExportExcel = () => {
+    const fileName = `Bao_cao_thu_chi_${period}_${format(date, "yyyyMMdd")}`;
+    exportToExcel(data, fileName);
+  };
+
+  const handleExportPDF = () => {
+    const fileName = `Bao_cao_thu_chi_${period}_${format(date, "yyyyMMdd")}`;
+    exportToPDF(data, fileName, getTitle());
+  };
+
   return (
     <div className="space-y-6">
       {/* Controls */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-card p-4 rounded-lg border shadow-sm">
-        <Tabs value={period} onValueChange={(v) => setPeriod(v as Period)} className="w-full sm:w-auto">
-          <TabsList className="grid w-full grid-cols-3 sm:w-auto">
-            <TabsTrigger value="day">Ngày</TabsTrigger>
-            <TabsTrigger value="month">Tháng</TabsTrigger>
-            <TabsTrigger value="year">Năm</TabsTrigger>
-          </TabsList>
-        </Tabs>
+        <div className="flex items-center gap-4 w-full sm:w-auto">
+          <Tabs value={period} onValueChange={(v) => setPeriod(v as Period)} className="w-full sm:w-auto">
+            <TabsList className="grid w-full grid-cols-3 sm:w-auto">
+              <TabsTrigger value="day">Ngày</TabsTrigger>
+              <TabsTrigger value="month">Tháng</TabsTrigger>
+              <TabsTrigger value="year">Năm</TabsTrigger>
+            </TabsList>
+          </Tabs>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-2">
+                <Download className="h-4 w-4" />
+                <span className="hidden sm:inline">Xuất báo cáo</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={handleExportExcel}>
+                Xuất Excel (.xlsx)
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleExportPDF}>
+                Xuất PDF (.pdf)
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
         
         <div className="flex items-center gap-2">
           <Button variant="outline" size="icon" onClick={handlePrevious}>

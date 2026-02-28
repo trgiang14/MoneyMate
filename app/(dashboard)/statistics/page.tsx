@@ -1,5 +1,6 @@
 import { StatsChart } from "@/components/stats/StatsChart";
 import { MonthlyComparisonChart } from "@/components/stats/MonthlyComparisonChart";
+import { AnomalyDetection } from "@/components/stats/AnomalyDetection";
 
 export default function StatisticsPage() {
   return (
@@ -10,6 +11,7 @@ export default function StatisticsPage() {
           Theo dõi và phân tích thu chi của bạn theo thời gian
         </p>
       </div>
+      <AnomalyDetection />
       <StatsChart />
       <MonthlyComparisonChart />
     </div>

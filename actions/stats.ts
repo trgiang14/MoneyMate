@@ -177,6 +177,10 @@ export async function getCategoryStats(period: Period, date: Date) {
 }
 
 export async function getMonthlyComparison(monthsCount: number = 6) {
+  // ... existing code ...
+}
+
+export async function detectAnomalies() {
   const session = await auth();
 
   if (!session?.user?.id) {
@@ -185,46 +189,65 @@ export async function getMonthlyComparison(monthsCount: number = 6) {
 
   const userId = session.user.id;
   const now = new Date();
-  const startDate = startOfMonth(subMonths(now, monthsCount - 1));
-  const endDate = endOfMonth(now);
+  const thirtyDaysAgo = subMonths(now, 1);
 
-  const transactions = await db.transaction.findMany({
+  // 1. Lấy các giao dịch trong 30 ngày qua
+  const recentTransactions = await db.transaction.findMany({
     where: {
       userId,
+      type: "EXPENSE",
       date: {
-        gte: startDate,
-        lte: endDate,
+        gte: thirtyDaysAgo,
       },
     },
-    select: {
-      date: true,
-      amount: true,
-      type: true,
+    include: {
+      category: true,
+    },
+    orderBy: {
+      date: "desc",
     },
   });
 
-  const months = eachMonthOfInterval({ start: startDate, end: endDate });
-  const comparisonData = months.map((month) => {
-    const monthKey = format(month, "yyyy-MM");
-    const monthTransactions = transactions.filter(
-      (t) => format(t.date, "yyyy-MM") === monthKey
-    );
-
-    const income = monthTransactions
-      .filter((t) => t.type === "INCOME")
-      .reduce((sum, t) => sum + t.amount, 0);
-    
-    const expense = monthTransactions
-      .filter((t) => t.type === "EXPENSE")
-      .reduce((sum, t) => sum + t.amount, 0);
-
-    return {
-      month: format(month, "MM/yyyy"),
-      income,
-      expense,
-      savings: income - expense,
-    };
+  // 2. Lấy dữ liệu lịch sử để tính trung bình (3 tháng trước đó)
+  const historyStart = subMonths(thirtyDaysAgo, 3);
+  const historicalTransactions = await db.transaction.findMany({
+    where: {
+      userId,
+      type: "EXPENSE",
+      date: {
+        gte: historyStart,
+        lt: thirtyDaysAgo,
+      },
+    },
   });
 
-  return { data: comparisonData };
+  // Tính trung bình chi tiêu mỗi giao dịch theo từng danh mục
+  const categoryAverages: Record<string, { total: number; count: number; avg: number }> = {};
+  
+  historicalTransactions.forEach((t) => {
+    if (!categoryAverages[t.categoryId]) {
+      categoryAverages[t.categoryId] = { total: 0, count: 0, avg: 0 };
+    }
+    categoryAverages[t.categoryId].total += t.amount;
+    categoryAverages[t.categoryId].count += 1;
+  });
+
+  Object.keys(categoryAverages).forEach((id) => {
+    categoryAverages[id].avg = categoryAverages[id].total / categoryAverages[id].count;
+  });
+
+  // 3. Phát hiện bất thường: Giao dịch cao hơn 2 lần trung bình danh mục đó
+  const anomalies = recentTransactions.filter((t) => {
+    const avgData = categoryAverages[t.categoryId];
+    // Chỉ cảnh báo nếu đã có lịch sử chi tiêu (> 3 giao dịch) và số tiền > 200k để tránh cảnh báo rác
+    if (avgData && avgData.count >= 3) {
+      return t.amount > avgData.avg * 2 && t.amount > 200000;
+    }
+    return false;
+  }).map(t => ({
+    ...t,
+    average: categoryAverages[t.categoryId].avg
+  }));
+
+  return { data: anomalies };
 }

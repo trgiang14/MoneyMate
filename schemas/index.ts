@@ -68,3 +68,12 @@ export const ReminderSchema = z.object({
   isActive: z.boolean().default(true),
 });
 
+export const BillSchema = z.object({
+  name: z.string().min(1, "Tên hóa đơn là bắt buộc"),
+  amount: z.coerce.number().positive("Số tiền phải lớn hơn 0"),
+  dueDate: z.coerce.number().min(1).max(31, "Ngày không hợp lệ"),
+  description: z.string().optional(),
+  categoryId: z.string().min(1, "Danh mục là bắt buộc"),
+  isActive: z.boolean().default(true),
+});
+

@@ -1,9 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Trash2, Play, Pause, Calendar, Clock, ArrowUpCircle, ArrowDownCircle, Bell, Repeat as RepeatIcon } from "lucide-react";
+import { Plus, Trash2, Calendar, Clock, Bell, Repeat as RepeatIcon, CreditCard } from "lucide-react";
 import { format } from "date-fns";
-import { vi } from "date-fns/locale";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -40,7 +39,7 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
-import { RecurringTransactionSchema, ReminderSchema } from "@/schemas";
+import { RecurringTransactionSchema, ReminderSchema, BillSchema } from "@/schemas";
 import { 
   getRecurringTransactions, 
   createRecurringTransaction, 
@@ -54,6 +53,12 @@ import {
   deleteReminder, 
   toggleReminder 
 } from "@/actions/reminders";
+import {
+  getBills,
+  createBill,
+  deleteBill,
+  toggleBill
+} from "@/actions/bills";
 import { getCategories } from "@/actions/categories";
 
 const DAYS_OF_WEEK = [
@@ -70,10 +75,13 @@ export default function AutomationPage() {
   const [activeTab, setActiveTab] = useState("recurring");
   const [recurringTransactions, setRecurringTransactions] = useState<any[]>([]);
   const [reminders, setReminders] = useState<any[]>([]);
+  const [bills, setBills] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  
   const [isRecurringDialogOpen, setIsRecurringDialogOpen] = useState(false);
   const [isReminderDialogOpen, setIsReminderDialogOpen] = useState(false);
+  const [isBillDialogOpen, setIsBillDialogOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
   const recurringForm = useForm<z.infer<typeof RecurringTransactionSchema>>({
@@ -100,16 +108,30 @@ export default function AutomationPage() {
     },
   });
 
+  const billForm = useForm<z.infer<typeof BillSchema>>({
+    resolver: zodResolver(BillSchema),
+    defaultValues: {
+      name: "",
+      amount: 0,
+      dueDate: 1,
+      description: "",
+      categoryId: "",
+      isActive: true,
+    },
+  });
+
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const [recurringData, reminderData, catData] = await Promise.all([
+      const [recurringData, reminderData, billData, catData] = await Promise.all([
         getRecurringTransactions(),
         getReminders(),
+        getBills(),
         getCategories()
       ]);
       setRecurringTransactions(recurringData);
       setReminders(reminderData);
+      setBills(billData);
       setCategories(catData);
     } catch (error) {
       toast.error("Không thể tải dữ liệu");
@@ -146,6 +168,18 @@ export default function AutomationPage() {
     }
   };
 
+  const onBillSubmit = async (values: z.infer<typeof BillSchema>) => {
+    const result = await createBill(values);
+    if (result.error) {
+      toast.error(result.error);
+    } else {
+      toast.success(result.success);
+      setIsBillDialogOpen(false);
+      billForm.reset();
+      fetchData();
+    }
+  };
+
   const onDeleteRecurring = async (id: string) => {
     if (confirm("Bạn có chắc chắn muốn xóa khoản định kỳ này?")) {
       const result = await deleteRecurringTransaction(id);
@@ -170,6 +204,18 @@ export default function AutomationPage() {
     }
   };
 
+  const onDeleteBill = async (id: string) => {
+    if (confirm("Bạn có chắc chắn muốn xóa hóa đơn này?")) {
+      const result = await deleteBill(id);
+      if (result.error) {
+        toast.error(result.error);
+      } else {
+        toast.success(result.success);
+        fetchData();
+      }
+    }
+  };
+
   const onToggleRecurring = async (id: string, currentStatus: boolean) => {
     const result = await toggleRecurringTransaction(id, !currentStatus);
     if (result.error) {
@@ -182,6 +228,16 @@ export default function AutomationPage() {
 
   const onToggleReminder = async (id: string, currentStatus: boolean) => {
     const result = await toggleReminder(id, !currentStatus);
+    if (result.error) {
+      toast.error(result.error);
+    } else {
+      toast.success(result.success);
+      fetchData();
+    }
+  };
+
+  const onToggleBill = async (id: string, currentStatus: boolean) => {
+    const result = await toggleBill(id, !currentStatus);
     if (result.error) {
       toast.error(result.error);
     } else {
@@ -216,7 +272,7 @@ export default function AutomationPage() {
         <div>
           <h2 className="text-3xl font-bold tracking-tight">Tự động hóa</h2>
           <p className="text-muted-foreground">
-            Quản lý các khoản thu chi định kỳ và nhắc nhở nhập liệu.
+            Quản lý các khoản thu chi định kỳ, hóa đơn và nhắc nhở.
           </p>
         </div>
         <div className="flex gap-2">
@@ -232,10 +288,14 @@ export default function AutomationPage() {
       </div>
 
       <Tabs defaultValue="recurring" className="w-full" onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-2 max-w-[400px]">
+        <TabsList className="grid w-full grid-cols-3 max-w-[600px]">
           <TabsTrigger value="recurring" className="flex items-center gap-2">
             <RepeatIcon className="h-4 w-4" />
             Định kỳ
+          </TabsTrigger>
+          <TabsTrigger value="bill" className="flex items-center gap-2">
+            <CreditCard className="h-4 w-4" />
+            Hóa đơn
           </TabsTrigger>
           <TabsTrigger value="reminder" className="flex items-center gap-2">
             <Bell className="h-4 w-4" />
@@ -424,6 +484,154 @@ export default function AutomationPage() {
                         <Clock className="h-3 w-3" />
                         <span>Tiếp theo: {format(new Date(item.nextRunDate), "dd/MM/yyyy")}</span>
                       </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="bill" className="space-y-4 pt-4">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-medium">Hóa đơn cố định</h3>
+            <Dialog open={isBillDialogOpen} onOpenChange={setIsBillDialogOpen}>
+              <DialogTrigger asChild>
+                <Button size="sm">
+                  <Plus className="mr-2 h-4 w-4" />
+                  Thêm hóa đơn
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Thêm hóa đơn</DialogTitle>
+                  <DialogDescription>
+                    Quản lý các hóa đơn cố định hàng tháng (điện, nước, tiền trọ...).
+                  </DialogDescription>
+                </DialogHeader>
+                <Form {...billForm}>
+                  <form onSubmit={billForm.handleSubmit(onBillSubmit)} className="space-y-4">
+                    <FormField
+                      control={billForm.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Tên hóa đơn</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Ví dụ: Tiền điện" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={billForm.control}
+                      name="amount"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Số tiền ước tính</FormLabel>
+                          <FormControl>
+                            <Input type="number" placeholder="0" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={billForm.control}
+                      name="dueDate"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Ngày đến hạn (hàng tháng)</FormLabel>
+                          <FormControl>
+                            <Input type="number" min="1" max="31" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={billForm.control}
+                      name="categoryId"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Danh mục</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Chọn danh mục" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {categories
+                                .filter(c => c.type === "EXPENSE")
+                                .map((category) => (
+                                  <SelectItem key={category.id} value={category.id}>
+                                    {category.name}
+                                  </SelectItem>
+                                ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={billForm.control}
+                      name="description"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Ghi chú (tùy chọn)</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Ghi chú thêm..." {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <DialogFooter>
+                      <Button type="submit" className="w-full">Lưu</Button>
+                    </DialogFooter>
+                  </form>
+                </Form>
+              </DialogContent>
+            </Dialog>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {isLoading ? (
+              <p>Đang tải...</p>
+            ) : bills.length === 0 ? (
+              <div className="col-span-full flex flex-col items-center justify-center p-8 border-2 border-dashed rounded-lg text-muted-foreground">
+                <CreditCard className="h-12 w-12 mb-4 opacity-20" />
+                <p>Chưa có hóa đơn nào.</p>
+              </div>
+            ) : (
+              bills.map((item) => (
+                <Card key={item.id} className={item.isActive ? "" : "opacity-60"}>
+                  <CardHeader className="pb-2">
+                    <div className="flex items-center justify-between">
+                      <Badge variant="outline">Ngày {item.dueDate}</Badge>
+                      <div className="flex items-center gap-2">
+                        <Switch 
+                          checked={item.isActive} 
+                          onCheckedChange={() => onToggleBill(item.id, item.isActive)}
+                        />
+                        <Button variant="ghost" size="icon" onClick={() => onDeleteBill(item.id)}>
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      </div>
+                    </div>
+                    <CardTitle className="text-xl mt-2">
+                      {item.amount.toLocaleString('vi-VN')} ₫
+                    </CardTitle>
+                    <CardDescription>
+                      {item.name} • {item.category?.name}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-sm">
+                      <p className="text-muted-foreground">{item.description || "Không có ghi chú"}</p>
                     </div>
                   </CardContent>
                 </Card>

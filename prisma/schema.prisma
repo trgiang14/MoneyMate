@@ -23,6 +23,7 @@ model User {
   budgets       Budget[]
   savingGoals   SavingGoal[]
   recurringTransactions RecurringTransaction[]
+  reminders     Reminder[]
 }
 
 model Category {
@@ -96,6 +97,23 @@ model RecurringTransaction {
   @@index([userId])
   @@index([categoryId])
   @@index([nextRunDate])
+}
+
+model Reminder {
+  id            String    @id @default(cuid())
+  title         String
+  description   String?
+  time          String    // Định dạng "HH:mm"
+  daysOfWeek    String    // Lưu dưới dạng chuỗi "1,2,3,4,5,6,0" (0 là Chủ Nhật)
+  isActive      Boolean   @default(true)
+  
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([userId])
 }
 
 enum RecurrenceFrequency {

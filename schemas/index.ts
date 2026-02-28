@@ -60,3 +60,11 @@ export const RecurringTransactionSchema = z.object({
   isActive: z.boolean().default(true),
 });
 
+export const ReminderSchema = z.object({
+  title: z.string().min(1, "Tiêu đề là bắt buộc"),
+  description: z.string().optional(),
+  time: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Thời gian không hợp lệ (HH:mm)"),
+  daysOfWeek: z.array(z.number().min(0).max(6)).min(1, "Chọn ít nhất một ngày trong tuần"),
+  isActive: z.boolean().default(true),
+});
+

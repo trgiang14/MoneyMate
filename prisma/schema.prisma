@@ -38,6 +38,7 @@ model Category {
   transactions  Transaction[]
   recurringTransactions RecurringTransaction[]
   budgets       Budget[]
+  bills         Bill[]
   isDefault     Boolean   @default(false)
 
   @@index([userId])

@@ -150,7 +150,9 @@ export default function GroupsPage() {
               </DialogHeader>
               <div className="space-y-4 py-4">
                 <div className="space-y-2">
-                  <FormLabel>Mã mời</FormLabel>
+                  <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                    Mã mời
+                  </label>
                   <Input 
                     placeholder="Nhập mã mời (ví dụ: clx...)" 
                     value={inviteCode}

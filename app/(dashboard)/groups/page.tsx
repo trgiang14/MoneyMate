@@ -296,7 +296,7 @@ export default function GroupsPage() {
                 >
                   <LogOut className="h-4 w-4" />
                 </Button>
-                {group.members.find((m: any) => m.userId === groups[0].members.find((me: any) => me.role === 'ADMIN')?.userId && m.role === 'ADMIN') && (
+                {group.members.some((m: any) => m.role === 'ADMIN') && (
                    <Button 
                    variant="ghost" 
                    size="sm" 

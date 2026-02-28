@@ -77,3 +77,23 @@ export const BillSchema = z.object({
   isActive: z.boolean().default(true),
 });
 
+export const GroupSchema = z.object({
+  name: z.string().min(1, "Tên nhóm là bắt buộc"),
+  description: z.string().optional(),
+});
+
+export const GroupTransactionSchema = z.object({
+  amount: z.coerce.number().positive("Số tiền phải lớn hơn 0"),
+  description: z.string().min(1, "Mô tả là bắt buộc"),
+  date: z.date({
+    required_error: "Ngày là bắt buộc",
+  }),
+  categoryId: z.string().min(1, "Danh mục là bắt buộc"),
+  groupId: z.string().min(1, "Nhóm là bắt buộc"),
+  payerId: z.string().min(1, "Người thanh toán là bắt buộc"),
+  splits: z.array(z.object({
+    userId: z.string(),
+    amount: z.coerce.number(),
+  })).min(1, "Phải có ít nhất một người chia tiền"),
+});
+

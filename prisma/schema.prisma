@@ -25,6 +25,9 @@ model User {
   recurringTransactions RecurringTransaction[]
   reminders     Reminder[]
   bills         Bill[]
+  groups        GroupMember[]
+  groupTransactions GroupTransaction[]
+  splits        TransactionSplit[]
 }
 
 model Category {
@@ -40,7 +43,80 @@ model Category {
   budgets       Budget[]
   bills         Bill[]
   isDefault     Boolean   @default(false)
+  groupTransactions GroupTransaction[]
 
+  @@index([userId])
+}
+
+model Group {
+  id            String    @id @default(cuid())
+  name          String
+  description   String?
+  inviteCode    String    @unique @default(cuid())
+  
+  members       GroupMember[]
+  transactions  GroupTransaction[]
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model GroupMember {
+  id            String    @id @default(cuid())
+  groupId       String
+  group         Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role          GroupRole @default(MEMBER)
+
+  createdAt     DateTime  @default(now())
+
+  @@unique([groupId, userId])
+  @@index([groupId])
+  @@index([userId])
+}
+
+enum GroupRole {
+  ADMIN
+  MEMBER
+}
+
+model GroupTransaction {
+  id            String    @id @default(cuid())
+  amount        Float
+  description   String?
+  date          DateTime  @default(now())
+  
+  groupId       String
+  group         Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  
+  payerId       String
+  payer         User      @relation(fields: [payerId], references: [id], onDelete: Cascade)
+  
+  categoryId    String
+  category      Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  
+  splits        TransactionSplit[]
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([groupId])
+  @@index([payerId])
+  @@index([categoryId])
+}
+
+model TransactionSplit {
+  id                 String           @id @default(cuid())
+  amount             Float
+  
+  groupTransactionId String
+  groupTransaction   GroupTransaction @relation(fields: [groupTransactionId], references: [id], onDelete: Cascade)
+  
+  userId             String
+  user               User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([groupTransactionId])
   @@index([userId])
 }
 

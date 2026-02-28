@@ -16,7 +16,8 @@ import {
   BarChart3,
   PieChart,
   Target,
-  Repeat
+  Repeat,
+  Users
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -79,6 +80,12 @@ export const Sidebar = ({ userName }: SidebarProps) => {
       icon: Repeat,
       href: "/automation",
       active: pathname === "/automation",
+    },
+    {
+      label: "Nhóm chi tiêu",
+      icon: Users,
+      href: "/groups",
+      active: pathname === "/groups",
     },
     {
       label: "Cài đặt",

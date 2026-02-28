@@ -1,4 +1,5 @@
 import { StatsChart } from "@/components/stats/StatsChart";
+import { MonthlyComparisonChart } from "@/components/stats/MonthlyComparisonChart";
 
 export default function StatisticsPage() {
   return (
@@ -10,6 +11,7 @@ export default function StatisticsPage() {
         </p>
       </div>
       <StatsChart />
+      <MonthlyComparisonChart />
     </div>
   );
 }

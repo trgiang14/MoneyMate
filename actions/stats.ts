@@ -2,7 +2,7 @@
 
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { startOfDay, endOfDay, startOfMonth, endOfMonth, startOfYear, endOfYear, subYears, format, eachDayOfInterval, eachMonthOfInterval, eachYearOfInterval } from "date-fns";
+import { startOfDay, endOfDay, startOfMonth, endOfMonth, startOfYear, endOfYear, subYears, format, eachDayOfInterval, eachMonthOfInterval, eachYearOfInterval, subMonths } from "date-fns";
 import { vi } from "date-fns/locale";
 
 export type Period = "day" | "month" | "year";
@@ -174,4 +174,57 @@ export async function getCategoryStats(period: Period, date: Date) {
     income: data.filter((d) => d.type === "INCOME").sort((a, b) => b.value - a.value),
     expense: data.filter((d) => d.type === "EXPENSE").sort((a, b) => b.value - a.value),
   };
+}
+
+export async function getMonthlyComparison(monthsCount: number = 6) {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    return { error: "Bạn cần đăng nhập!" };
+  }
+
+  const userId = session.user.id;
+  const now = new Date();
+  const startDate = startOfMonth(subMonths(now, monthsCount - 1));
+  const endDate = endOfMonth(now);
+
+  const transactions = await db.transaction.findMany({
+    where: {
+      userId,
+      date: {
+        gte: startDate,
+        lte: endDate,
+      },
+    },
+    select: {
+      date: true,
+      amount: true,
+      type: true,
+    },
+  });
+
+  const months = eachMonthOfInterval({ start: startDate, end: endDate });
+  const comparisonData = months.map((month) => {
+    const monthKey = format(month, "yyyy-MM");
+    const monthTransactions = transactions.filter(
+      (t) => format(t.date, "yyyy-MM") === monthKey
+    );
+
+    const income = monthTransactions
+      .filter((t) => t.type === "INCOME")
+      .reduce((sum, t) => sum + t.amount, 0);
+    
+    const expense = monthTransactions
+      .filter((t) => t.type === "EXPENSE")
+      .reduce((sum, t) => sum + t.amount, 0);
+
+    return {
+      month: format(month, "MM/yyyy"),
+      income,
+      expense,
+      savings: income - expense,
+    };
+  });
+
+  return { data: comparisonData };
 }

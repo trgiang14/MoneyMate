@@ -47,3 +47,16 @@ export const PasswordSchema = z.object({
   newPassword: z.string().min(6, "Mật khẩu mới tối thiểu 6 ký tự"),
 });
 
+export const RecurringTransactionSchema = z.object({
+  amount: z.coerce.number().positive("Số tiền phải lớn hơn 0"),
+  description: z.string().optional(),
+  type: z.enum(["INCOME", "EXPENSE"]),
+  frequency: z.enum(["DAILY", "WEEKLY", "MONTHLY", "YEARLY"]),
+  startDate: z.date({
+    required_error: "Ngày bắt đầu là bắt buộc",
+  }),
+  endDate: z.date().optional().nullable(),
+  categoryId: z.string().min(1, "Danh mục là bắt buộc"),
+  isActive: z.boolean().default(true),
+});
+

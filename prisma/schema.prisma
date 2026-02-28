@@ -22,6 +22,7 @@ model User {
   categories    Category[]
   budgets       Budget[]
   savingGoals   SavingGoal[]
+  recurringTransactions RecurringTransaction[]
 }
 
 model Category {
@@ -33,6 +34,7 @@ model Category {
   userId        String?
   user          User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
   transactions  Transaction[]
+  recurringTransactions RecurringTransaction[]
   budgets       Budget[]
   isDefault     Boolean   @default(false)
 
@@ -54,11 +56,53 @@ model Transaction {
   user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   categoryId    String
   category      Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  
+  // Link to recurring transaction if this was generated automatically
+  recurringTransactionId String?
+  recurringTransaction   RecurringTransaction? @relation(fields: [recurringTransactionId], references: [id], onDelete: SetNull)
+
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
   @@index([userId])
   @@index([categoryId])
+  @@index([recurringTransactionId])
+}
+
+model RecurringTransaction {
+  id            String    @id @default(cuid())
+  amount        Float
+  description   String?
+  type          CategoryType
+  
+  // Recurrence pattern
+  frequency     RecurrenceFrequency
+  startDate     DateTime
+  endDate       DateTime?
+  lastRunDate   DateTime?
+  nextRunDate   DateTime
+
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId    String
+  category      Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  
+  transactions  Transaction[]
+
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([categoryId])
+  @@index([nextRunDate])
+}
+
+enum RecurrenceFrequency {
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
 }
 
 model Budget {

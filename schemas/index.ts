@@ -91,9 +91,11 @@ export const GroupTransactionSchema = z.object({
   categoryId: z.string().min(1, "Danh mục là bắt buộc"),
   groupId: z.string().min(1, "Nhóm là bắt buộc"),
   payerId: z.string().min(1, "Người thanh toán là bắt buộc"),
+  splitType: z.enum(["EQUAL", "EXACT", "PERCENTAGE"]).default("EQUAL"),
   splits: z.array(z.object({
     userId: z.string(),
-    amount: z.coerce.number(),
+    amount: z.coerce.number().optional(),
+    percentage: z.coerce.number().optional(),
   })).min(1, "Phải có ít nhất một người chia tiền"),
 });
 

@@ -56,7 +56,7 @@ export const createGroupTransaction = async (values: z.infer<typeof GroupTransac
     return { error: "Thông tin không hợp lệ!" };
   }
 
-  const { amount, description, date, categoryId, groupId, payerId, splits } = validatedFields.data;
+  const { amount, description, date, categoryId, groupId, payerId, splits, splitType } = validatedFields.data;
 
   try {
     // 1. Kiểm tra xem người dùng có trong nhóm không
@@ -82,10 +82,11 @@ export const createGroupTransaction = async (values: z.infer<typeof GroupTransac
         groupId,
         payerId,
         categoryId,
+        splitType,
         splits: {
           create: splits.map((split) => ({
             userId: split.userId,
-            amount: split.amount,
+            amount: split.amount || 0,
           })),
         },
       },

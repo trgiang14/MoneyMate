@@ -86,6 +86,7 @@ model GroupTransaction {
   amount        Float
   description   String?
   date          DateTime  @default(now())
+  splitType     SplitType @default(EQUAL)
   
   groupId       String
   group         Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
@@ -104,6 +105,12 @@ model GroupTransaction {
   @@index([groupId])
   @@index([payerId])
   @@index([categoryId])
+}
+
+enum SplitType {
+  EQUAL
+  EXACT
+  PERCENTAGE
 }
 
 model TransactionSplit {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { 
   Plus, 
   Trash2, 
@@ -13,12 +13,17 @@ import {
   User, 
   Info,
   ChevronRight,
-  Loader2
+  Loader2,
+  UserMinus,
+  Settings2,
+  Percent,
+  Equal,
+  Calculator
 } from "lucide-react";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { toast } from "sonner";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import Link from "next/link";
@@ -56,7 +61,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
 import { GroupTransactionSchema } from "@/schemas";
-import { getGroups } from "@/actions/groups";
+import { getGroups, removeMember } from "@/actions/groups";
 import { 
   getGroupTransactions, 
   createGroupTransaction, 
@@ -64,6 +69,7 @@ import {
   getGroupBalances 
 } from "@/actions/group-transactions";
 import { getCategories } from "@/actions/categories";
+import { cn } from "@/lib/utils";
 
 export default function GroupDetailPage() {
   const params = useParams();
@@ -75,7 +81,7 @@ export default function GroupDetailPage() {
   const [categories, setCategories] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
+  const [isManageMembersOpen, setIsManageMembersOpen] = useState(false);
 
   const form = useForm<z.infer<typeof GroupTransactionSchema>>({
     resolver: zodResolver(GroupTransactionSchema),
@@ -86,9 +92,30 @@ export default function GroupDetailPage() {
       categoryId: "",
       groupId: groupId,
       payerId: "",
+      splitType: "EQUAL",
       splits: [],
     },
   });
+
+  const { fields, append, remove, replace } = useFieldArray({
+    control: form.control,
+    name: "splits",
+  });
+
+  const splitType = form.watch("splitType");
+  const totalAmount = form.watch("amount") || 0;
+
+  // Cập nhật splits khi thay đổi thành viên hoặc loại chia tiền
+  useEffect(() => {
+    if (group && isDialogOpen) {
+      const initialSplits = group.members.map((m: any) => ({
+        userId: m.userId,
+        amount: splitType === "EQUAL" ? totalAmount / group.members.length : 0,
+        percentage: splitType === "PERCENTAGE" ? 100 / group.members.length : 0,
+      }));
+      replace(initialSplits);
+    }
+  }, [group, isDialogOpen, splitType, totalAmount, replace]);
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -105,10 +132,6 @@ export default function GroupDetailPage() {
       setTransactions(transData);
       setBalances(balancesData);
       setCategories(catData.filter((c: any) => c.type === "EXPENSE"));
-      
-      if (currentGroup) {
-        setSelectedMembers(currentGroup.members.map((m: any) => m.userId));
-      }
     } catch (error) {
       toast.error("Không thể tải dữ liệu nhóm");
     } finally {
@@ -121,16 +144,32 @@ export default function GroupDetailPage() {
   }, [groupId]);
 
   const onSubmit = async (values: z.infer<typeof GroupTransactionSchema>) => {
-    // Tự động tính toán split đều cho những người được chọn
-    const splitAmount = values.amount / selectedMembers.length;
-    const splits = selectedMembers.map(userId => ({
-      userId,
-      amount: splitAmount
-    }));
+    let finalSplits = [...values.splits];
+
+    if (values.splitType === "EQUAL") {
+      const amountPerPerson = values.amount / values.splits.length;
+      finalSplits = values.splits.map(s => ({ ...s, amount: amountPerPerson }));
+    } else if (values.splitType === "PERCENTAGE") {
+      const totalPercent = values.splits.reduce((sum, s) => sum + (s.percentage || 0), 0);
+      if (Math.abs(totalPercent - 100) > 0.1) {
+        toast.error("Tổng tỷ lệ phải bằng 100%");
+        return;
+      }
+      finalSplits = values.splits.map(s => ({ 
+        ...s, 
+        amount: (values.amount * (s.percentage || 0)) / 100 
+      }));
+    } else if (values.splitType === "EXACT") {
+      const totalExact = values.splits.reduce((sum, s) => sum + (s.amount || 0), 0);
+      if (Math.abs(totalExact - values.amount) > 1) {
+        toast.error("Tổng số tiền chia phải bằng tổng số tiền giao dịch");
+        return;
+      }
+    }
 
     const result = await createGroupTransaction({
       ...values,
-      splits
+      splits: finalSplits
     });
 
     if (result.error) {
@@ -146,6 +185,18 @@ export default function GroupDetailPage() {
   const onDelete = async (id: string) => {
     if (confirm("Bạn có chắc chắn muốn xóa giao dịch này?")) {
       const result = await deleteGroupTransaction(id, groupId);
+      if (result.error) {
+        toast.error(result.error);
+      } else {
+        toast.success(result.success);
+        fetchData();
+      }
+    }
+  };
+
+  const onRemoveMember = async (userId: string) => {
+    if (confirm("Bạn có chắc chắn muốn xóa thành viên này khỏi nhóm?")) {
+      const result = await removeMember(groupId, userId);
       if (result.error) {
         toast.error(result.error);
       } else {
@@ -194,19 +245,62 @@ export default function GroupDetailPage() {
           <h2 className="text-3xl font-bold tracking-tight">{group.name}</h2>
           <p className="text-muted-foreground">{group.description}</p>
         </div>
-        <div className="ml-auto">
+        <div className="ml-auto flex gap-2">
+          <Dialog open={isManageMembersOpen} onOpenChange={setIsManageMembersOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline">
+                <Users className="mr-2 h-4 w-4" />
+                Thành viên
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Quản lý thành viên</DialogTitle>
+                <DialogDescription>
+                  Danh sách thành viên trong nhóm. Mã mời: <code className="bg-muted px-1 rounded">{group.inviteCode}</code>
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                {group.members.map((member: any) => (
+                  <div key={member.userId} className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={member.user.image || ""} />
+                        <AvatarFallback>{member.user.name?.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="text-sm font-medium">{member.user.name}</p>
+                        <p className="text-xs text-muted-foreground">{member.role}</p>
+                      </div>
+                    </div>
+                    {member.role !== "ADMIN" && (
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="text-destructive"
+                        onClick={() => onRemoveMember(member.userId)}
+                      >
+                        <UserMinus className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </DialogContent>
+          </Dialog>
+
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button>
                 <Plus className="mr-2 h-4 w-4" />
-                Thêm chi tiêu nhóm
+                Thêm chi tiêu
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[500px]">
+            <DialogContent className="sm:max-w-[550px] max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>Chi tiêu nhóm mới</DialogTitle>
                 <DialogDescription>
-                  Nhập khoản chi tiêu và chọn những người sẽ chia sẻ khoản chi này.
+                  Nhập khoản chi và chọn cách thức chia tiền.
                 </DialogDescription>
               </DialogHeader>
               <Form {...form}>
@@ -283,42 +377,78 @@ export default function GroupDetailPage() {
                       <FormItem>
                         <FormLabel>Mô tả</FormLabel>
                         <FormControl>
-                          <Input placeholder="Ví dụ: Ăn tối, Tiền điện tháng 5..." {...field} />
+                          <Input placeholder="Ví dụ: Ăn tối, Tiền điện..." {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
 
-                  <div className="space-y-2">
-                    <FormLabel>Chia tiền cho ai?</FormLabel>
-                    <div className="grid grid-cols-2 gap-2 p-3 border rounded-lg bg-slate-50">
-                      {group.members.map((member: any) => (
-                        <div key={member.userId} className="flex items-center space-x-2">
-                          <Checkbox 
-                            id={`member-${member.userId}`}
-                            checked={selectedMembers.includes(member.userId)}
-                            onCheckedChange={(checked) => {
-                              if (checked) {
-                                setSelectedMembers([...selectedMembers, member.userId]);
-                              } else {
-                                if (selectedMembers.length > 1) {
-                                  setSelectedMembers(selectedMembers.filter(id => id !== member.userId));
-                                } else {
-                                  toast.error("Phải có ít nhất một người chia tiền");
-                                }
-                              }
-                            }}
-                          />
-                          <label htmlFor={`member-${member.userId}`} className="text-sm font-medium leading-none cursor-pointer">
-                            {member.user.name}
-                          </label>
+                  <div className="space-y-3">
+                    <FormLabel>Cách chia tiền</FormLabel>
+                    <Tabs 
+                      defaultValue="EQUAL" 
+                      value={splitType} 
+                      onValueChange={(v) => form.setValue("splitType", v as any)}
+                    >
+                      <TabsList className="grid w-full grid-cols-3">
+                        <TabsTrigger value="EQUAL" className="flex items-center gap-1">
+                          <Equal className="h-3 w-3" /> Chia đều
+                        </TabsTrigger>
+                        <TabsTrigger value="EXACT" className="flex items-center gap-1">
+                          <Calculator className="h-3 w-3" /> Số tiền
+                        </TabsTrigger>
+                        <TabsTrigger value="PERCENTAGE" className="flex items-center gap-1">
+                          <Percent className="h-3 w-3" /> Tỷ lệ
+                        </TabsTrigger>
+                      </TabsList>
+                    </Tabs>
+
+                    <div className="space-y-3 p-3 border rounded-lg bg-slate-50/50">
+                      {fields.map((field, index) => (
+                        <div key={field.id} className="flex items-center gap-3">
+                          <div className="flex items-center gap-2 flex-1">
+                            <Avatar className="h-6 w-6">
+                              <AvatarFallback className="text-[10px]">
+                                {group.members.find((m: any) => m.userId === field.userId)?.user.name.charAt(0)}
+                              </AvatarFallback>
+                            </Avatar>
+                            <span className="text-sm font-medium truncate">
+                              {group.members.find((m: any) => m.userId === field.userId)?.user.name}
+                            </span>
+                          </div>
+                          
+                          {splitType === "EQUAL" && (
+                            <span className="text-sm text-muted-foreground">
+                              {formatCurrency(totalAmount / fields.length)}
+                            </span>
+                          )}
+
+                          {splitType === "EXACT" && (
+                            <div className="w-32">
+                              <Input 
+                                type="number" 
+                                className="h-8 text-right"
+                                placeholder="0"
+                                {...form.register(`splits.${index}.amount` as const)}
+                              />
+                            </div>
+                          )}
+
+                          {splitType === "PERCENTAGE" && (
+                            <div className="w-24 flex items-center gap-1">
+                              <Input 
+                                type="number" 
+                                className="h-8 text-right"
+                                placeholder="0"
+                                {...form.register(`splits.${index}.percentage` as const)}
+                              />
+                              <span className="text-xs text-muted-foreground">%</span>
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>
-                    <p className="text-[10px] text-muted-foreground">
-                      * Số tiền sẽ được chia đều cho {selectedMembers.length} người đã chọn.
-                    </p>
                   </div>
 
                   <DialogFooter>
@@ -367,7 +497,7 @@ export default function GroupDetailPage() {
                             <span className="text-[10px] text-muted-foreground mr-1">Chia cho:</span>
                             {t.splits.map((s: any) => (
                               <Badge key={s.id} variant="secondary" className="text-[9px] px-1 py-0">
-                                {s.user.name}
+                                {s.user.name} ({formatCurrency(s.amount)})
                               </Badge>
                             ))}
                           </div>
@@ -428,26 +558,6 @@ export default function GroupDetailPage() {
               <AlertCircle className="h-3 w-3 shrink-0" />
               <p>Số dư dương (+) nghĩa là người đó đã trả nhiều hơn phần của mình. Số dư âm (-) nghĩa là người đó đang nợ nhóm.</p>
             </CardFooter>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-sm">Thông tin nhóm</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3 text-sm">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Mã mời:</span>
-                <code className="bg-muted px-2 py-0.5 rounded font-mono text-xs">{group.inviteCode}</code>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Ngày tạo:</span>
-                <span>{format(new Date(group.createdAt), "dd/MM/yyyy")}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Thành viên:</span>
-                <span>{group.members.length}</span>
-              </div>
-            </CardContent>
           </Card>
         </div>
       </div>

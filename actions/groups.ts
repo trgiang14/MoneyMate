@@ -209,3 +209,44 @@ export const deleteGroup = async (groupId: string) => {
     return { error: "Đã có lỗi xảy ra!" };
   }
 };
+
+export const removeMember = async (groupId: string, userId: string) => {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    return { error: "Bạn cần đăng nhập!" };
+  }
+
+  try {
+    const adminMember = await db.groupMember.findUnique({
+      where: {
+        groupId_userId: {
+          groupId,
+          userId: session.user.id,
+        },
+      },
+    });
+
+    if (!adminMember || adminMember.role !== "ADMIN") {
+      return { error: "Chỉ Admin mới có quyền xóa thành viên!" };
+    }
+
+    if (userId === session.user.id) {
+      return { error: "Bạn không thể tự xóa chính mình. Hãy sử dụng chức năng Rời nhóm." };
+    }
+
+    await db.groupMember.delete({
+      where: {
+        groupId_userId: {
+          groupId,
+          userId,
+        },
+      },
+    });
+
+    revalidatePath(`/groups/${groupId}`);
+    return { success: "Đã xóa thành viên khỏi nhóm!" };
+  } catch (error) {
+    return { error: "Đã có lỗi xảy ra!" };
+  }
+};

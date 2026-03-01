@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect, useMemo } from "react";
 import { 
@@ -104,7 +104,7 @@ export default function DashboardPage() {
 
   const toggleWidgetVisibility = (id: string) => {
     setLayout(prev => {
-      const currentLayout = Array.isArray(prev) && prev.length > 0 ? prev : DEFAULT_DASHBOARD_LAYOUT;
+      const currentLayout = (Array.isArray(prev) && prev.length > 0) ? prev : DEFAULT_DASHBOARD_LAYOUT;
       return currentLayout.map(w => w.id === id ? { ...w, visible: !w.visible } : w);
     });
   };

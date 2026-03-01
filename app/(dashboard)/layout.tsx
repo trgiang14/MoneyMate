@@ -9,7 +9,7 @@ export default async function DashboardLayout({
   const session = await auth();
 
   return (
-    <div className="min-h-screen bg-slate-50 flex">
+    <div className="min-h-screen bg-background flex">
       <Sidebar userName={session?.user?.name} />
       
       <div className="flex-1 flex flex-col min-w-0 transition-all duration-300 main-content">
@@ -19,7 +19,7 @@ export default async function DashboardLayout({
           </div>
         </main>
         
-        <footer className="py-6 border-t bg-white/50">
+        <footer className="py-6 border-t border-border bg-card/50">
           <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
             &copy; {new Date().getFullYear()} MoneyMate. Tất cả các quyền được bảo lưu.
           </div>

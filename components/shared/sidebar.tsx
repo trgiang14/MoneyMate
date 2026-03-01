@@ -118,19 +118,19 @@ export const Sidebar = ({ userName }: SidebarProps) => {
       {/* Sidebar container */}
       <aside
         className={cn(
-          "fixed left-0 top-0 h-full bg-white border-r z-40 transition-all duration-300 flex flex-col",
+          "fixed left-0 top-0 h-full bg-card border-r z-40 transition-all duration-300 flex flex-col",
           isCollapsed ? "w-20" : "w-64",
           isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
       >
         {/* Logo area */}
-        <div className="h-16 flex items-center px-6 border-b">
+        <div className="h-16 flex items-center px-6 border-b border-border">
           <Link href="/dashboard" className="flex items-center gap-3 overflow-hidden">
-            <div className="min-w-8 min-h-8 bg-primary rounded-lg flex items-center justify-center text-white">
+            <div className="min-w-8 min-h-8 bg-primary rounded-lg flex items-center justify-center text-primary-foreground">
               <Wallet className="w-5 h-5" />
             </div>
             {!isCollapsed && (
-              <span className="font-bold text-xl text-primary whitespace-nowrap">MoneyMate</span>
+              <span className="font-bold text-xl text-foreground whitespace-nowrap">MoneyMate</span>
             )}
           </Link>
         </div>
@@ -145,8 +145,8 @@ export const Sidebar = ({ userName }: SidebarProps) => {
                   className={cn(
                     "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors group relative",
                     route.active 
-                      ? "bg-primary text-white" 
-                      : "text-muted-foreground hover:bg-slate-100 hover:text-foreground"
+                      ? "bg-primary text-primary-foreground" 
+                      : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                   )}
                   onClick={() => setIsMobileOpen(false)}
                 >
@@ -166,7 +166,7 @@ export const Sidebar = ({ userName }: SidebarProps) => {
         </nav>
 
         {/* Bottom area: User & Logout */}
-        <div className="p-3 border-t space-y-2">
+        <div className="p-3 border-t border-border space-y-2">
           <div className={cn(
             "flex items-center gap-2 px-3 py-2",
             isCollapsed ? "justify-center" : "justify-between"
@@ -184,7 +184,7 @@ export const Sidebar = ({ userName }: SidebarProps) => {
           <Button
             variant="ghost"
             className={cn(
-              "w-full flex items-center gap-3 px-3 justify-start text-destructive hover:bg-red-50 hover:text-destructive",
+              "w-full flex items-center gap-3 px-3 justify-start text-destructive hover:bg-destructive/10 hover:text-destructive",
               isCollapsed && "justify-center"
             )}
             onClick={() => logout()}
@@ -197,7 +197,7 @@ export const Sidebar = ({ userName }: SidebarProps) => {
           <Button
             variant="ghost"
             size="icon"
-            className="hidden lg:flex w-full mt-2 items-center justify-center text-muted-foreground"
+            className="hidden lg:flex w-full mt-2 items-center justify-center text-muted-foreground hover:bg-accent hover:text-accent-foreground"
             onClick={toggleSidebar}
           >
             {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}

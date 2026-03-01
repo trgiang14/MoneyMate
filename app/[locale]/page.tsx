@@ -1,6 +1,5 @@
-"use client";
-
-import Link from "next/link";
+import {useTranslations} from 'next-intl';
+import {Link} from '@/i18n/routing';
 import { motion } from "framer-motion";
 import { 
   Wallet, 
@@ -15,6 +14,7 @@ import {
   Users
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import LocaleSwitcher from "@/components/shared/LocaleSwitcher";
 
 const container = {
   hidden: { opacity: 0 },
@@ -32,6 +32,9 @@ const item = {
 };
 
 export default function LandingPage() {
+  const t = useTranslations('HomePage');
+  const navT = useTranslations('Navigation');
+
   return (
     <div className="flex flex-col min-h-screen bg-white text-slate-900">
       {/* Header */}
@@ -50,6 +53,7 @@ export default function LandingPage() {
           <Link className="text-sm font-semibold text-slate-600 hover:text-primary transition-colors" href="#about">
             Về chúng tôi
           </Link>
+          <LocaleSwitcher />
           <Link className="text-sm font-semibold text-slate-600 hover:text-primary transition-colors" href="/login">
             Đăng nhập
           </Link>
@@ -61,7 +65,8 @@ export default function LandingPage() {
         </nav>
 
         {/* Mobile menu simple version */}
-        <div className="md:hidden">
+        <div className="md:hidden flex items-center gap-4">
+          <LocaleSwitcher />
           <Link href="/login">
             <Button variant="ghost" size="sm" className="font-bold">Đăng nhập</Button>
           </Link>
@@ -87,13 +92,10 @@ export default function LandingPage() {
                 <Zap className="w-4 h-4" /> Ứng dụng quản lý tài chính số 1 Việt Nam
               </div>
               <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[1.1]">
-                Làm chủ túi tiền <br />
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-blue-600 to-indigo-600">
-                  Kiến tạo tương lai
-                </span>
+                {t('title')}
               </h1>
               <p className="mx-auto max-w-[700px] text-slate-500 md:text-xl leading-relaxed">
-                MoneyMate không chỉ là một ứng dụng ghi chép thu chi, mà là người bạn đồng hành giúp bạn xây dựng thói quen tài chính thông minh và bền vững.
+                {t('description')}
               </p>
               <div className="flex flex-col sm:flex-row justify-center gap-4 mt-10">
                 <Link href="/register">

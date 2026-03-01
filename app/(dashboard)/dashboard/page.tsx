@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, useMemo } from "react";
 import { 
@@ -38,7 +38,8 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { getTransactions } from "@/actions/transactions";
 import { getBudgets } from "@/actions/budgets";
-import { getDashboardConfig, updateDashboardConfig, DEFAULT_DASHBOARD_LAYOUT } from "@/actions/dashboard-config";
+import { getDashboardConfig, updateDashboardConfig } from "@/actions/dashboard-config";
+import { DEFAULT_DASHBOARD_LAYOUT } from "@/lib/dashboard-constants";
 import { cn } from "@/lib/utils";
 
 export default function DashboardPage() {
@@ -337,3 +338,4 @@ export default function DashboardPage() {
     </div>
   );
 }
+

@@ -1,16 +1,9 @@
-"use strict";
-"use server";
+﻿"use server";
 
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
-
-export const DEFAULT_DASHBOARD_LAYOUT = [
-  { id: "overBudgets", visible: true, title: "Cảnh báo ngân sách" },
-  { id: "summary", visible: true, title: "Thống kê tổng quan" },
-  { id: "recentTransactions", visible: true, title: "Giao dịch gần đây" },
-  { id: "categoryDistribution", visible: true, title: "Phân bổ chi tiêu" },
-];
+import { DEFAULT_DASHBOARD_LAYOUT } from "@/lib/dashboard-constants";
 
 export const getDashboardConfig = async () => {
   const session = await auth();
@@ -39,7 +32,7 @@ export const updateDashboardConfig = async (layout: any[]) => {
   const session = await auth();
 
   if (!session?.user?.id) {
-    return { error: "Bạn cần đăng nhập!" };
+    return { error: "Ban can dang nhap!" };
   }
 
   try {
@@ -53,9 +46,10 @@ export const updateDashboardConfig = async (layout: any[]) => {
     });
 
     revalidatePath("/dashboard");
-    return { success: "Đã cập nhật cấu hình Dashboard!" };
+    return { success: "Da cap nhat cau hinh Dashboard!" };
   } catch (error) {
     console.error("Error updating dashboard config:", error);
-    return { error: "Đã có lỗi xảy ra!" };
+    return { error: "Da co loi xay ra!" };
   }
 };
+

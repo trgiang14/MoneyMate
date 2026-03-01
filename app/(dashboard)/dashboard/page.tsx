@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -60,9 +60,16 @@ export default function DashboardPage() {
       ]);
       setTransactions(transactionsData);
       setBudgets(budgetsData);
-      setLayout(configData.layout || DEFAULT_DASHBOARD_LAYOUT);
+      
+      // Ensure layout is always an array
+      if (configData && Array.isArray(configData.layout)) {
+        setLayout(configData.layout);
+      } else {
+        setLayout(DEFAULT_DASHBOARD_LAYOUT);
+      }
     } catch (error) {
       toast.error("Không thể tải dữ liệu");
+      setLayout(DEFAULT_DASHBOARD_LAYOUT);
     } finally {
       setIsLoading(false);
     }
@@ -72,10 +79,15 @@ export default function DashboardPage() {
     fetchData();
   }, []);
 
+  // Use a derived layout to ensure we always have something to render
+  const activeLayout = useMemo(() => {
+    return (Array.isArray(layout) && layout.length > 0) ? layout : DEFAULT_DASHBOARD_LAYOUT;
+  }, [layout]);
+
   const handleSaveConfig = async () => {
     setIsSaving(true);
     try {
-      const result = await updateDashboardConfig(layout);
+      const result = await updateDashboardConfig(activeLayout);
       if (result.success) {
         toast.success(result.success);
         setIsConfigOpen(false);
@@ -90,7 +102,10 @@ export default function DashboardPage() {
   };
 
   const toggleWidgetVisibility = (id: string) => {
-    setLayout(prev => prev.map(w => w.id === id ? { ...w, visible: !w.visible } : w));
+    setLayout(prev => {
+      const currentLayout = Array.isArray(prev) && prev.length > 0 ? prev : DEFAULT_DASHBOARD_LAYOUT;
+      return currentLayout.map(w => w.id === id ? { ...w, visible: !w.visible } : w);
+    });
   };
 
   const totalIncome = transactions
@@ -120,7 +135,7 @@ export default function DashboardPage() {
 
   // Render Widgets based on layout
   const renderWidget = (widgetId: string) => {
-    const widget = layout.find(w => w.id === widgetId);
+    const widget = activeLayout.find(w => w.id === widgetId);
     if (!widget || !widget.visible) return null;
 
     switch (widgetId) {
@@ -290,7 +305,7 @@ export default function DashboardPage() {
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
-              {layout.map((widget) => (
+              {activeLayout.map((widget) => (
                 <div key={widget.id} className="flex items-center justify-between p-2 border rounded-lg">
                   <div className="flex items-center gap-3">
                     <GripVertical className="h-4 w-4 text-muted-foreground cursor-move" />
@@ -317,7 +332,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="space-y-6">
-        {layout.map(w => renderWidget(w.id))}
+        {activeLayout.map(w => renderWidget(w.id))}
       </div>
     </div>
   );

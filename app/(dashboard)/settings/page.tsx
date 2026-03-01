@@ -178,7 +178,9 @@ export default function SettingsPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <FormLabel>Đơn vị tiền tệ</FormLabel>
+                <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                  Đơn vị tiền tệ
+                </label>
                 <Select
                   value={currency}
                   onValueChange={onCurrencyChange}

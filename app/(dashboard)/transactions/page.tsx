@@ -44,6 +44,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { getCategories } from "@/actions/categories";
 import { createTransaction, deleteTransaction, getTransactions } from "@/actions/transactions";
+import { getUserCurrency } from "@/actions/settings";
+import { formatCurrency } from "@/lib/currencies";
 import { TransactionSchema } from "@/schemas";
 import { Badge } from "@/components/ui/badge";
 import { Calendar } from "@/components/ui/calendar";
@@ -54,6 +56,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 export default function TransactionsPage() {
   const [transactions, setTransactions] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
+  const [currency, setCurrency] = useState("VND");
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -79,17 +82,19 @@ export default function TransactionsPage() {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const [transData, catData] = await Promise.all([
+      const [transData, catData, userCurrency] = await Promise.all([
         getTransactions({
           startDate: dateRange?.from,
           endDate: dateRange?.to,
           categoryId: selectedCategory,
           search: searchQuery,
         }),
-        getCategories()
+        getCategories(),
+        getUserCurrency(),
       ]);
       setTransactions(transData);
       setCategories(catData);
+      setCurrency(userCurrency);
     } catch (error) {
       toast.error("Không thể tải dữ liệu");
     } finally {
@@ -435,7 +440,7 @@ export default function TransactionsPage() {
                       transaction.type === "INCOME" ? "text-emerald-600" : "text-destructive"
                     )}>
                       {transaction.type === "INCOME" ? "+" : "-"}
-                      {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(transaction.amount)}
+                      {formatCurrency(transaction.amount, currency)}
                     </TableCell>
                     <TableCell className="text-right">
                       <Button

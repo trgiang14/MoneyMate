@@ -77,3 +77,44 @@ export const updatePassword = async (values: z.infer<typeof PasswordSchema>) => 
   }
 };
 
+export const updateCurrency = async (currency: string) => {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    return { error: "Chưa đăng nhập!" };
+  }
+
+  try {
+    await db.user.update({
+      where: { id: session.user.id },
+      data: { currency },
+    });
+
+    revalidatePath("/settings");
+    revalidatePath("/dashboard");
+    revalidatePath("/transactions");
+    return { success: "Cập nhật đơn vị tiền tệ thành công!" };
+  } catch (error) {
+    return { error: "Đã có lỗi xảy ra!" };
+  }
+};
+
+export const getUserCurrency = async () => {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    return "VND";
+  }
+
+  try {
+    const user = await db.user.findUnique({
+      where: { id: session.user.id },
+      select: { currency: true },
+    });
+
+    return user?.currency || "VND";
+  } catch (error) {
+    return "VND";
+  }
+};
+

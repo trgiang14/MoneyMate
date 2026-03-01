@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { toast } from "sonner";
-import { User, Lock } from "lucide-react";
+import { User, Lock, Coins } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -24,12 +24,29 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { updateProfile, updatePassword } from "@/actions/settings";
+import { updateProfile, updatePassword, updateCurrency, getUserCurrency } from "@/actions/settings";
 import { ProfileSchema, PasswordSchema } from "@/schemas";
+import { CURRENCIES } from "@/lib/currencies";
 
 export default function SettingsPage() {
   const [isPending, setIsPending] = useState(false);
+  const [currency, setCurrency] = useState("VND");
+
+  useEffect(() => {
+    const fetchCurrency = async () => {
+      const userCurrency = await getUserCurrency();
+      setCurrency(userCurrency);
+    };
+    fetchCurrency();
+  }, []);
 
   const profileForm = useForm<z.infer<typeof ProfileSchema>>({
     resolver: zodResolver(ProfileSchema),
@@ -79,19 +96,39 @@ export default function SettingsPage() {
     }
   };
 
+  const onCurrencyChange = async (value: string) => {
+    setIsPending(true);
+    try {
+      const result = await updateCurrency(value);
+      if (result.error) {
+        toast.error(result.error);
+      } else {
+        setCurrency(value);
+        toast.success(result.success);
+      }
+    } catch (error) {
+      toast.error("Đã có lỗi xảy ra!");
+    } finally {
+      setIsPending(false);
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Cài đặt</h1>
         <p className="text-muted-foreground">
-          Quản lý tài khoản và thông tin cá nhân của bạn
+          Quản lý tài khoản và cấu hình ứng dụng của bạn
         </p>
       </div>
 
       <Tabs defaultValue="profile" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="profile" className="flex items-center gap-2">
             <User className="h-4 w-4" /> Hồ sơ
+          </TabsTrigger>
+          <TabsTrigger value="currency" className="flex items-center gap-2">
+            <Coins className="h-4 w-4" /> Tiền tệ
           </TabsTrigger>
           <TabsTrigger value="password" className="flex items-center gap-2">
             <Lock className="h-4 w-4" /> Bảo mật
@@ -127,6 +164,41 @@ export default function SettingsPage() {
                   </Button>
                 </form>
               </Form>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="currency" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Đơn vị tiền tệ</CardTitle>
+              <CardDescription>
+                Chọn đơn vị tiền tệ chính để hiển thị trên toàn ứng dụng
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <FormLabel>Đơn vị tiền tệ</FormLabel>
+                <Select
+                  value={currency}
+                  onValueChange={onCurrencyChange}
+                  disabled={isPending}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Chọn đơn vị tiền tệ" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {CURRENCIES.map((c) => (
+                      <SelectItem key={c.value} value={c.value}>
+                        {c.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                * Lưu ý: Việc đổi đơn vị tiền tệ chỉ thay đổi cách hiển thị ký hiệu, không tự động quy đổi tỷ giá các giao dịch cũ.
+              </p>
             </CardContent>
           </Card>
         </TabsContent>

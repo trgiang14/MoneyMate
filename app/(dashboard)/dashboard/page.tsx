@@ -41,11 +41,14 @@ import { getBudgets } from "@/actions/budgets";
 import { getDashboardConfig, updateDashboardConfig } from "@/actions/dashboard-config";
 import { DEFAULT_DASHBOARD_LAYOUT } from "@/lib/dashboard-constants";
 import { cn } from "@/lib/utils";
+import { getUserCurrency } from "@/actions/settings";
+import { formatCurrency as formatCurrencyHelper } from "@/lib/currencies";
 
 export default function DashboardPage() {
   const [transactions, setTransactions] = useState<any[]>([]);
   const [budgets, setBudgets] = useState<any[]>([]);
   const [layout, setLayout] = useState<any[]>([]);
+  const [currency, setCurrency] = useState("VND");
   const [isLoading, setIsLoading] = useState(true);
   const [isConfigOpen, setIsConfigOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -54,13 +57,15 @@ export default function DashboardPage() {
     setIsLoading(true);
     try {
       const now = new Date();
-      const [transactionsData, budgetsData, configData] = await Promise.all([
+      const [transactionsData, budgetsData, configData, userCurrency] = await Promise.all([
         getTransactions(),
         getBudgets(now.getMonth() + 1, now.getFullYear()),
         getDashboardConfig(),
+        getUserCurrency(),
       ]);
       setTransactions(transactionsData);
       setBudgets(budgetsData);
+      setCurrency(userCurrency);
       
       // Ensure layout is always an array
       if (configData && Array.isArray(configData.layout)) {
@@ -120,7 +125,7 @@ export default function DashboardPage() {
   const balance = totalIncome - totalExpense;
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+    return formatCurrencyHelper(amount, currency);
   };
 
   const recentTransactions = transactions.slice(0, 5);

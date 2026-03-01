@@ -7,6 +7,7 @@ import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { ProfileSchema, PasswordSchema } from "@/schemas";
+import { getExchangeRate } from "@/lib/currencies";
 
 export const updateProfile = async (values: z.infer<typeof ProfileSchema>) => {
   const session = await auth();
@@ -77,7 +78,7 @@ export const updatePassword = async (values: z.infer<typeof PasswordSchema>) => 
   }
 };
 
-export const updateCurrency = async (currency: string) => {
+export const updateCurrency = async (currency: string, convertOldTransactions: boolean = false) => {
   const session = await auth();
 
   if (!session?.user?.id) {
@@ -85,16 +86,60 @@ export const updateCurrency = async (currency: string) => {
   }
 
   try {
+    const user = await db.user.findUnique({
+      where: { id: session.user.id },
+      select: { currency: true },
+    });
+
+    const oldCurrency = user?.currency || "VND";
+
+    // Cập nhật đơn vị tiền tệ mới
     await db.user.update({
       where: { id: session.user.id },
       data: { currency },
     });
 
+    // Nếu người dùng chọn quy đổi giao dịch cũ
+    if (convertOldTransactions && oldCurrency !== currency) {
+      const rate = await getExchangeRate(oldCurrency, currency);
+
+      if (rate !== 1) {
+        // Cập nhật tất cả giao dịch cá nhân
+        await db.transaction.updateMany({
+          where: { userId: session.user.id },
+          data: {
+            amount: {
+              multiply: rate,
+            },
+          },
+        });
+
+        // Cập nhật tất cả ngân sách
+        await db.budget.updateMany({
+          where: { userId: session.user.id },
+          data: {
+            amount: {
+              multiply: rate,
+            },
+          },
+        });
+
+        // Cập nhật số dư tài khoản (nếu có trường balance, nhưng hiện tại có vẻ tính toán từ giao dịch)
+      }
+    }
+
     revalidatePath("/settings");
     revalidatePath("/dashboard");
     revalidatePath("/transactions");
-    return { success: "Cập nhật đơn vị tiền tệ thành công!" };
+    revalidatePath("/budgets");
+    
+    return { 
+      success: convertOldTransactions 
+        ? `Đã chuyển đổi sang ${currency} và quy đổi các giao dịch cũ!` 
+        : `Đã chuyển đổi sang ${currency}!` 
+    };
   } catch (error) {
+    console.error("Lỗi cập nhật tiền tệ:", error);
     return { error: "Đã có lỗi xảy ra!" };
   }
 };

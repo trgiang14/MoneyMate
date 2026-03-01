@@ -31,6 +31,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { updateProfile, updatePassword, updateCurrency, getUserCurrency } from "@/actions/settings";
 import { ProfileSchema, PasswordSchema } from "@/schemas";
@@ -39,6 +40,7 @@ import { CURRENCIES } from "@/lib/currencies";
 export default function SettingsPage() {
   const [isPending, setIsPending] = useState(false);
   const [currency, setCurrency] = useState("VND");
+  const [convertOld, setConvertOld] = useState(false);
 
   useEffect(() => {
     const fetchCurrency = async () => {
@@ -99,7 +101,7 @@ export default function SettingsPage() {
   const onCurrencyChange = async (value: string) => {
     setIsPending(true);
     try {
-      const result = await updateCurrency(value);
+      const result = await updateCurrency(value, convertOld);
       if (result.error) {
         toast.error(result.error);
       } else {
@@ -198,8 +200,24 @@ export default function SettingsPage() {
                   </SelectContent>
                 </Select>
               </div>
+              
+              <div className="flex items-center space-x-2 py-2">
+                <Checkbox 
+                  id="convertOld" 
+                  checked={convertOld} 
+                  onCheckedChange={(checked) => setConvertOld(!!checked)}
+                  disabled={isPending}
+                />
+                <label
+                  htmlFor="convertOld"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                >
+                  Tự động quy đổi các giao dịch và ngân sách cũ theo tỷ giá hiện tại
+                </label>
+              </div>
+
               <p className="text-xs text-muted-foreground">
-                * Lưu ý: Việc đổi đơn vị tiền tệ chỉ thay đổi cách hiển thị ký hiệu, không tự động quy đổi tỷ giá các giao dịch cũ.
+                * Lưu ý: Nếu chọn quy đổi, tất cả số tiền trong lịch sử giao dịch và ngân sách sẽ được nhân với tỷ giá hối đoái hiện tại.
               </p>
             </CardContent>
           </Card>

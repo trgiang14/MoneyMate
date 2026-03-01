@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { logout } from "@/actions/logout";
 import { 
   Tooltip, 
@@ -166,6 +167,14 @@ export const Sidebar = ({ userName }: SidebarProps) => {
 
         {/* Bottom area: User & Logout */}
         <div className="p-3 border-t space-y-2">
+          <div className={cn(
+            "flex items-center gap-2 px-3 py-2",
+            isCollapsed ? "justify-center" : "justify-between"
+          )}>
+            {!isCollapsed && <span className="text-xs font-medium text-muted-foreground">Giao diện</span>}
+            <ThemeToggle />
+          </div>
+
           {!isCollapsed && userName && (
             <div className="px-3 py-2 text-sm font-medium text-muted-foreground truncate">
               Chào, {userName}

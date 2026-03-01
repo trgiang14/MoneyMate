@@ -1,0 +1,12 @@
+{
+  "HomePage": {
+    "title": "Welcome to MoneyMate",
+    "description": "Smart personal finance management."
+  },
+  "Navigation": {
+    "dashboard": "Dashboard",
+    "transactions": "Transactions",
+    "stats": "Statistics",
+    "settings": "Settings"
+  }
+}

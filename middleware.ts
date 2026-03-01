@@ -1,40 +1,14 @@
-import NextAuth from "next-auth";
-import authConfig from "./auth.config";
+import createMiddleware from 'next-intl/middleware';
 
-const { auth } = NextAuth(authConfig);
+export default createMiddleware({
+  // A list of all locales that are supported
+  locales: ['en', 'vi'],
 
-export default auth((req) => {
-  const { nextUrl } = req;
-  const isLoggedIn = !!req.auth;
-
-  const isApiAuthRoute = nextUrl.pathname.startsWith("/api/auth");
-  const isPublicRoute = ["/", "/login", "/register"].includes(nextUrl.pathname);
-  const isAuthRoute = ["/login", "/register"].includes(nextUrl.pathname);
-
-  if (isApiAuthRoute) {
-    return;
-  }
-
-  if (isAuthRoute) {
-    if (isLoggedIn) {
-      return Response.redirect(new URL("/dashboard", nextUrl));
-    }
-    return;
-  }
-
-  if (!isLoggedIn && !isPublicRoute) {
-    return Response.redirect(new URL("/login", nextUrl));
-  }
-
-  // Redirect to dashboard if logged in and trying to access landing page
-  if (isLoggedIn && nextUrl.pathname === "/") {
-    return Response.redirect(new URL("/dashboard", nextUrl));
-  }
-
-  return;
+  // Used when no locale matches
+  defaultLocale: 'vi'
 });
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  // Match only internationalized pathnames
+  matcher: ['/', '/(vi|en)/:path*']
 };
-

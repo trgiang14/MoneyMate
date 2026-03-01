@@ -44,7 +44,7 @@ import { cn } from "@/lib/utils";
 export default function DashboardPage() {
   const [transactions, setTransactions] = useState<any[]>([]);
   const [budgets, setBudgets] = useState<any[]>([]);
-  const [layout, setLayout] = useState<any[]>(DEFAULT_DASHBOARD_LAYOUT);
+  const [layout, setLayout] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isConfigOpen, setIsConfigOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -60,9 +60,7 @@ export default function DashboardPage() {
       ]);
       setTransactions(transactionsData);
       setBudgets(budgetsData);
-      if (configData.layout) {
-        setLayout(configData.layout);
-      }
+      setLayout(configData.layout || DEFAULT_DASHBOARD_LAYOUT);
     } catch (error) {
       toast.error("Không thể tải dữ liệu");
     } finally {

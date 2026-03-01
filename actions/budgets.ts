@@ -66,6 +66,11 @@ export const upsertBudget = async (values: z.infer<typeof BudgetSchema>) => {
   const { amount, month, year, categoryId } = validatedFields.data;
 
   try {
+    const user = await db.user.findUnique({
+      where: { id: session.user.id },
+      select: { currency: true },
+    });
+
     await db.budget.upsert({
       where: {
         userId_categoryId_month_year: {
@@ -75,9 +80,15 @@ export const upsertBudget = async (values: z.infer<typeof BudgetSchema>) => {
           year,
         },
       },
-      update: { amount },
+      update: { 
+        amount,
+        originalAmount: amount,
+        originalCurrency: user?.currency || "VND",
+      },
       create: {
         amount,
+        originalAmount: amount,
+        originalCurrency: user?.currency || "VND",
         month,
         year,
         categoryId,

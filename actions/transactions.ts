@@ -77,10 +77,17 @@ export const createTransaction = async (values: z.infer<typeof TransactionSchema
   }
 
   try {
+    const user = await db.user.findUnique({
+      where: { id: session.user.id },
+      select: { currency: true },
+    });
+
     await db.transaction.create({
       data: {
         ...validatedFields.data,
         userId: session.user.id,
+        originalAmount: validatedFields.data.amount,
+        originalCurrency: user?.currency || "VND",
       },
     });
 

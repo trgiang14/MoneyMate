@@ -99,6 +99,8 @@ enum GroupRole {
 model GroupTransaction {
   id            String    @id @default(cuid())
   amount        Float
+  originalAmount Float?
+  originalCurrency String? @default("VND")
   description   String?
   date          DateTime  @default(now())
   splitType     SplitType @default(EQUAL)
@@ -150,6 +152,8 @@ enum CategoryType {
 model Transaction {
   id            String    @id @default(cuid())
   amount        Float
+  originalAmount Float?
+  originalCurrency String? @default("VND")
   description   String?
   date          DateTime  @default(now())
   type          CategoryType
@@ -173,6 +177,8 @@ model Transaction {
 model RecurringTransaction {
   id            String    @id @default(cuid())
   amount        Float
+  originalAmount Float?
+  originalCurrency String? @default("VND")
   description   String?
   type          CategoryType
   
@@ -220,6 +226,8 @@ model Bill {
   id            String    @id @default(cuid())
   name          String
   amount        Float
+  originalAmount Float?
+  originalCurrency String? @default("VND")
   dueDate       Int       // Ngày trong tháng (1-31)
   description   String?
   isActive      Boolean   @default(true)
@@ -246,6 +254,8 @@ enum RecurrenceFrequency {
 model Budget {
   id          String   @id @default(cuid())
   amount      Float
+  originalAmount Float?
+  originalCurrency String? @default("VND")
   month       Int      // 1-12
   year        Int
   userId      String

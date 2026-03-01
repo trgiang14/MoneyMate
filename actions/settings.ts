@@ -104,27 +104,50 @@ export const updateCurrency = async (currency: string, convertOldTransactions: b
       const rate = await getExchangeRate(oldCurrency, currency);
 
       if (rate !== 1) {
-        // Cập nhật tất cả giao dịch cá nhân
-        await db.transaction.updateMany({
-          where: { userId: session.user.id },
-          data: {
-            amount: {
-              multiply: rate,
-            },
-          },
+        // Lấy tất cả giao dịch của người dùng
+        const transactions = await db.transaction.findMany({
+          where: { userId: session.user.id }
         });
 
-        // Cập nhật tất cả ngân sách
-        await db.budget.updateMany({
-          where: { userId: session.user.id },
-          data: {
-            amount: {
-              multiply: rate,
-            },
-          },
+        // Cập nhật từng giao dịch để kiểm tra logic khôi phục số tiền gốc
+        for (const transaction of transactions) {
+          let newAmount: number;
+          
+          // Nếu đổi về đơn vị tiền tệ gốc của giao dịch đó -> khôi phục số tiền gốc để tránh sai số
+          if (transaction.originalCurrency === currency && transaction.originalAmount) {
+            newAmount = transaction.originalAmount;
+          } else {
+            // Ngược lại thì nhân với tỷ giá
+            newAmount = transaction.amount * rate;
+          }
+
+          await db.transaction.update({
+            where: { id: transaction.id },
+            data: { amount: newAmount }
+          });
+        }
+
+        // Tương tự cho ngân sách (Budget)
+        const budgets = await db.budget.findMany({
+          where: { userId: session.user.id }
         });
 
-        // Cập nhật số dư tài khoản (nếu có trường balance, nhưng hiện tại có vẻ tính toán từ giao dịch)
+        for (const budget of budgets) {
+          let newAmount: number;
+          
+          if (budget.originalCurrency === currency && budget.originalAmount) {
+            newAmount = budget.originalAmount;
+          } else {
+            newAmount = budget.amount * rate;
+          }
+
+          await db.budget.update({
+            where: { id: budget.id },
+            data: { amount: newAmount }
+          });
+        }
+
+        // Cập nhật các bảng khác tương tự nếu cần (Bill, RecurringTransaction...)
       }
     }
 

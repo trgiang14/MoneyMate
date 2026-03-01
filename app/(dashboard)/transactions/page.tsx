@@ -439,8 +439,18 @@ export default function TransactionsPage() {
                       "text-right font-medium",
                       transaction.type === "INCOME" ? "text-emerald-600" : "text-destructive"
                     )}>
-                      {transaction.type === "INCOME" ? "+" : "-"}
-                      {formatCurrency(transaction.amount, currency)}
+                      <div className="flex flex-col items-end">
+                        <span>
+                          {transaction.type === "INCOME" ? "+" : "-"}
+                          {formatCurrency(transaction.amount, currency)}
+                        </span>
+                        {transaction.originalAmount && transaction.originalCurrency !== currency && (
+                          <span className="text-[10px] text-muted-foreground italic">
+                            ({transaction.type === "INCOME" ? "+" : "-"}
+                            {formatCurrency(transaction.originalAmount, transaction.originalCurrency)})
+                          </span>
+                        )}
+                      </div>
                     </TableCell>
                     <TableCell className="text-right">
                       <Button

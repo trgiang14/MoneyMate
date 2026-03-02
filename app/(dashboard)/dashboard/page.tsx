@@ -43,6 +43,8 @@ import { DEFAULT_DASHBOARD_LAYOUT } from "@/lib/dashboard-constants";
 import { cn } from "@/lib/utils";
 import { getUserCurrency } from "@/actions/settings";
 import { formatCurrency as formatCurrencyHelper } from "@/lib/currencies";
+import { BadgeCollection } from "@/components/badges/BadgeCollection";
+import { seedBadges } from "@/actions/badges";
 
 export default function DashboardPage() {
   const [transactions, setTransactions] = useState<any[]>([]);
@@ -56,6 +58,9 @@ export default function DashboardPage() {
   const fetchData = async () => {
     setIsLoading(true);
     try {
+      // Đảm bảo huy hiệu được khởi tạo
+      await seedBadges();
+
       const now = new Date();
       const [transactionsData, budgetsData, configData, userCurrency] = await Promise.all([
         getTransactions(),
@@ -280,6 +285,9 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
         );
+
+      case "badges":
+        return <BadgeCollection key="badges" />;
 
       default:
         return null;

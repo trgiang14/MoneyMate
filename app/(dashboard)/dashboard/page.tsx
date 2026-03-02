@@ -38,7 +38,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { getTransactions } from "@/actions/transactions";
 import { getBudgets } from "@/actions/budgets";
-import { getDashboardConfig, updateDashboardConfig } from "@/actions/dashboard-config";
+import { getDashboardConfig, updateDashboardConfig, syncDashboardConfig } from "@/actions/dashboard-config";
 import { DEFAULT_DASHBOARD_LAYOUT } from "@/lib/dashboard-constants";
 import { cn } from "@/lib/utils";
 import { getUserCurrency } from "@/actions/settings";
@@ -60,6 +60,8 @@ export default function DashboardPage() {
     try {
       // Đảm bảo huy hiệu được khởi tạo
       await seedBadges();
+      // Đồng bộ cấu hình dashboard để thêm widget mới nếu chưa có
+      await syncDashboardConfig();
 
       const now = new Date();
       const [transactionsData, budgetsData, configData, userCurrency] = await Promise.all([

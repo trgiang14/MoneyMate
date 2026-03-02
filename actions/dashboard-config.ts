@@ -1,4 +1,4 @@
-﻿"use server";
+"use server";
 
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
@@ -25,6 +25,33 @@ export const getDashboardConfig = async () => {
   } catch (error) {
     console.error("Error fetching dashboard config:", error);
     return { layout: DEFAULT_DASHBOARD_LAYOUT };
+  }
+};
+
+export const syncDashboardConfig = async () => {
+  const session = await auth();
+  if (!session?.user?.id) return;
+
+  try {
+    const config = await db.userDashboardConfig.findUnique({
+      where: { userId: session.user.id },
+    });
+
+    if (!config) return;
+
+    const currentLayout = JSON.parse(config.layout);
+    const hasBadges = currentLayout.some((w: any) => w.id === "badges");
+
+    if (!hasBadges) {
+      const newLayout = [...currentLayout, { id: "badges", visible: true, title: "Huy hiệu thành tựu" }];
+      await db.userDashboardConfig.update({
+        where: { userId: session.user.id },
+        data: { layout: JSON.stringify(newLayout) },
+      });
+      revalidatePath("/dashboard");
+    }
+  } catch (error) {
+    console.error("Error syncing dashboard config:", error);
   }
 };
 

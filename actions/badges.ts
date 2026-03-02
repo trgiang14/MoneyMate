@@ -4,7 +4,7 @@ import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 
-export const INITIAL_BADGES = [
+const INITIAL_BADGES = [
   {
     id: "first-saving-goal",
     name: "Tiết kiệm đầu tay",

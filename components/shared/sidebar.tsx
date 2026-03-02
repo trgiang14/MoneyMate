@@ -17,7 +17,8 @@ import {
   PieChart,
   Target,
   Repeat,
-  Users
+  Users,
+  Trophy
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -87,6 +88,12 @@ export const Sidebar = ({ userName }: SidebarProps) => {
       icon: Users,
       href: "/groups",
       active: pathname === "/groups",
+    },
+    {
+      label: "Huy hiệu",
+      icon: Trophy,
+      href: "/badges",
+      active: pathname === "/badges",
     },
     {
       label: "Cài đặt",

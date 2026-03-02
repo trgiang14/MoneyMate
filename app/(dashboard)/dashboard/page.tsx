@@ -288,9 +288,6 @@ export default function DashboardPage() {
           </Card>
         );
 
-      case "badges":
-        return <BadgeCollection key="badges" />;
-
       default:
         return null;
     }

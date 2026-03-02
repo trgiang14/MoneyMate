@@ -1,0 +1,12 @@
+{
+  "HomePage": {
+    "title": "Smart Financial Management",
+    "description": "Control spending, save effectively and achieve financial freedom with MoneyMate."
+  },
+  "Navigation": {
+    "features": "Features",
+    "about": "About Us",
+    "login": "Login",
+    "register": "Get Started"
+  }
+}

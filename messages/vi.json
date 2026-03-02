@@ -1,0 +1,12 @@
+{
+  "HomePage": {
+    "title": "Quản lý tài chính thông minh",
+    "description": "Kiểm soát thu chi, tiết kiệm hiệu quả và đạt được tự do tài chính cùng MoneyMate."
+  },
+  "Navigation": {
+    "features": "Tính năng",
+    "about": "Về chúng tôi",
+    "login": "Đăng nhập",
+    "register": "Bắt đầu ngay"
+  }
+}

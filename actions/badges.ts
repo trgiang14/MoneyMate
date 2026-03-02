@@ -49,11 +49,21 @@ export const getUserBadges = async () => {
   const session = await auth();
   if (!session?.user?.id) return [];
 
-  return await db.userBadge.findMany({
-    where: { userId: session.user.id },
-    include: { badge: true },
-    orderBy: { earnedAt: "desc" },
+  const allBadges = await db.badge.findMany({
+    orderBy: { category: "asc" },
   });
+
+  const userBadges = await db.userBadge.findMany({
+    where: { userId: session.user.id },
+  });
+
+  const userBadgeIds = new Set(userBadges.map((ub) => ub.badgeId));
+
+  return allBadges.map((badge) => ({
+    badge,
+    isEarned: userBadgeIds.has(badge.id),
+    earnedAt: userBadges.find((ub) => ub.badgeId === badge.id)?.earnedAt || null,
+  }));
 };
 
 export const checkAndAwardBadges = async () => {

@@ -1,6 +1,7 @@
 import { StatsChart } from "@/components/stats/StatsChart";
 import { MonthlyComparisonChart } from "@/components/stats/MonthlyComparisonChart";
 import { AnomalyDetection } from "@/components/stats/AnomalyDetection";
+import { SpendingHabits } from "@/components/stats/SpendingHabits";
 
 export default function StatisticsPage() {
   return (
@@ -12,7 +13,10 @@ export default function StatisticsPage() {
         </p>
       </div>
       <AnomalyDetection />
-      <StatsChart />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <StatsChart />
+        <SpendingHabits />
+      </div>
       <MonthlyComparisonChart />
     </div>
   );

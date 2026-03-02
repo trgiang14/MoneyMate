@@ -300,3 +300,61 @@ export async function detectAnomalies() {
 
   return { data: anomalies };
 }
+
+export async function getSpendingHabits() {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    return { error: "Bạn cần đăng nhập!" };
+  }
+
+  const userId = session.user.id;
+  const now = new Date();
+  const threeMonthsAgo = subMonths(now, 3);
+
+  const transactions = await db.transaction.findMany({
+    where: {
+      userId,
+      type: "EXPENSE",
+      date: {
+        gte: threeMonthsAgo,
+      },
+    },
+    select: {
+      date: true,
+      amount: true,
+    },
+  });
+
+  // 1. Thống kê theo giờ trong ngày (0-23)
+  const hourlyData = Array.from({ length: 24 }, (_, i) => ({
+    hour: `${i}h`,
+    amount: 0,
+    count: 0,
+  }));
+
+  // 2. Thống kê theo ngày trong tuần (Thứ 2 - Chủ Nhật)
+  const dayLabels = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
+  const weeklyData = dayLabels.map((label) => ({
+    day: label,
+    amount: 0,
+    count: 0,
+  }));
+
+  transactions.forEach((t) => {
+    const date = new Date(t.date);
+    const hour = date.getHours();
+    const day = date.getDay(); // 0 (CN) - 6 (T7)
+
+    hourlyData[hour].amount += t.amount;
+    hourlyData[hour].count += 1;
+
+    weeklyData[day].amount += t.amount;
+    weeklyData[day].count += 1;
+  });
+
+  return {
+    hourly: hourlyData,
+    weekly: weeklyData,
+  };
+}

@@ -236,7 +236,7 @@ export default function TransactionsPage() {
                         <SelectContent>
                           {filteredCategories.map((cat) => (
                             <SelectItem key={cat.id} value={cat.id}>
-                              {cat.name}
+                              {t(`default.${cat.name}`, { defaultValue: cat.name })}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -339,7 +339,7 @@ export default function TransactionsPage() {
                   <SelectItem value="all">{t("filters.allCategories")}</SelectItem>
                   {categories.map((cat) => (
                     <SelectItem key={cat.id} value={cat.id}>
-                      {cat.name}
+                      {t(`default.${cat.name}`, { defaultValue: cat.name })}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -434,7 +434,7 @@ export default function TransactionsPage() {
                           className="w-2 h-2 rounded-full" 
                           style={{ backgroundColor: transaction.category?.color || '#94a3b8' }}
                         />
-                        {transaction.category?.name}
+                        {t(`default.${transaction.category?.name}`, { defaultValue: transaction.category?.name })}
                       </div>
                     </TableCell>
                     <TableCell className="max-w-[200px] truncate">

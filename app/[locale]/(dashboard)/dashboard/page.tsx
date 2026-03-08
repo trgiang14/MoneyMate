@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
-import { vi } from "date-fns/locale";
+import { vi, enUS } from "date-fns/locale";
 
 import {
   Card,
@@ -57,6 +57,9 @@ export default function DashboardPage() {
   const [isSaving, setIsSaving] = useState(false);
 
   const t = useTranslations('Dashboard');
+  const tCat = useTranslations('Categories');
+  const locale = useLocale();
+  const dateLocale = locale === "vi" ? vi : enUS;
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -174,7 +177,10 @@ export default function DashboardPage() {
                       {budget.percent >= 100 ? t('widgets.overBudget') : t('widgets.nearLimit')}
                     </p>
                     <p className="text-xs opacity-90">
-                      {t('widgets.budgetAlert', { category: budget.category.name, percent: budget.percent })}
+                      {t('widgets.budgetAlert', { 
+                        category: tCat(`default.${budget.category.name}`, { defaultValue: budget.category.name }), 
+                        percent: budget.percent 
+                      })}
                     </p>
                   </div>
                 </div>
@@ -256,9 +262,11 @@ export default function DashboardPage() {
                           />
                         </div>
                         <div>
-                          <p className="text-sm font-medium leading-none">{t.category?.name}</p>
+                          <p className="text-sm font-medium leading-none">
+                            {tCat(`default.${t.category?.name}`, { defaultValue: t.category?.name })}
+                          </p>
                           <p className="text-xs text-muted-foreground mt-1">
-                            {format(new Date(t.date), "dd MMM yyyy", { locale: vi })}
+                            {format(new Date(t.date), "dd MMM yyyy", { locale: dateLocale })}
                           </p>
                         </div>
                       </div>
@@ -353,4 +361,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-

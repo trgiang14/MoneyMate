@@ -126,6 +126,46 @@
     "copyright": "© {year} MoneyMate. Tất cả các quyền được bảo lưu.",
     "madeWith": "Made with ❤️ for financial freedom"
   },
+  "Categories": {
+    "title": "Danh mục",
+    "description": "Quản lý các loại thu nhập và chi tiêu của bạn",
+    "addCategory": "Thêm danh mục",
+    "addNewCategory": "Thêm danh mục mới",
+    "addDescription": "Tạo một danh mục mới để phân loại các giao dịch của bạn.",
+    "form": {
+      "name": "Tên danh mục",
+      "namePlaceholder": "Ví dụ: Ăn uống, Tiền lương...",
+      "type": "Loại",
+      "typePlaceholder": "Chọn loại danh mục",
+      "expense": "Khoản chi",
+      "income": "Khoản thu",
+      "save": "Lưu lại"
+    },
+    "list": {
+      "loading": "Đang tải...",
+      "income": "Thu nhập",
+      "expense": "Chi tiêu",
+      "deleteConfirm": "Bạn có chắc chắn muốn xóa danh mục này?",
+      "deleteSuccess": "Xóa danh mục thành công",
+      "deleteError": "Lỗi khi xóa danh mục",
+      "fetchError": "Không thể tải danh sách danh mục",
+      "createSuccess": "Thêm danh mục thành công",
+      "createError": "Lỗi khi thêm danh mục"
+    },
+    "default": {
+      "Ăn uống": "Ăn uống",
+      "Di chuyển": "Di chuyển",
+      "Mua sắm": "Mua sắm",
+      "Giải trí": "Giải trí",
+      "Sức khỏe": "Sức khỏe",
+      "Giáo dục": "Giáo dục",
+      "Hóa đơn": "Hóa đơn",
+      "Khác": "Khác",
+      "Lương": "Lương",
+      "Thưởng": "Thưởng",
+      "Đầu tư": "Đầu tư"
+    }
+  },
   "Transactions": {
     "title": "Giao dịch",
     "description": "Quản lý và tìm kiếm lịch sử giao dịch",

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Plus, Trash2, Tag } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -45,6 +46,7 @@ import { CategorySchema } from "@/schemas";
 import { Badge } from "@/components/ui/badge";
 
 export default function CategoriesPage() {
+  const t = useTranslations("Categories");
   const [categories, setCategories] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -63,7 +65,7 @@ export default function CategoriesPage() {
       const data = await getCategories();
       setCategories(data);
     } catch (error) {
-      toast.error("Không thể tải danh sách danh mục");
+      toast.error(t("list.fetchError"));
     } finally {
       setIsLoading(false);
     }
@@ -76,9 +78,9 @@ export default function CategoriesPage() {
   const onSubmit = async (values: z.infer<typeof CategorySchema>) => {
     const result = await createCategory(values);
     if (result.error) {
-      toast.error(result.error);
+      toast.error(t("list.createError"));
     } else {
-      toast.success(result.success);
+      toast.success(t("list.createSuccess"));
       setIsDialogOpen(false);
       form.reset();
       fetchCategories();
@@ -86,12 +88,12 @@ export default function CategoriesPage() {
   };
 
   const onDelete = async (id: string) => {
-    if (confirm("Bạn có chắc chắn muốn xóa danh mục này?")) {
+    if (confirm(t("list.deleteConfirm"))) {
       const result = await deleteCategory(id);
       if (result.error) {
-        toast.error(result.error);
+        toast.error(t("list.deleteError"));
       } else {
-        toast.success(result.success);
+        toast.success(t("list.deleteSuccess"));
         fetchCategories();
       }
     }
@@ -101,22 +103,22 @@ export default function CategoriesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Danh mục</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t("title")}</h1>
           <p className="text-muted-foreground">
-            Quản lý các loại thu nhập và chi tiêu của bạn
+            {t("description")}
           </p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button>
-              <Plus className="mr-2 h-4 w-4" /> Thêm danh mục
+              <Plus className="mr-2 h-4 w-4" /> {t("addCategory")}
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Thêm danh mục mới</DialogTitle>
+              <DialogTitle>{t("addNewCategory")}</DialogTitle>
               <DialogDescription>
-                Tạo một danh mục mới để phân loại các giao dịch của bạn.
+                {t("addDescription")}
               </DialogDescription>
             </DialogHeader>
             <Form {...form}>
@@ -126,9 +128,9 @@ export default function CategoriesPage() {
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Tên danh mục</FormLabel>
+                      <FormLabel>{t("form.name")}</FormLabel>
                       <FormControl>
-                        <Input placeholder="Ví dụ: Ăn uống, Tiền lương..." {...field} />
+                        <Input placeholder={t("form.namePlaceholder")} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -139,19 +141,19 @@ export default function CategoriesPage() {
                   name="type"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Loại</FormLabel>
+                      <FormLabel>{t("form.type")}</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Chọn loại danh mục" />
+                            <SelectValue placeholder={t("form.typePlaceholder")} />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="EXPENSE">Khoản chi</SelectItem>
-                          <SelectItem value="INCOME">Khoản thu</SelectItem>
+                          <SelectItem value="EXPENSE">{t("form.expense")}</SelectItem>
+                          <SelectItem value="INCOME">{t("form.income")}</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -159,7 +161,7 @@ export default function CategoriesPage() {
                   )}
                 />
                 <DialogFooter>
-                  <Button type="submit">Lưu lại</Button>
+                  <Button type="submit">{t("form.save")}</Button>
                 </DialogFooter>
               </form>
             </Form>
@@ -169,7 +171,7 @@ export default function CategoriesPage() {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {isLoading ? (
-          <p>Đang tải...</p>
+          <p>{t("list.loading")}</p>
         ) : (
           categories.map((category) => (
             <Card key={category.id}>
@@ -180,7 +182,7 @@ export default function CategoriesPage() {
                       className="w-3 h-3 rounded-full" 
                       style={{ backgroundColor: category.color || '#94a3b8' }}
                     />
-                    {category.name}
+                    {t(`default.${category.name}`, { defaultValue: category.name })}
                   </div>
                 </CardTitle>
                 <Tag className="h-4 w-4 text-muted-foreground" />
@@ -188,7 +190,7 @@ export default function CategoriesPage() {
               <CardContent>
                 <div className="flex items-center justify-between mt-2">
                   <Badge variant={category.type === "INCOME" ? "success" : "destructive"}>
-                    {category.type === "INCOME" ? "Thu nhập" : "Chi tiêu"}
+                    {category.type === "INCOME" ? t("list.income") : t("list.expense")}
                   </Badge>
                   <Button
                     variant="ghost"
@@ -206,4 +208,3 @@ export default function CategoriesPage() {
     </div>
   );
 }
-

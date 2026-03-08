@@ -126,6 +126,50 @@
     "copyright": "© {year} MoneyMate. All rights reserved.",
     "madeWith": "Made with ❤️ for financial freedom"
   },
+  "Transactions": {
+    "title": "Transactions",
+    "description": "Manage and search your transaction history",
+    "addTransaction": "Add Transaction",
+    "addNewTransaction": "Add New Transaction",
+    "addDescription": "Enter your income or expense information.",
+    "form": {
+      "type": "Type",
+      "typePlaceholder": "Select type",
+      "expense": "Expense",
+      "income": "Income",
+      "amount": "Amount",
+      "category": "Category",
+      "categoryPlaceholder": "Select category",
+      "date": "Date",
+      "datePlaceholder": "Select date",
+      "note": "Note",
+      "notePlaceholder": "Weekend shopping...",
+      "save": "Save"
+    },
+    "filters": {
+      "title": "Filters & Search",
+      "searchPlaceholder": "Search by note...",
+      "allCategories": "All Categories",
+      "selectDateRange": "Select date range",
+      "reset": "Reset Filters"
+    },
+    "list": {
+      "title": "Transaction List",
+      "loading": "Loading...",
+      "noTransactions": "No matching transactions found.",
+      "clearFilters": "Clear filters to see all",
+      "date": "Date",
+      "category": "Category",
+      "note": "Note",
+      "amount": "Amount",
+      "deleteConfirm": "Are you sure you want to delete this transaction?",
+      "deleteSuccess": "Transaction deleted successfully",
+      "deleteError": "Failed to delete transaction",
+      "fetchError": "Unable to load data",
+      "createSuccess": "Transaction created successfully",
+      "createError": "Failed to create transaction"
+    }
+  },
   "Metadata": {
     "title": "MoneyMate - Smart Financial Management",
     "description": "Modern personal finance management application"

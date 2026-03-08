@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import { Plus, Trash2, Receipt, CalendarIcon, Search, Filter, X } from "lucide-react";
 import { toast } from "sonner";
 import { format, subDays } from "date-fns";
-import { vi } from "date-fns/locale";
+import { vi, enUS } from "date-fns/locale";
 import { DateRange } from "react-day-picker";
+import { useTranslations, useLocale } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -54,6 +55,10 @@ import { cn } from "@/lib/utils";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 export default function TransactionsPage() {
+  const t = useTranslations("Transactions");
+  const locale = useLocale();
+  const dateLocale = locale === "vi" ? vi : enUS;
+
   const [transactions, setTransactions] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [currency, setCurrency] = useState("VND");
@@ -96,7 +101,7 @@ export default function TransactionsPage() {
       setCategories(catData);
       setCurrency(userCurrency);
     } catch (error) {
-      toast.error("Không thể tải dữ liệu");
+      toast.error(t("list.fetchError"));
     } finally {
       setIsLoading(false);
     }
@@ -114,9 +119,9 @@ export default function TransactionsPage() {
   const onSubmit = async (values: z.infer<typeof TransactionSchema>) => {
     const result = await createTransaction(values);
     if (result.error) {
-      toast.error(result.error);
+      toast.error(t("list.createError"));
     } else {
-      toast.success(result.success);
+      toast.success(t("list.createSuccess"));
       setIsDialogOpen(false);
       form.reset();
       fetchData();
@@ -124,12 +129,12 @@ export default function TransactionsPage() {
   };
 
   const onDelete = async (id: string) => {
-    if (confirm("Bạn có chắc chắn muốn xóa giao dịch này?")) {
+    if (confirm(t("list.deleteConfirm"))) {
       const result = await deleteTransaction(id);
       if (result.error) {
-        toast.error(result.error);
+        toast.error(t("list.deleteError"));
       } else {
-        toast.success(result.success);
+        toast.success(t("list.deleteSuccess"));
         fetchData();
       }
     }
@@ -153,22 +158,22 @@ export default function TransactionsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Giao dịch</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t("title")}</h1>
           <p className="text-muted-foreground">
-            Quản lý và tìm kiếm lịch sử giao dịch
+            {t("description")}
           </p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button>
-              <Plus className="mr-2 h-4 w-4" /> Thêm giao dịch
+              <Plus className="mr-2 h-4 w-4" /> {t("addTransaction")}
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle>Thêm giao dịch mới</DialogTitle>
+              <DialogTitle>{t("addNewTransaction")}</DialogTitle>
               <DialogDescription>
-                Nhập thông tin khoản thu hoặc chi của bạn.
+                {t("addDescription")}
               </DialogDescription>
             </DialogHeader>
             <Form {...form}>
@@ -178,7 +183,7 @@ export default function TransactionsPage() {
                   name="type"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Loại</FormLabel>
+                      <FormLabel>{t("form.type")}</FormLabel>
                       <Select
                         onValueChange={(val) => {
                           field.onChange(val);
@@ -188,12 +193,12 @@ export default function TransactionsPage() {
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Chọn loại" />
+                            <SelectValue placeholder={t("form.typePlaceholder")} />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="EXPENSE">Khoản chi</SelectItem>
-                          <SelectItem value="INCOME">Khoản thu</SelectItem>
+                          <SelectItem value="EXPENSE">{t("form.expense")}</SelectItem>
+                          <SelectItem value="INCOME">{t("form.income")}</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -205,7 +210,7 @@ export default function TransactionsPage() {
                   name="amount"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Số tiền</FormLabel>
+                      <FormLabel>{t("form.amount")}</FormLabel>
                       <FormControl>
                         <Input type="number" placeholder="0" {...field} />
                       </FormControl>
@@ -218,14 +223,14 @@ export default function TransactionsPage() {
                   name="categoryId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Danh mục</FormLabel>
+                      <FormLabel>{t("form.category")}</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         value={field.value}
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Chọn danh mục" />
+                            <SelectValue placeholder={t("form.categoryPlaceholder")} />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -245,7 +250,7 @@ export default function TransactionsPage() {
                   name="date"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
-                      <FormLabel>Ngày</FormLabel>
+                      <FormLabel>{t("form.date")}</FormLabel>
                       <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>
@@ -257,9 +262,9 @@ export default function TransactionsPage() {
                               )}
                             >
                               {field.value ? (
-                                format(field.value, "PPP", { locale: vi })
+                                format(field.value, "PPP", { locale: dateLocale })
                               ) : (
-                                <span>Chọn ngày</span>
+                                <span>{t("form.datePlaceholder")}</span>
                               )}
                               <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                             </Button>
@@ -286,16 +291,16 @@ export default function TransactionsPage() {
                   name="description"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Ghi chú</FormLabel>
+                      <FormLabel>{t("form.note")}</FormLabel>
                       <FormControl>
-                        <Input placeholder="Mua sắm cuối tuần..." {...field} />
+                        <Input placeholder={t("form.notePlaceholder")} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
                 <DialogFooter>
-                  <Button type="submit">Lưu lại</Button>
+                  <Button type="submit">{t("form.save")}</Button>
                 </DialogFooter>
               </form>
             </Form>
@@ -308,7 +313,7 @@ export default function TransactionsPage() {
         <CardHeader className="pb-3">
           <CardTitle className="text-base font-medium flex items-center gap-2">
             <Filter className="h-4 w-4" />
-            Bộ lọc & Tìm kiếm
+            {t("filters.title")}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -317,7 +322,7 @@ export default function TransactionsPage() {
             <div className="relative md:col-span-1">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Tìm theo ghi chú..."
+                placeholder={t("filters.searchPlaceholder")}
                 className="pl-8"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -328,10 +333,10 @@ export default function TransactionsPage() {
             <div className="md:col-span-1">
               <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Tất cả danh mục" />
+                  <SelectValue placeholder={t("filters.allCategories")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Tất cả danh mục</SelectItem>
+                  <SelectItem value="all">{t("filters.allCategories")}</SelectItem>
                   {categories.map((cat) => (
                     <SelectItem key={cat.id} value={cat.id}>
                       {cat.name}
@@ -364,7 +369,7 @@ export default function TransactionsPage() {
                         format(dateRange.from, "dd/MM/yyyy")
                       )
                     ) : (
-                      <span>Chọn khoảng thời gian</span>
+                      <span>{t("filters.selectDateRange")}</span>
                     )}
                   </Button>
                 </PopoverTrigger>
@@ -385,7 +390,7 @@ export default function TransactionsPage() {
             <div className="md:col-span-1">
               <Button variant="ghost" onClick={resetFilters} className="w-full justify-start md:justify-center">
                 <X className="mr-2 h-4 w-4" />
-                Xóa bộ lọc
+                {t("filters.reset")}
               </Button>
             </div>
           </div>
@@ -394,26 +399,26 @@ export default function TransactionsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Danh sách giao dịch</CardTitle>
+          <CardTitle>{t("list.title")}</CardTitle>
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <p className="text-center py-4">Đang tải...</p>
+            <p className="text-center py-4">{t("list.loading")}</p>
           ) : transactions.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
-              <p>Không tìm thấy giao dịch nào phù hợp.</p>
+              <p>{t("list.noTransactions")}</p>
               <Button variant="link" onClick={resetFilters} className="mt-2">
-                Xóa bộ lọc để xem tất cả
+                {t("list.clearFilters")}
               </Button>
             </div>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Ngày</TableHead>
-                  <TableHead>Danh mục</TableHead>
-                  <TableHead>Ghi chú</TableHead>
-                  <TableHead className="text-right">Số tiền</TableHead>
+                  <TableHead>{t("list.date")}</TableHead>
+                  <TableHead>{t("list.category")}</TableHead>
+                  <TableHead>{t("list.note")}</TableHead>
+                  <TableHead className="text-right">{t("list.amount")}</TableHead>
                   <TableHead></TableHead>
                 </TableRow>
               </TableHeader>

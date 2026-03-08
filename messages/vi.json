@@ -126,6 +126,50 @@
     "copyright": "© {year} MoneyMate. Tất cả các quyền được bảo lưu.",
     "madeWith": "Made with ❤️ for financial freedom"
   },
+  "Transactions": {
+    "title": "Giao dịch",
+    "description": "Quản lý và tìm kiếm lịch sử giao dịch",
+    "addTransaction": "Thêm giao dịch",
+    "addNewTransaction": "Thêm giao dịch mới",
+    "addDescription": "Nhập thông tin khoản thu hoặc chi của bạn.",
+    "form": {
+      "type": "Loại",
+      "typePlaceholder": "Chọn loại",
+      "expense": "Khoản chi",
+      "income": "Khoản thu",
+      "amount": "Số tiền",
+      "category": "Danh mục",
+      "categoryPlaceholder": "Chọn danh mục",
+      "date": "Ngày",
+      "datePlaceholder": "Chọn ngày",
+      "note": "Ghi chú",
+      "notePlaceholder": "Mua sắm cuối tuần...",
+      "save": "Lưu lại"
+    },
+    "filters": {
+      "title": "Bộ lọc & Tìm kiếm",
+      "searchPlaceholder": "Tìm theo ghi chú...",
+      "allCategories": "Tất cả danh mục",
+      "selectDateRange": "Chọn khoảng thời gian",
+      "reset": "Xóa bộ lọc"
+    },
+    "list": {
+      "title": "Danh sách giao dịch",
+      "loading": "Đang tải...",
+      "noTransactions": "Không tìm thấy giao dịch nào phù hợp.",
+      "clearFilters": "Xóa bộ lọc để xem tất cả",
+      "date": "Ngày",
+      "category": "Danh mục",
+      "note": "Ghi chú",
+      "amount": "Số tiền",
+      "deleteConfirm": "Bạn có chắc chắn muốn xóa giao dịch này?",
+      "deleteSuccess": "Xóa giao dịch thành công",
+      "deleteError": "Lỗi khi xóa giao dịch",
+      "fetchError": "Không thể tải dữ liệu",
+      "createSuccess": "Thêm giao dịch thành công",
+      "createError": "Lỗi khi thêm giao dịch"
+    }
+  },
   "Metadata": {
     "title": "MoneyMate - Quản lý tài chính thông minh",
     "description": "Ứng dụng quản lý thu chi cá nhân hiện đại"

@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/routing";
 import { usePathname } from "next/navigation";
 import { 
   LayoutDashboard, 
@@ -39,67 +40,69 @@ export const Sidebar = ({ userName }: SidebarProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const pathname = usePathname();
+  const t = useTranslations('Navigation');
+  const sidebarT = useTranslations('Sidebar');
 
   const routes = [
     {
-      label: "Tổng quan",
+      label: t('dashboard') || "Tổng quan",
       icon: LayoutDashboard,
       href: "/dashboard",
-      active: pathname === "/dashboard",
+      active: pathname.includes("/dashboard"),
     },
     {
-      label: "Giao dịch",
+      label: t('transactions') || "Giao dịch",
       icon: Receipt,
       href: "/transactions",
-      active: pathname === "/transactions",
+      active: pathname.includes("/transactions"),
     },
     {
-      label: "Danh mục",
+      label: t('categories') || "Danh mục",
       icon: Tag,
       href: "/categories",
-      active: pathname === "/categories",
+      active: pathname.includes("/categories"),
     },
     {
-      label: "Thống kê",
+      label: t('statistics') || "Thống kê",
       icon: BarChart3,
       href: "/statistics",
-      active: pathname === "/statistics",
+      active: pathname.includes("/statistics"),
     },
     {
-      label: "Ngân sách",
+      label: t('budgets') || "Ngân sách",
       icon: PieChart,
       href: "/budgets",
-      active: pathname === "/budgets",
+      active: pathname.includes("/budgets"),
     },
     {
-      label: "Mục tiêu",
+      label: t('savingGoals') || "Mục tiêu",
       icon: Target,
       href: "/saving-goals",
-      active: pathname === "/saving-goals",
+      active: pathname.includes("/saving-goals"),
     },
     {
-      label: "Tự động hóa",
+      label: t('automation') || "Tự động hóa",
       icon: Repeat,
       href: "/automation",
-      active: pathname === "/automation",
+      active: pathname.includes("/automation"),
     },
     {
-      label: "Nhóm chi tiêu",
+      label: t('groups') || "Nhóm chi tiêu",
       icon: Users,
       href: "/groups",
-      active: pathname === "/groups",
+      active: pathname.includes("/groups"),
     },
     {
-      label: "Huy hiệu",
+      label: t('badges') || "Huy hiệu",
       icon: Trophy,
       href: "/badges",
-      active: pathname === "/badges",
+      active: pathname.includes("/badges"),
     },
     {
-      label: "Cài đặt",
+      label: t('settings') || "Cài đặt",
       icon: Settings,
       href: "/settings",
-      active: pathname === "/settings",
+      active: pathname.includes("/settings"),
     },
   ];
 
@@ -178,13 +181,13 @@ export const Sidebar = ({ userName }: SidebarProps) => {
             "flex items-center gap-2 px-3 py-2",
             isCollapsed ? "justify-center" : "justify-between"
           )}>
-            {!isCollapsed && <span className="text-xs font-medium text-muted-foreground">Giao diện</span>}
+            {!isCollapsed && <span className="text-xs font-medium text-muted-foreground">{sidebarT('theme')}</span>}
             <ThemeToggle />
           </div>
 
           {!isCollapsed && userName && (
             <div className="px-3 py-2 text-sm font-medium text-muted-foreground truncate">
-              Chào, {userName}
+              {sidebarT('greeting')}, {userName}
             </div>
           )}
           
@@ -197,7 +200,7 @@ export const Sidebar = ({ userName }: SidebarProps) => {
             onClick={() => logout()}
           >
             <LogOut className="w-5 h-5 shrink-0" />
-            {!isCollapsed && <span className="text-sm font-medium">Đăng xuất</span>}
+            {!isCollapsed && <span className="text-sm font-medium">{sidebarT('logout')}</span>}
           </Button>
 
           {/* Collapse toggle button */}

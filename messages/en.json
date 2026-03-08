@@ -58,7 +58,22 @@
     "features": "Features",
     "about": "About Us",
     "login": "Login",
-    "register": "Get Started"
+    "register": "Get Started",
+    "dashboard": "Overview",
+    "transactions": "Transactions",
+    "categories": "Categories",
+    "statistics": "Statistics",
+    "budgets": "Budgets",
+    "savingGoals": "Saving Goals",
+    "automation": "Automation",
+    "groups": "Groups",
+    "badges": "Badges",
+    "settings": "Settings"
+  },
+  "Sidebar": {
+    "theme": "Theme",
+    "greeting": "Hi",
+    "logout": "Logout"
   },
   "Dashboard": {
     "title": "Overview",

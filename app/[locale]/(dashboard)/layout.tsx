@@ -1,8 +1,5 @@
 import { auth } from "@/auth";
 import { Sidebar } from "@/components/shared/sidebar";
-
-import { auth } from "@/auth";
-import { Sidebar } from "@/components/shared/sidebar";
 import { getTranslations } from "next-intl/server";
 
 export default async function DashboardLayout({

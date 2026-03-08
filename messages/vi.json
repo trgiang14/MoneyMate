@@ -58,7 +58,22 @@
     "features": "Tính năng",
     "about": "Về chúng tôi",
     "login": "Đăng nhập",
-    "register": "Bắt đầu ngay"
+    "register": "Bắt đầu ngay",
+    "dashboard": "Tổng quan",
+    "transactions": "Giao dịch",
+    "categories": "Danh mục",
+    "statistics": "Thống kê",
+    "budgets": "Ngân sách",
+    "savingGoals": "Mục tiêu",
+    "automation": "Tự động hóa",
+    "groups": "Nhóm chi tiêu",
+    "badges": "Huy hiệu",
+    "settings": "Cài đặt"
+  },
+  "Sidebar": {
+    "theme": "Giao diện",
+    "greeting": "Chào",
+    "logout": "Đăng xuất"
   },
   "Dashboard": {
     "title": "Tổng quan",

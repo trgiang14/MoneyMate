@@ -1,6 +1,7 @@
 "use client";
 
-import Link from "next/link";
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/routing';
 import { motion } from "framer-motion";
 import { 
   Wallet, 
@@ -15,6 +16,7 @@ import {
   Users
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import LocaleSwitcher from "@/components/shared/LocaleSwitcher";
 
 const container = {
   hidden: { opacity: 0 },
@@ -32,6 +34,10 @@ const item = {
 };
 
 export default function LandingPage() {
+  const t = useTranslations('HomePage');
+  const navT = useTranslations('Navigation');
+  const footerT = useTranslations('Footer');
+
   return (
     <div className="flex flex-col min-h-screen bg-white text-slate-900">
       {/* Header */}
@@ -45,25 +51,27 @@ export default function LandingPage() {
         
         <nav className="hidden md:flex items-center gap-8">
           <Link className="text-sm font-semibold text-slate-600 hover:text-primary transition-colors" href="#features">
-            Tính năng
+            {navT('features')}
           </Link>
           <Link className="text-sm font-semibold text-slate-600 hover:text-primary transition-colors" href="#about">
-            Về chúng tôi
+            {navT('about')}
           </Link>
+          <LocaleSwitcher />
           <Link className="text-sm font-semibold text-slate-600 hover:text-primary transition-colors" href="/login">
-            Đăng nhập
+            {navT('login')}
           </Link>
           <Link href="/register">
             <Button className="rounded-full px-6 font-bold shadow-lg shadow-primary/20">
-              Bắt đầu ngay
+              {navT('register')}
             </Button>
           </Link>
         </nav>
 
         {/* Mobile menu simple version */}
-        <div className="md:hidden">
+        <div className="md:hidden flex items-center gap-4">
+          <LocaleSwitcher />
           <Link href="/login">
-            <Button variant="ghost" size="sm" className="font-bold">Đăng nhập</Button>
+            <Button variant="ghost" size="sm" className="font-bold">{navT('login')}</Button>
           </Link>
         </div>
       </header>
@@ -84,26 +92,23 @@ export default function LandingPage() {
               className="text-center max-w-4xl mx-auto space-y-8"
             >
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-bold mb-4 animate-bounce">
-                <Zap className="w-4 h-4" /> Ứng dụng quản lý tài chính số 1 Việt Nam
+                <Zap className="w-4 h-4" /> {t('heroBadge')}
               </div>
               <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[1.1]">
-                Làm chủ túi tiền <br />
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-blue-600 to-indigo-600">
-                  Kiến tạo tương lai
-                </span>
+                {t('title')}
               </h1>
               <p className="mx-auto max-w-[700px] text-slate-500 md:text-xl leading-relaxed">
-                MoneyMate không chỉ là một ứng dụng ghi chép thu chi, mà là người bạn đồng hành giúp bạn xây dựng thói quen tài chính thông minh và bền vững.
+                {t('description')}
               </p>
               <div className="flex flex-col sm:flex-row justify-center gap-4 mt-10">
                 <Link href="/register">
                   <Button size="lg" className="h-14 px-10 text-lg font-bold rounded-2xl shadow-xl shadow-primary/25">
-                    Đăng ký miễn phí ngay <ArrowRight className="ml-2 h-5 w-5" />
+                    {t('registerFree')} <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
                 <Link href="/login">
                   <Button size="lg" variant="outline" className="h-14 px-10 text-lg font-bold rounded-2xl border-2 hover:bg-slate-100">
-                    Xem bản Demo
+                    {t('viewDemo')}
                   </Button>
                 </Link>
               </div>
@@ -157,7 +162,7 @@ export default function LandingPage() {
                 {/* Overlay text */}
                 <div className="absolute inset-0 bg-primary/10 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                    <div className="bg-white px-8 py-4 rounded-full font-black text-primary shadow-2xl transform scale-150">
-                      KHÁM PHÁ DASHBOARD
+                      {t('exploreDashboard')}
                    </div>
                 </div>
               </motion.div>
@@ -171,19 +176,19 @@ export default function LandingPage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
               <div className="space-y-1">
                 <h3 className="text-4xl font-black">100K+</h3>
-                <p className="text-primary-foreground/70 font-medium">Người dùng tin dùng</p>
+                <p className="text-primary-foreground/70 font-medium">{t('stats.users')}</p>
               </div>
               <div className="space-y-1">
                 <h3 className="text-4xl font-black">500M+</h3>
-                <p className="text-primary-foreground/70 font-medium">Giao dịch được ghi lại</p>
+                <p className="text-primary-foreground/70 font-medium">{t('stats.transactions')}</p>
               </div>
               <div className="space-y-1">
                 <h3 className="text-4xl font-black">4.9/5</h3>
-                <p className="text-primary-foreground/70 font-medium">Đánh giá hài lòng</p>
+                <p className="text-primary-foreground/70 font-medium">{t('stats.rating')}</p>
               </div>
               <div className="space-y-1">
                 <h3 className="text-4xl font-black">Top 1</h3>
-                <p className="text-primary-foreground/70 font-medium">Finance App AppStore</p>
+                <p className="text-primary-foreground/70 font-medium">{t('stats.topApp')}</p>
               </div>
             </div>
           </div>
@@ -193,9 +198,9 @@ export default function LandingPage() {
         <section id="features" className="w-full py-24 lg:py-32 bg-white">
           <div className="container mx-auto px-4 md:px-6">
             <div className="text-center mb-20 space-y-4">
-              <h2 className="text-primary font-black uppercase tracking-widest text-sm">Tính năng cốt lõi</h2>
-              <h2 className="text-4xl md:text-5xl font-black tracking-tight">Vượt xa một ứng dụng ghi chép</h2>
-              <p className="text-slate-500 max-w-2xl mx-auto text-lg">MoneyMate mang đến những công cụ mạnh mẽ nhưng dễ sử dụng để bạn quản lý tài chính cá nhân một cách tối ưu.</p>
+              <h2 className="text-primary font-black uppercase tracking-widest text-sm">{t('features.badge')}</h2>
+              <h2 className="text-4xl md:text-5xl font-black tracking-tight">{t('features.title')}</h2>
+              <p className="text-slate-500 max-w-2xl mx-auto text-lg">{t('features.description')}</p>
             </div>
             
             <motion.div 
@@ -209,48 +214,48 @@ export default function LandingPage() {
                 <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 mb-6 group-hover:scale-110 transition-transform duration-300">
                   <Zap className="h-8 w-8" />
                 </div>
-                <h3 className="text-2xl font-black mb-4">Ghi chép siêu nhanh</h3>
-                <p className="text-slate-500 leading-relaxed">Ghi lại các khoản thu và chi chỉ với 2 lần chạm. Phân loại thông minh dựa trên thói quen của bạn.</p>
+                <h3 className="text-2xl font-black mb-4">{t('features.fastRecording.title')}</h3>
+                <p className="text-slate-500 leading-relaxed">{t('features.fastRecording.description')}</p>
               </motion.div>
 
               <motion.div variants={item} className="group p-8 bg-slate-50 rounded-[2.5rem] border border-transparent hover:border-primary/20 hover:bg-white hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300">
                 <div className="w-16 h-16 bg-emerald-100 rounded-2xl flex items-center justify-center text-emerald-600 mb-6 group-hover:scale-110 transition-transform duration-300">
                   <PieChart className="h-8 w-8" />
                 </div>
-                <h3 className="text-2xl font-black mb-4">Thống kê đa dạng</h3>
-                <p className="text-slate-500 leading-relaxed">Hiểu rõ dòng tiền của bạn thông qua các biểu đồ tròn, cột, đường sinh động và chi tiết theo thời gian.</p>
+                <h3 className="text-2xl font-black mb-4">{t('features.diverseStats.title')}</h3>
+                <p className="text-slate-500 leading-relaxed">{t('features.diverseStats.description')}</p>
               </motion.div>
 
               <motion.div variants={item} className="group p-8 bg-slate-50 rounded-[2.5rem] border border-transparent hover:border-primary/20 hover:bg-white hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300">
                 <div className="w-16 h-16 bg-orange-100 rounded-2xl flex items-center justify-center text-orange-600 mb-6 group-hover:scale-110 transition-transform duration-300">
                   <ShieldCheck className="h-8 w-8" />
                 </div>
-                <h3 className="text-2xl font-black mb-4">Bảo mật đa lớp</h3>
-                <p className="text-slate-500 leading-relaxed">Mã hóa dữ liệu đầu cuối và hỗ trợ bảo mật bằng vân tay/khuôn mặt. Tài chính của bạn luôn được an toàn.</p>
+                <h3 className="text-2xl font-black mb-4">{t('features.multiLayerSecurity.title')}</h3>
+                <p className="text-slate-500 leading-relaxed">{t('features.multiLayerSecurity.description')}</p>
               </motion.div>
 
               <motion.div variants={item} className="group p-8 bg-slate-50 rounded-[2.5rem] border border-transparent hover:border-primary/20 hover:bg-white hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300">
                 <div className="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center text-purple-600 mb-6 group-hover:scale-110 transition-transform duration-300">
                   <TrendingUp className="h-8 w-8" />
                 </div>
-                <h3 className="text-2xl font-black mb-4">Lập kế hoạch tiết kiệm</h3>
-                <p className="text-slate-500 leading-relaxed">Thiết lập các mục tiêu mua nhà, xe, du lịch và theo dõi tiến độ thực hiện một cách trực quan nhất.</p>
+                <h3 className="text-2xl font-black mb-4">{t('features.savingPlan.title')}</h3>
+                <p className="text-slate-500 leading-relaxed">{t('features.savingPlan.description')}</p>
               </motion.div>
 
               <motion.div variants={item} className="group p-8 bg-slate-50 rounded-[2.5rem] border border-transparent hover:border-primary/20 hover:bg-white hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300">
                 <div className="w-16 h-16 bg-pink-100 rounded-2xl flex items-center justify-center text-pink-600 mb-6 group-hover:scale-110 transition-transform duration-300">
                   <Globe className="h-8 w-8" />
                 </div>
-                <h3 className="text-2xl font-black mb-4">Đồng bộ đám mây</h3>
-                <p className="text-slate-500 leading-relaxed">Dữ liệu của bạn được đồng bộ tức thời trên tất cả các thiết bị. Không bao giờ lo lắng về việc mất mát dữ liệu.</p>
+                <h3 className="text-2xl font-black mb-4">{t('features.cloudSync.title')}</h3>
+                <p className="text-slate-500 leading-relaxed">{t('features.cloudSync.description')}</p>
               </motion.div>
 
               <motion.div variants={item} className="group p-8 bg-slate-50 rounded-[2.5rem] border border-transparent hover:border-primary/20 hover:bg-white hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300">
                 <div className="w-16 h-16 bg-teal-100 rounded-2xl flex items-center justify-center text-teal-600 mb-6 group-hover:scale-110 transition-transform duration-300">
                   <Users className="h-8 w-8" />
                 </div>
-                <h3 className="text-2xl font-black mb-4">Quản lý nhóm/gia đình</h3>
-                <p className="text-slate-500 leading-relaxed">Tính năng độc đáo giúp bạn và người thân cùng quản lý quỹ chung một cách minh bạch và dễ dàng.</p>
+                <h3 className="text-2xl font-black mb-4">{t('features.groupManagement.title')}</h3>
+                <p className="text-slate-500 leading-relaxed">{t('features.groupManagement.description')}</p>
               </motion.div>
             </motion.div>
           </div>
@@ -266,15 +271,15 @@ export default function LandingPage() {
                   <div className="flex gap-1 text-yellow-400">
                     {[1,2,3,4,5].map(i => <Zap key={i} className="fill-current w-5 h-5" />)}
                   </div>
-                  <h2 className="text-4xl md:text-5xl font-black leading-tight">"MoneyMate đã thay đổi hoàn toàn cách tôi tiêu tiền"</h2>
+                  <h2 className="text-4xl md:text-5xl font-black leading-tight">{t('testimonials.quote')}</h2>
                   <p className="text-xl text-primary-foreground/80 leading-relaxed">
-                    Tôi từng không biết tiền của mình đi đâu hết vào cuối tháng. Nhờ MoneyMate, tôi đã tiết kiệm được 100 triệu đầu tiên sau 1 năm sử dụng.
+                    {t('testimonials.description')}
                   </p>
                   <div className="flex items-center gap-4 pt-4 border-t border-white/20">
                     <div className="w-16 h-16 rounded-full bg-slate-200 border-4 border-white/20" />
                     <div>
-                      <p className="font-black text-2xl">Lê Nam</p>
-                      <p className="text-primary-foreground/60">Doanh nhân tự do</p>
+                      <p className="font-black text-2xl">{t('testimonials.author')}</p>
+                      <p className="text-primary-foreground/60">{t('testimonials.role')}</p>
                     </div>
                   </div>
                 </div>
@@ -308,20 +313,20 @@ export default function LandingPage() {
                 className="space-y-6"
               >
                 <h2 className="text-4xl md:text-6xl font-black tracking-tight leading-tight">
-                  Sẵn sàng để trở thành <br /> "bậc thầy" tài chính?
+                  {t('cta.title')}
                 </h2>
                 <p className="mx-auto max-w-[600px] text-slate-400 text-lg md:text-xl leading-relaxed">
-                  Bắt đầu quản lý tài chính hiệu quả ngay hôm nay. MoneyMate cam kết miễn phí trọn đời cho các tính năng cơ bản.
+                  {t('cta.description')}
                 </p>
                 <div className="flex flex-col sm:flex-row justify-center gap-6 pt-6">
                   <Link href="/register">
                     <Button size="lg" variant="secondary" className="h-16 px-12 text-xl font-black rounded-2xl bg-white text-slate-900 hover:bg-slate-100 shadow-xl">
-                      Đăng ký miễn phí
+                      {t('cta.register')}
                     </Button>
                   </Link>
                   <Link href="/login">
                     <Button size="lg" variant="outline" className="h-16 px-12 text-xl font-black rounded-2xl border-white/20 hover:bg-white/10 shadow-xl">
-                      Đăng nhập ngay
+                      {t('cta.login')}
                     </Button>
                   </Link>
                 </div>
@@ -343,34 +348,34 @@ export default function LandingPage() {
                 <span className="text-2xl font-black text-primary tracking-tight">MoneyMate</span>
               </Link>
               <p className="text-slate-500 max-w-sm text-lg leading-relaxed">
-                MoneyMate được xây dựng với sứ mệnh giúp hàng triệu người Việt Nam kiểm soát tài chính cá nhân và đạt được sự tự do tài chính.
+                {footerT('mission')}
               </p>
               <div className="flex gap-4">
                  {[1,2,3,4].map(i => <div key={i} className="w-10 h-10 rounded-full bg-slate-200" />)}
               </div>
             </div>
             <div className="space-y-6">
-              <h4 className="font-black text-lg">Sản phẩm</h4>
+              <h4 className="font-black text-lg">{footerT('product')}</h4>
               <ul className="space-y-4 text-slate-500">
-                <li><Link href="#features" className="hover:text-primary transition-colors">Tính năng</Link></li>
-                <li><Link href="#" className="hover:text-primary transition-colors">Bảng giá</Link></li>
-                <li><Link href="#" className="hover:text-primary transition-colors">API</Link></li>
-                <li><Link href="#" className="hover:text-primary transition-colors">Tải ứng dụng</Link></li>
+                <li><Link href="#features" className="hover:text-primary transition-colors">{footerT('links.features')}</Link></li>
+                <li><Link href="#" className="hover:text-primary transition-colors">{footerT('links.pricing')}</Link></li>
+                <li><Link href="#" className="hover:text-primary transition-colors">{footerT('links.api')}</Link></li>
+                <li><Link href="#" className="hover:text-primary transition-colors">{footerT('links.download')}</Link></li>
               </ul>
             </div>
             <div className="space-y-6">
-              <h4 className="font-black text-lg">Hỗ trợ</h4>
+              <h4 className="font-black text-lg">{footerT('support')}</h4>
               <ul className="space-y-4 text-slate-500">
-                <li><Link href="#" className="hover:text-primary transition-colors">Trung tâm trợ giúp</Link></li>
-                <li><Link href="#" className="hover:text-primary transition-colors">Điều khoản dịch vụ</Link></li>
-                <li><Link href="#" className="hover:text-primary transition-colors">Chính sách bảo mật</Link></li>
-                <li><Link href="#" className="hover:text-primary transition-colors">Liên hệ</Link></li>
+                <li><Link href="#" className="hover:text-primary transition-colors">{footerT('links.helpCenter')}</Link></li>
+                <li><Link href="#" className="hover:text-primary transition-colors">{footerT('links.terms')}</Link></li>
+                <li><Link href="#" className="hover:text-primary transition-colors">{footerT('links.privacy')}</Link></li>
+                <li><Link href="#" className="hover:text-primary transition-colors">{footerT('links.contact')}</Link></li>
               </ul>
             </div>
           </div>
           <div className="pt-8 border-t flex flex-col md:flex-row justify-between items-center gap-4 text-slate-400 font-medium">
-            <p>&copy; {new Date().getFullYear()} MoneyMate. Tất cả các quyền được bảo lưu.</p>
-            <p>Made with ❤️ for financial freedom</p>
+            <p>{footerT('copyright', { year: new Date().getFullYear() })}</p>
+            <p>{footerT('madeWith')}</p>
           </div>
         </div>
       </footer>

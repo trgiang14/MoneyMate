@@ -1,12 +1,118 @@
 {
   "HomePage": {
     "title": "Quản lý tài chính thông minh",
-    "description": "Kiểm soát thu chi, tiết kiệm hiệu quả và đạt được tự do tài chính cùng MoneyMate."
+    "description": "Kiểm soát thu chi, tiết kiệm hiệu quả và đạt được tự do tài chính cùng MoneyMate.",
+    "heroBadge": "Ứng dụng quản lý tài chính số 1 Việt Nam",
+    "registerFree": "Đăng ký miễn phí ngay",
+    "viewDemo": "Xem bản Demo",
+    "exploreDashboard": "KHÁM PHÁ DASHBOARD",
+    "stats": {
+      "users": "Người dùng tin dùng",
+      "transactions": "Giao dịch được ghi lại",
+      "rating": "Đánh giá hài lòng",
+      "topApp": "Finance App AppStore"
+    },
+    "features": {
+      "badge": "Tính năng cốt lõi",
+      "title": "Vượt xa một ứng dụng ghi chép",
+      "description": "MoneyMate mang đến những công cụ mạnh mẽ nhưng dễ sử dụng để bạn quản lý tài chính cá nhân một cách tối ưu.",
+      "fastRecording": {
+        "title": "Ghi chép siêu nhanh",
+        "description": "Ghi lại các khoản thu và chi chỉ với 2 lần chạm. Phân loại thông minh dựa trên thói quen của bạn."
+      },
+      "diverseStats": {
+        "title": "Thống kê đa dạng",
+        "description": "Hiểu rõ dòng tiền của bạn thông qua các biểu đồ tròn, cột, đường sinh động và chi tiết theo thời gian."
+      },
+      "multiLayerSecurity": {
+        "title": "Bảo mật đa lớp",
+        "description": "Mã hóa dữ liệu đầu cuối và hỗ trợ bảo mật bằng vân tay/khuôn mặt. Tài chính của bạn luôn được an toàn."
+      },
+      "savingPlan": {
+        "title": "Lập kế hoạch tiết kiệm",
+        "description": "Thiết lập các mục tiêu mua nhà, xe, du lịch và theo dõi tiến độ thực hiện một cách trực quan nhất."
+      },
+      "cloudSync": {
+        "title": "Đồng bộ đám mây",
+        "description": "Dữ liệu của bạn được đồng bộ tức thời trên tất cả các thiết bị. Không bao giờ lo lắng về việc mất mát dữ liệu."
+      },
+      "groupManagement": {
+        "title": "Quản lý nhóm/gia đình",
+        "description": "Tính năng độc đáo giúp bạn và người thân cùng quản lý quỹ chung một cách minh bạch và dễ dàng."
+      }
+    },
+    "testimonials": {
+      "quote": "\"MoneyMate đã thay đổi hoàn toàn cách tôi tiêu tiền\"",
+      "description": "Tôi từng không biết tiền của mình đi đâu hết vào cuối tháng. Nhờ MoneyMate, tôi đã tiết kiệm được 100 triệu đầu tiên sau 1 năm sử dụng.",
+      "author": "Lê Nam",
+      "role": "Doanh nhân tự do"
+    },
+    "cta": {
+      "title": "Sẵn sàng để trở thành \"bậc thầy\" tài chính?",
+      "description": "Bắt đầu quản lý tài chính hiệu quả ngay hôm nay. MoneyMate cam kết miễn phí trọn đời cho các tính năng cơ bản.",
+      "register": "Đăng ký miễn phí",
+      "login": "Đăng nhập ngay"
+    }
   },
   "Navigation": {
     "features": "Tính năng",
     "about": "Về chúng tôi",
     "login": "Đăng nhập",
     "register": "Bắt đầu ngay"
+  },
+  "Dashboard": {
+    "title": "Tổng quan",
+    "description": "Theo dõi tình hình tài chính của bạn",
+    "customize": "Tùy chỉnh Dashboard",
+    "dialog": {
+      "title": "Tùy chỉnh Dashboard",
+      "description": "Bật/tắt các thành phần hiển thị trên trang tổng quan của bạn.",
+      "cancel": "Hủy",
+      "save": "Lưu thay đổi",
+      "saving": "Đang lưu..."
+    },
+    "widgets": {
+      "balance": "Số dư hiện tại",
+      "balanceDesc": "Tổng thu nhập trừ tổng chi tiêu",
+      "income": "Tổng thu nhập",
+      "incomeDesc": "Tiền vào tài khoản",
+      "expense": "Tổng chi tiêu",
+      "expenseDesc": "Tiền ra khỏi tài khoản",
+      "recentTransactions": "Giao dịch gần đây",
+      "recentTransactionsDesc": "5 giao dịch mới nhất của bạn",
+      "noTransactions": "Chưa có giao dịch nào.",
+      "categoryDistribution": "Phân bổ chi tiêu",
+      "categoryDistributionDesc": "Tỷ lệ chi tiêu theo danh mục",
+      "chartPlaceholder": "Biểu đồ sẽ được cập nhật trong phiên bản tiếp theo",
+      "overBudget": "Vượt ngân sách!",
+      "nearLimit": "Sắp chạm hạn mức!",
+      "budgetAlert": "Danh mục {category} đã dùng {percent}% hạn mức tháng này."
+    },
+    "errors": {
+      "fetchFailed": "Không thể tải dữ liệu",
+      "saveSuccess": "Cập nhật thành công",
+      "saveFailed": "Lỗi khi lưu cấu hình"
+    }
+  },
+  "Footer": {
+    "mission": "MoneyMate được xây dựng với sứ mệnh giúp hàng triệu người Việt Nam kiểm soát tài chính cá nhân và đạt được sự tự do tài chính.",
+    "product": "Sản phẩm",
+    "support": "Hỗ trợ",
+    "links": {
+      "features": "Tính năng",
+      "pricing": "Bảng giá",
+      "api": "API",
+      "download": "Tải ứng dụng",
+      "helpCenter": "Trung tâm trợ giúp",
+      "terms": "Điều khoản dịch vụ",
+      "privacy": "Chính sách bảo mật",
+      "contact": "Liên hệ"
+    },
+    "copyright": "© {year} MoneyMate. Tất cả các quyền được bảo lưu.",
+    "madeWith": "Made with ❤️ for financial freedom"
+  },
+  "Metadata": {
+    "title": "MoneyMate - Quản lý tài chính thông minh",
+    "description": "Ứng dụng quản lý thu chi cá nhân hiện đại"
   }
 }

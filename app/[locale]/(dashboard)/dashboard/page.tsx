@@ -55,6 +55,8 @@ export default function DashboardPage() {
   const [isConfigOpen, setIsConfigOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
+  const t = useTranslations('Dashboard');
+
   const fetchData = async () => {
     setIsLoading(true);
     try {
@@ -81,7 +83,7 @@ export default function DashboardPage() {
         setLayout(DEFAULT_DASHBOARD_LAYOUT);
       }
     } catch (error) {
-      toast.error("Không thể tải dữ liệu");
+      toast.error(t('errors.fetchFailed'));
       setLayout(DEFAULT_DASHBOARD_LAYOUT);
     } finally {
       setIsLoading(false);
@@ -102,13 +104,13 @@ export default function DashboardPage() {
     try {
       const result = await updateDashboardConfig(activeLayout);
       if (result.success) {
-        toast.success(result.success);
+        toast.success(t('errors.saveSuccess'));
         setIsConfigOpen(false);
       } else {
-        toast.error(result.error);
+        toast.error(t('errors.saveFailed'));
       }
     } catch (error) {
-      toast.error("Lỗi khi lưu cấu hình");
+      toast.error(t('errors.saveFailed'));
     } finally {
       setIsSaving(false);
     }
@@ -168,10 +170,10 @@ export default function DashboardPage() {
                   <AlertTriangle className="h-5 w-5" />
                   <div>
                     <p className="text-sm font-bold">
-                      {budget.percent >= 100 ? "Vượt ngân sách!" : "Sắp chạm hạn mức!"}
+                      {budget.percent >= 100 ? t('widgets.overBudget') : t('widgets.nearLimit')}
                     </p>
                     <p className="text-xs opacity-90">
-                      Danh mục {budget.category.name} đã dùng {budget.percent}% hạn mức tháng này.
+                      {t('widgets.budgetAlert', { category: budget.category.name, percent: budget.percent })}
                     </p>
                   </div>
                 </div>
@@ -188,39 +190,39 @@ export default function DashboardPage() {
           <div key="summary" className="grid gap-4 md:grid-cols-3">
             <Card className="shadow-sm">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Số dư hiện tại</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('widgets.balance')}</CardTitle>
                 <Wallet className="h-4 w-4 text-primary" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{formatCurrency(balance)}</div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Tổng thu nhập trừ tổng chi tiêu
+                  {t('widgets.balanceDesc')}
                 </p>
               </CardContent>
             </Card>
             <Card className="shadow-sm">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-emerald-600">Tổng thu nhập</CardTitle>
+                <CardTitle className="text-sm font-medium text-emerald-600">{t('widgets.income')}</CardTitle>
                 <TrendingUp className="h-4 w-4 text-emerald-600" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-emerald-600">{formatCurrency(totalIncome)}</div>
                 <div className="flex items-center text-xs text-emerald-600 mt-1">
                   <ArrowUpRight className="h-3 w-3 mr-1" />
-                  Tiền vào tài khoản
+                  {t('widgets.incomeDesc')}
                 </div>
               </CardContent>
             </Card>
             <Card className="shadow-sm">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-destructive">Tổng chi tiêu</CardTitle>
+                <CardTitle className="text-sm font-medium text-destructive">{t('widgets.expense')}</CardTitle>
                 <TrendingDown className="h-4 w-4 text-destructive" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-destructive">{formatCurrency(totalExpense)}</div>
                 <div className="flex items-center text-xs text-destructive mt-1">
                   <ArrowDownRight className="h-3 w-3 mr-1" />
-                  Tiền ra khỏi tài khoản
+                  {t('widgets.expenseDesc')}
                 </div>
               </CardContent>
             </Card>
@@ -231,14 +233,14 @@ export default function DashboardPage() {
         return (
           <Card key="recentTransactions" className="shadow-sm">
             <CardHeader>
-              <CardTitle>Giao dịch gần đây</CardTitle>
+              <CardTitle>{t('widgets.recentTransactions')}</CardTitle>
               <CardDescription>
-                5 giao dịch mới nhất của bạn
+                {t('widgets.recentTransactionsDesc')}
               </CardDescription>
             </CardHeader>
             <CardContent>
               {recentTransactions.length === 0 ? (
-                <p className="text-sm py-4 text-muted-foreground">Chưa có giao dịch nào.</p>
+                <p className="text-sm py-4 text-muted-foreground">{t('widgets.noTransactions')}</p>
               ) : (
                 <div className="space-y-4">
                   {recentTransactions.map((t) => (
@@ -277,13 +279,13 @@ export default function DashboardPage() {
         return (
           <Card key="categoryDistribution" className="shadow-sm">
             <CardHeader>
-              <CardTitle>Phân bổ chi tiêu</CardTitle>
+              <CardTitle>{t('widgets.categoryDistribution')}</CardTitle>
               <CardDescription>
-                Tỷ lệ chi tiêu theo danh mục
+                {t('widgets.categoryDistributionDesc')}
               </CardDescription>
             </CardHeader>
             <CardContent className="h-[200px] flex items-center justify-center border-2 border-dashed rounded-md mt-2">
-              <p className="text-sm text-muted-foreground italic">Biểu đồ sẽ được cập nhật trong phiên bản tiếp theo</p>
+              <p className="text-sm text-muted-foreground italic">{t('widgets.chartPlaceholder')}</p>
             </CardContent>
           </Card>
         );
@@ -297,9 +299,9 @@ export default function DashboardPage() {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Tổng quan</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('title')}</h1>
           <p className="text-muted-foreground">
-            Theo dõi tình hình tài chính của bạn
+            {t('description')}
           </p>
         </div>
         
@@ -307,14 +309,14 @@ export default function DashboardPage() {
           <DialogTrigger asChild>
             <Button variant="outline" size="sm" className="gap-2">
               <Settings2 className="h-4 w-4" />
-              Tùy chỉnh Dashboard
+              {t('customize')}
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle>Tùy chỉnh Dashboard</DialogTitle>
+              <DialogTitle>{t('dialog.title')}</DialogTitle>
               <DialogDescription>
-                Bật/tắt các thành phần hiển thị trên trang tổng quan của bạn.
+                {t('dialog.description')}
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
@@ -335,9 +337,9 @@ export default function DashboardPage() {
               ))}
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setIsConfigOpen(false)}>Hủy</Button>
+              <Button variant="outline" onClick={() => setIsConfigOpen(false)}>{t('dialog.cancel')}</Button>
               <Button onClick={handleSaveConfig} disabled={isSaving}>
-                {isSaving ? "Đang lưu..." : "Lưu thay đổi"}
+                {isSaving ? t('dialog.saving') : t('dialog.save')}
               </Button>
             </DialogFooter>
           </DialogContent>

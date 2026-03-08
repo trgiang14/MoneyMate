@@ -1,12 +1,17 @@
 import { auth } from "@/auth";
 import { Sidebar } from "@/components/shared/sidebar";
 
+import { auth } from "@/auth";
+import { Sidebar } from "@/components/shared/sidebar";
+import { getTranslations } from "next-intl/server";
+
 export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const session = await auth();
+  const t = await getTranslations('Footer');
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -21,7 +26,7 @@ export default async function DashboardLayout({
         
         <footer className="py-6 border-t border-border bg-card/50">
           <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} MoneyMate. Tất cả các quyền được bảo lưu.
+            {t('copyright', { year: new Date().getFullYear() })}
           </div>
         </footer>
       </div>

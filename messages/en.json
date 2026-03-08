@@ -1,12 +1,118 @@
 {
   "HomePage": {
     "title": "Smart Financial Management",
-    "description": "Control spending, save effectively and achieve financial freedom with MoneyMate."
+    "description": "Control spending, save effectively and achieve financial freedom with MoneyMate.",
+    "heroBadge": "Vietnam's #1 Financial Management App",
+    "registerFree": "Register for free now",
+    "viewDemo": "View Demo",
+    "exploreDashboard": "EXPLORE DASHBOARD",
+    "stats": {
+      "users": "Trusted users",
+      "transactions": "Transactions recorded",
+      "rating": "Satisfaction rating",
+      "topApp": "Finance App AppStore"
+    },
+    "features": {
+      "badge": "Core Features",
+      "title": "Beyond just a recording app",
+      "description": "MoneyMate provides powerful yet easy-to-use tools for you to optimize your personal finance management.",
+      "fastRecording": {
+        "title": "Super-fast recording",
+        "description": "Record income and expenses with just 2 taps. Smart classification based on your habits."
+      },
+      "diverseStats": {
+        "title": "Diverse statistics",
+        "description": "Understand your cash flow through vivid and detailed pie, bar, and line charts over time."
+      },
+      "multiLayerSecurity": {
+        "title": "Multi-layer security",
+        "description": "End-to-end data encryption and support for fingerprint/face ID security. Your finances are always safe."
+      },
+      "savingPlan": {
+        "title": "Savings planning",
+        "description": "Set goals for buying a house, car, travel and track progress in the most intuitive way."
+      },
+      "cloudSync": {
+        "title": "Cloud synchronization",
+        "description": "Your data is instantly synced across all devices. Never worry about data loss."
+      },
+      "groupManagement": {
+        "title": "Group/Family management",
+        "description": "Unique feature helps you and your loved ones manage common funds transparently and easily."
+      }
+    },
+    "testimonials": {
+      "quote": "\"MoneyMate has completely changed the way I spend money\"",
+      "description": "I used to not know where my money went at the end of the month. Thanks to MoneyMate, I saved my first 100 million after 1 year of use.",
+      "author": "Nam Le",
+      "role": "Freelance Entrepreneur"
+    },
+    "cta": {
+      "title": "Ready to become a financial \"master\"?",
+      "description": "Start managing your finances effectively today. MoneyMate is committed to being free forever for basic features.",
+      "register": "Register for free",
+      "login": "Login now"
+    }
   },
   "Navigation": {
     "features": "Features",
     "about": "About Us",
     "login": "Login",
     "register": "Get Started"
+  },
+  "Dashboard": {
+    "title": "Overview",
+    "description": "Track your financial situation",
+    "customize": "Customize Dashboard",
+    "dialog": {
+      "title": "Customize Dashboard",
+      "description": "Turn on/off components displayed on your overview page.",
+      "cancel": "Cancel",
+      "save": "Save changes",
+      "saving": "Saving..."
+    },
+    "widgets": {
+      "balance": "Current Balance",
+      "balanceDesc": "Total income minus total expenses",
+      "income": "Total Income",
+      "incomeDesc": "Money into account",
+      "expense": "Total Expenses",
+      "expenseDesc": "Money out of account",
+      "recentTransactions": "Recent Transactions",
+      "recentTransactionsDesc": "Your 5 latest transactions",
+      "noTransactions": "No transactions yet.",
+      "categoryDistribution": "Spending Distribution",
+      "categoryDistributionDesc": "Spending ratio by category",
+      "chartPlaceholder": "Charts will be updated in the next version",
+      "overBudget": "Over Budget!",
+      "nearLimit": "Near Limit!",
+      "budgetAlert": "Category {category} has used {percent}% of this month's limit."
+    },
+    "errors": {
+      "fetchFailed": "Unable to load data",
+      "saveSuccess": "Update successful",
+      "saveFailed": "Error saving configuration"
+    }
+  },
+  "Footer": {
+    "mission": "MoneyMate is built with the mission to help millions of Vietnamese people control their personal finances and achieve financial freedom.",
+    "product": "Product",
+    "support": "Support",
+    "links": {
+      "features": "Features",
+      "pricing": "Pricing",
+      "api": "API",
+      "download": "Download App",
+      "helpCenter": "Help Center",
+      "terms": "Terms of Service",
+      "privacy": "Privacy Policy",
+      "contact": "Contact"
+    },
+    "copyright": "© {year} MoneyMate. All rights reserved.",
+    "madeWith": "Made with ❤️ for financial freedom"
+  },
+  "Metadata": {
+    "title": "MoneyMate - Smart Financial Management",
+    "description": "Modern personal finance management application"
   }
 }

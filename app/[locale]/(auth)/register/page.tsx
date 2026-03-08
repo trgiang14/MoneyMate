@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Wallet, ArrowRight, CheckCircle2, UserPlus } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -28,6 +29,7 @@ import { AuthFeatures } from "@/components/shared/auth-features";
 export default function RegisterPage() {
   const [isPending, setIsPending] = useState(false);
   const router = useRouter();
+  const t = useTranslations("Auth.register");
 
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
@@ -50,7 +52,7 @@ export default function RegisterPage() {
         router.push("/login");
       }
     } catch (error) {
-      toast.error("Đã có lỗi xảy ra!");
+      toast.error(t("error"));
     } finally {
       setIsPending(false);
     }
@@ -79,9 +81,9 @@ export default function RegisterPage() {
               <Wallet className="h-10 w-10 text-primary" />
               <span className="text-2xl font-bold text-primary tracking-tight">MoneyMate</span>
             </Link>
-            <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">Tạo tài khoản mới</h2>
+            <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">{t("title")}</h2>
             <p className="mt-2 text-sm text-slate-600">
-              Hoàn toàn miễn phí và bảo mật tuyệt đối
+              {t("description")}
             </p>
           </div>
 
@@ -94,11 +96,11 @@ export default function RegisterPage() {
                     name="name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-slate-700">Họ và tên</FormLabel>
+                        <FormLabel className="text-slate-700">{t("name")}</FormLabel>
                         <FormControl>
                           <Input 
                             {...field} 
-                            placeholder="Nguyễn Văn A" 
+                            placeholder={t("namePlaceholder")} 
                             disabled={isPending}
                             className="bg-white/50 border-slate-200 focus:bg-white transition-all"
                           />
@@ -112,11 +114,11 @@ export default function RegisterPage() {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-slate-700">Email</FormLabel>
+                        <FormLabel className="text-slate-700">{t("email")}</FormLabel>
                         <FormControl>
                           <Input 
                             {...field} 
-                            placeholder="abc@example.com" 
+                            placeholder={t("emailPlaceholder")} 
                             type="email" 
                             disabled={isPending}
                             className="bg-white/50 border-slate-200 focus:bg-white transition-all"
@@ -131,11 +133,11 @@ export default function RegisterPage() {
                     name="password"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-slate-700">Mật khẩu</FormLabel>
+                        <FormLabel className="text-slate-700">{t("password")}</FormLabel>
                         <FormControl>
                           <Input 
                             {...field} 
-                            placeholder="******" 
+                            placeholder={t("passwordPlaceholder")} 
                             type="password" 
                             disabled={isPending}
                             className="bg-white/50 border-slate-200 focus:bg-white transition-all"
@@ -149,11 +151,11 @@ export default function RegisterPage() {
                     {isPending ? (
                       <div className="flex items-center gap-2">
                         <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                        Đang tạo tài khoản...
+                        {t("submitting")}
                       </div>
                     ) : (
                       <div className="flex items-center gap-2">
-                        Đăng ký ngay <ArrowRight className="h-5 w-5" />
+                        {t("submit")} <ArrowRight className="h-5 w-5" />
                       </div>
                     )}
                   </Button>
@@ -166,20 +168,20 @@ export default function RegisterPage() {
                   <span className="w-full border-t border-slate-200" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-white px-2 text-slate-500 font-medium">Hoặc</span>
+                  <span className="bg-white px-2 text-slate-500 font-medium">{t("or")}</span>
                 </div>
               </div>
               <p className="text-center text-sm text-slate-600">
-                Đã có tài khoản?{" "}
+                {t("alreadyHaveAccount")}{" "}
                 <Link href="/login" className="font-bold text-primary hover:text-primary/80 transition-colors">
-                  Đăng nhập
+                  {t("loginNow")}
                 </Link>
               </p>
             </CardFooter>
           </Card>
           
           <p className="text-center text-xs text-slate-400">
-            Bằng việc đăng ký, bạn đồng ý với Điều khoản và Chính sách bảo mật của chúng tôi.
+            {t("terms")}
           </p>
         </div>
       </div>

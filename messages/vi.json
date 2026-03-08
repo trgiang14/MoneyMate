@@ -147,6 +147,23 @@
       "copyright": "© {year} MoneyMate. Bảo mật và riêng tư tuyệt đối.",
       "error": "Đã có lỗi xảy ra!"
     },
+    "register": {
+      "title": "Tạo tài khoản mới",
+      "description": "Hoàn toàn miễn phí và bảo mật tuyệt đối",
+      "name": "Họ và tên",
+      "namePlaceholder": "Nguyễn Văn A",
+      "email": "Email",
+      "emailPlaceholder": "abc@example.com",
+      "password": "Mật khẩu",
+      "passwordPlaceholder": "******",
+      "submit": "Đăng ký ngay",
+      "submitting": "Đang tạo tài khoản...",
+      "or": "Hoặc",
+      "alreadyHaveAccount": "Đã có tài khoản?",
+      "loginNow": "Đăng nhập",
+      "terms": "Bằng việc đăng ký, bạn đồng ý với Điều khoản và Chính sách bảo mật của chúng tôi.",
+      "error": "Đã có lỗi xảy ra!"
+    },
     "features": {
       "login": [
         {

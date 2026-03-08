@@ -147,6 +147,23 @@
       "copyright": "© {year} MoneyMate. Absolute security and privacy.",
       "error": "Something went wrong!"
     },
+    "register": {
+      "title": "Create New Account",
+      "description": "Completely free and absolutely secure",
+      "name": "Full Name",
+      "namePlaceholder": "John Doe",
+      "email": "Email",
+      "emailPlaceholder": "abc@example.com",
+      "password": "Password",
+      "passwordPlaceholder": "******",
+      "submit": "Register Now",
+      "submitting": "Creating account...",
+      "or": "Or",
+      "alreadyHaveAccount": "Already have an account?",
+      "loginNow": "Login",
+      "terms": "By registering, you agree to our Terms and Privacy Policy.",
+      "error": "Something went wrong!"
+    },
     "features": {
       "login": [
         {

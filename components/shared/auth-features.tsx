@@ -3,54 +3,13 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2 } from "lucide-react";
-
-const loginFeatures = [
-  {
-    title: "Bắt đầu hành trình quản lý tài chính thông minh hơn",
-    description: "Theo dõi dòng tiền hàng ngày chính xác và hiệu quả.",
-    points: [
-      "Theo dõi dòng tiền hàng ngày chính xác",
-      "Phân tích biểu đồ chi tiêu trực quan",
-      "Lập kế hoạch tiết kiệm hiệu quả",
-      "Truy cập mọi lúc, mọi nơi"
-    ]
-  },
-  {
-    title: "Tiết kiệm thông minh hơn mỗi ngày",
-    description: "Xây dựng thói quen chi tiêu tốt để đạt được mục tiêu tương lai.",
-    points: [
-      "Thiết lập ngân sách chi tiêu hàng tháng",
-      "Cảnh báo khi vượt quá hạn mức",
-      "Theo dõi tiến độ tiết kiệm",
-      "Gợi ý cắt giảm chi phí thừa"
-    ]
-  }
-];
-
-const registerFeatures = [
-  {
-    title: "Tham gia cộng đồng quản lý tài chính hiệu quả nhất",
-    description: "Gia nhập cùng hàng ngàn người dùng đang tối ưu hóa túi tiền của họ.",
-    steps: [
-      { id: 1, title: "Đăng ký nhanh chóng", desc: "Chỉ mất 30 giây để bắt đầu hành trình mới." },
-      { id: 2, title: "Cá nhân hóa danh mục", desc: "Tự tạo các loại thu chi phù hợp với lối sống." },
-      { id: 3, title: "Kiểm soát dòng tiền", desc: "Xem báo cáo chi tiết ngay trên điện thoại." }
-    ]
-  },
-  {
-    title: "Dữ liệu của bạn luôn được bảo mật tuyệt đối",
-    description: "Chúng tôi sử dụng công nghệ mã hóa tiên tiến nhất.",
-    steps: [
-      { id: 1, title: "Mã hóa đầu cuối", desc: "Dữ liệu chỉ dành riêng cho bạn." },
-      { id: 2, title: "Sao lưu đám mây", desc: "Không bao giờ lo mất dữ liệu." },
-      { id: 3, title: "Riêng tư tuyệt đối", desc: "Chúng tôi không chia sẻ dữ liệu cho bên thứ 3." }
-    ]
-  }
-];
+import { useTranslations } from "next-intl";
 
 export const AuthFeatures = ({ type }: { type: "login" | "register" }) => {
   const [index, setIndex] = useState(0);
-  const features = type === "login" ? loginFeatures : registerFeatures;
+  const t = useTranslations("Auth.features");
+  
+  const features = t.raw(type);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -80,7 +39,7 @@ export const AuthFeatures = ({ type }: { type: "login" | "register" }) => {
 
           {type === "login" ? (
             <ul className="space-y-6">
-              {(features[index] as any).points?.map((text: string, i: number) => (
+              {features[index].points?.map((text: string, i: number) => (
                 <li key={i} className="flex items-center gap-4 text-lg text-primary-foreground/90">
                   <div className="bg-white/20 p-1 rounded-full shrink-0">
                     <CheckCircle2 className="h-6 w-6" />
@@ -91,10 +50,10 @@ export const AuthFeatures = ({ type }: { type: "login" | "register" }) => {
             </ul>
           ) : (
             <div className="space-y-8">
-              {(features[index] as any).steps?.map((step: any) => (
-                <div key={step.id} className="flex gap-4">
+              {features[index].steps?.map((step: any, i: number) => (
+                <div key={i} className="flex gap-4">
                   <div className="bg-primary/20 h-12 w-12 rounded-xl flex items-center justify-center shrink-0">
-                    <span className="text-xl font-bold text-primary-foreground">{step.id}</span>
+                    <span className="text-xl font-bold text-primary-foreground">{i + 1}</span>
                   </div>
                   <div>
                     <h4 className="text-xl font-bold mb-1">{step.title}</h4>

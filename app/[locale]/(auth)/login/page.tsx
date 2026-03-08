@@ -7,6 +7,7 @@ import * as z from "zod";
 import Link from "next/link";
 import { toast } from "sonner";
 import { Wallet, ArrowRight, CheckCircle2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -26,6 +27,7 @@ import { AuthFeatures } from "@/components/shared/auth-features";
 
 export default function LoginPage() {
   const [isPending, setIsPending] = useState(false);
+  const t = useTranslations("Auth.login");
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -44,7 +46,7 @@ export default function LoginPage() {
         toast.error(data.error);
       }
     } catch (error) {
-      toast.error("Đã có lỗi xảy ra!");
+      toast.error(t("error"));
     } finally {
       setIsPending(false);
     }
@@ -73,9 +75,9 @@ export default function LoginPage() {
               <Wallet className="h-10 w-10 text-primary" />
               <span className="text-2xl font-bold text-primary tracking-tight">MoneyMate</span>
             </Link>
-            <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">Chào mừng quay trở lại</h2>
+            <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">{t("title")}</h2>
             <p className="mt-2 text-sm text-slate-600">
-              Vui lòng nhập thông tin để truy cập tài khoản của bạn
+              {t("description")}
             </p>
           </div>
 
@@ -88,11 +90,11 @@ export default function LoginPage() {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-slate-700">Email</FormLabel>
+                        <FormLabel className="text-slate-700">{t("email")}</FormLabel>
                         <FormControl>
                           <Input 
                             {...field} 
-                            placeholder="abc@example.com" 
+                            placeholder={t("emailPlaceholder")} 
                             type="email" 
                             disabled={isPending}
                             className="bg-white/50 border-slate-200 focus:bg-white transition-all"
@@ -108,15 +110,15 @@ export default function LoginPage() {
                     render={({ field }) => (
                       <FormItem>
                         <div className="flex items-center justify-between">
-                          <FormLabel className="text-slate-700">Mật khẩu</FormLabel>
+                          <FormLabel className="text-slate-700">{t("password")}</FormLabel>
                           <Link href="#" className="text-xs text-primary hover:underline font-medium">
-                            Quên mật khẩu?
+                            {t("forgotPassword")}
                           </Link>
                         </div>
                         <FormControl>
                           <Input 
                             {...field} 
-                            placeholder="******" 
+                            placeholder={t("passwordPlaceholder")} 
                             type="password" 
                             disabled={isPending}
                             className="bg-white/50 border-slate-200 focus:bg-white transition-all"
@@ -130,11 +132,11 @@ export default function LoginPage() {
                     {isPending ? (
                       <div className="flex items-center gap-2">
                         <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                        Đang xử lý...
+                        {t("submitting")}
                       </div>
                     ) : (
                       <div className="flex items-center gap-2">
-                        Đăng nhập <ArrowRight className="h-5 w-5" />
+                        {t("submit")} <ArrowRight className="h-5 w-5" />
                       </div>
                     )}
                   </Button>
@@ -147,20 +149,20 @@ export default function LoginPage() {
                   <span className="w-full border-t border-slate-200" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-white px-2 text-slate-500 font-medium">Hoặc</span>
+                  <span className="bg-white px-2 text-slate-500 font-medium">{t("or")}</span>
                 </div>
               </div>
               <p className="text-center text-sm text-slate-600">
-                Chưa có tài khoản?{" "}
+                {t("noAccount")}{" "}
                 <Link href="/register" className="font-bold text-primary hover:text-primary/80 transition-colors">
-                  Đăng ký ngay
+                  {t("registerNow")}
                 </Link>
               </p>
             </CardFooter>
           </Card>
           
           <p className="text-center text-xs text-slate-400">
-            &copy; {new Date().getFullYear()} MoneyMate. Bảo mật và riêng tư tuyệt đối.
+            {t("copyright", { year: new Date().getFullYear() })}
           </p>
         </div>
       </div>

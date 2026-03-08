@@ -129,5 +129,67 @@
   "Metadata": {
     "title": "MoneyMate - Quản lý tài chính thông minh",
     "description": "Ứng dụng quản lý thu chi cá nhân hiện đại"
+  },
+  "Auth": {
+    "login": {
+      "title": "Chào mừng quay trở lại",
+      "description": "Vui lòng nhập thông tin để truy cập tài khoản của bạn",
+      "email": "Email",
+      "emailPlaceholder": "abc@example.com",
+      "password": "Mật khẩu",
+      "passwordPlaceholder": "******",
+      "forgotPassword": "Quên mật khẩu?",
+      "submit": "Đăng nhập",
+      "submitting": "Đang xử lý...",
+      "or": "Hoặc",
+      "noAccount": "Chưa có tài khoản?",
+      "registerNow": "Đăng ký ngay",
+      "copyright": "© {year} MoneyMate. Bảo mật và riêng tư tuyệt đối.",
+      "error": "Đã có lỗi xảy ra!"
+    },
+    "features": {
+      "login": [
+        {
+          "title": "Bắt đầu hành trình quản lý tài chính thông minh hơn",
+          "description": "Theo dõi dòng tiền hàng ngày chính xác và hiệu quả.",
+          "points": [
+            "Theo dõi dòng tiền hàng ngày chính xác",
+            "Phân tích biểu đồ chi tiêu trực quan",
+            "Lập kế hoạch tiết kiệm hiệu quả",
+            "Truy cập mọi lúc, mọi nơi"
+          ]
+        },
+        {
+          "title": "Tiết kiệm thông minh hơn mỗi ngày",
+          "description": "Xây dựng thói quen chi tiêu tốt để đạt được mục tiêu tương lai.",
+          "points": [
+            "Thiết lập ngân sách chi tiêu hàng tháng",
+            "Cảnh báo khi vượt quá hạn mức",
+            "Theo dõi tiến độ tiết kiệm",
+            "Gợi ý cắt giảm chi phí thừa"
+          ]
+        }
+      ],
+      "register": [
+        {
+          "title": "Tham gia cộng đồng quản lý tài chính hiệu quả nhất",
+          "description": "Gia nhập cùng hàng ngàn người dùng đang tối ưu hóa túi tiền của họ.",
+          "steps": [
+            { "title": "Đăng ký nhanh chóng", "desc": "Chỉ mất 30 giây để bắt đầu hành trình mới." },
+            { "title": "Cá nhân hóa danh mục", "desc": "Tự tạo các loại thu chi phù hợp với lối sống." },
+            { "title": "Kiểm soát dòng tiền", "desc": "Xem báo cáo chi tiết ngay trên điện thoại." }
+          ]
+        },
+        {
+          "title": "Dữ liệu của bạn luôn được bảo mật tuyệt đối",
+          "description": "Chúng tôi sử dụng công nghệ mã hóa tiên tiến nhất.",
+          "steps": [
+            { "title": "Mã hóa đầu cuối", "desc": "Dữ liệu chỉ dành riêng cho bạn." },
+            { "title": "Sao lưu đám mây", "desc": "Không bao giờ lo mất dữ liệu." },
+            { "title": "Riêng tư tuyệt đối", "desc": "Chúng tôi không chia sẻ dữ liệu cho bên thứ 3." }
+          ]
+        }
+      ]
+    }
   }
 }

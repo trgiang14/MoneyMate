@@ -129,5 +129,67 @@
   "Metadata": {
     "title": "MoneyMate - Smart Financial Management",
     "description": "Modern personal finance management application"
+  },
+  "Auth": {
+    "login": {
+      "title": "Welcome Back",
+      "description": "Please enter your information to access your account",
+      "email": "Email",
+      "emailPlaceholder": "abc@example.com",
+      "password": "Password",
+      "passwordPlaceholder": "******",
+      "forgotPassword": "Forgot password?",
+      "submit": "Login",
+      "submitting": "Processing...",
+      "or": "Or",
+      "noAccount": "Don't have an account?",
+      "registerNow": "Register now",
+      "copyright": "© {year} MoneyMate. Absolute security and privacy.",
+      "error": "Something went wrong!"
+    },
+    "features": {
+      "login": [
+        {
+          "title": "Start your journey to smarter financial management",
+          "description": "Track daily cash flow accurately and effectively.",
+          "points": [
+            "Accurate daily cash flow tracking",
+            "Visual spending chart analysis",
+            "Effective savings planning",
+            "Access anytime, anywhere"
+          ]
+        },
+        {
+          "title": "Save smarter every day",
+          "description": "Build good spending habits to achieve future goals.",
+          "points": [
+            "Set monthly spending budgets",
+            "Alerts when exceeding limits",
+            "Track savings progress",
+            "Suggestions for cutting excess costs"
+          ]
+        }
+      ],
+      "register": [
+        {
+          "title": "Join the most effective financial management community",
+          "description": "Join thousands of users who are optimizing their wallets.",
+          "steps": [
+            { "title": "Quick registration", "desc": "Only takes 30 seconds to start a new journey." },
+            { "title": "Personalize categories", "desc": "Create your own income and expense types to fit your lifestyle." },
+            { "title": "Control cash flow", "desc": "View detailed reports right on your phone." }
+          ]
+        },
+        {
+          "title": "Your data is always absolutely secure",
+          "description": "We use the most advanced encryption technology.",
+          "steps": [
+            { "title": "End-to-end encryption", "desc": "Data is for your eyes only." },
+            { "title": "Cloud backup", "desc": "Never worry about losing data." },
+            { "title": "Absolute privacy", "desc": "We do not share data with third parties." }
+          ]
+        }
+      ]
+    }
   }
 }

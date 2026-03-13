@@ -442,6 +442,9 @@
     "membersCount": "{count} members",
     "transactionsCount": "Transactions:",
     "details": "Details",
+    "list": {
+      "loading": "Loading..."
+    },
     "leaveConfirm": "Are you sure you want to leave this group?",
     "deleteConfirm": "Are you sure you want to delete this group? All group transaction data will be lost!",
     "copySuccess": "Invite code copied!",

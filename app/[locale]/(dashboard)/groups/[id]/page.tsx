@@ -497,7 +497,7 @@ export default function GroupDetailPage() {
                             <span>{format(new Date(t.date), "dd/MM/yyyy", { locale: dateLocale })}</span>
                             <span>•</span>
                             <Badge variant="outline" className="text-[10px]">
-                              {tCat(`default.${t.category.name}`, { defaultValue: t.category.name })}
+                              {tCat(`default.${t.category?.name}`, { defaultValue: t.category?.name })}
                             </Badge>
                           </div>
                           <div className="mt-2 flex flex-wrap gap-1">

@@ -442,6 +442,9 @@
     "membersCount": "{count} thành viên",
     "transactionsCount": "Giao dịch:",
     "details": "Chi tiết",
+    "list": {
+      "loading": "Đang tải..."
+    },
     "leaveConfirm": "Bạn có chắc chắn muốn rời nhóm này?",
     "deleteConfirm": "Bạn có chắc chắn muốn xóa nhóm này? Tất cả dữ liệu giao dịch nhóm sẽ bị mất!",
     "copySuccess": "Đã sao chép mã mời!",

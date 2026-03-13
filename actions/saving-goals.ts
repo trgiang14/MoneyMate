@@ -79,3 +79,26 @@ export const deleteSavingGoal = async (id: string) => {
     return { error: "Không thể xóa mục tiêu!" };
   }
 };
+
+export const addContribution = async (id: string, amount: number) => {
+  const session = await auth();
+  if (!session?.user?.id) return { error: "Bạn cần đăng nhập!" };
+
+  if (amount <= 0) return { error: "Số tiền phải lớn hơn 0!" };
+
+  try {
+    await db.savingGoal.update({
+      where: { id, userId: session.user.id },
+      data: {
+        currentAmount: {
+          increment: amount,
+        },
+      },
+    });
+
+    revalidatePath("/saving-goals");
+    return { success: "Đã thêm tiền tiết kiệm!" };
+  } catch (error) {
+    return { error: "Đã có lỗi xảy ra!" };
+  }
+};

@@ -2,7 +2,7 @@
 
 import { useTranslations, useLocale } from "next-intl";
 import { useEffect, useState } from "react";
-import { Plus, Trash2, Target, Calendar, TrendingUp } from "lucide-react";
+import { Plus, Trash2, Target, Calendar, TrendingUp, Coins } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { vi, enUS } from "date-fns/locale";
@@ -38,7 +38,7 @@ import { Progress } from "@/components/ui/progress";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { getSavingGoals, createSavingGoal, deleteSavingGoal, updateSavingGoal } from "@/actions/saving-goals";
+import { getSavingGoals, createSavingGoal, deleteSavingGoal, updateSavingGoal, addContribution } from "@/actions/saving-goals";
 import { cn } from "@/lib/utils";
 
 export default function SavingGoalsPage() {
@@ -49,12 +49,18 @@ export default function SavingGoalsPage() {
   const [goals, setGoals] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isContributionDialogOpen, setIsContributionDialogOpen] = useState(false);
+  const [selectedGoalId, setSelectedGoalId] = useState<string | null>(null);
 
   const SavingGoalSchema = z.object({
     name: z.string().min(1, t("errors.nameRequired")),
     targetAmount: z.coerce.number().min(1, t("errors.targetAmountMin")),
     currentAmount: z.coerce.number().min(0, t("errors.currentAmountMin")),
     deadline: z.string().optional().nullable(),
+  });
+
+  const ContributionSchema = z.object({
+    amount: z.coerce.number().min(1, t("errors.contributionAmountMin")),
   });
 
   const form = useForm<z.infer<typeof SavingGoalSchema>>({
@@ -64,6 +70,13 @@ export default function SavingGoalsPage() {
       targetAmount: 0,
       currentAmount: 0,
       deadline: "",
+    },
+  });
+
+  const contributionForm = useForm<z.infer<typeof ContributionSchema>>({
+    resolver: zodResolver(ContributionSchema),
+    defaultValues: {
+      amount: 0,
     },
   });
 
@@ -95,6 +108,20 @@ export default function SavingGoalsPage() {
       toast.success(result.success);
       setIsDialogOpen(false);
       form.reset();
+      fetchData();
+    }
+  };
+
+  const onContributionSubmit = async (values: z.infer<typeof ContributionSchema>) => {
+    if (!selectedGoalId) return;
+    
+    const result = await addContribution(selectedGoalId, values.amount);
+    if (result.error) {
+      toast.error(result.error);
+    } else {
+      toast.success(result.success);
+      setIsContributionDialogOpen(false);
+      contributionForm.reset();
       fetchData();
     }
   };
@@ -221,24 +248,36 @@ export default function SavingGoalsPage() {
           goals.map((goal) => {
             const percent = Math.min(Math.round((goal.currentAmount / goal.targetAmount) * 100), 100);
             return (
-              <Card key={goal.id}>
+              <Card key={goal.id} className="flex flex-col">
                 <CardHeader className="pb-2">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-lg">{goal.name}</CardTitle>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => onDelete(goal.id)}
-                    >
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
+                    <div className="flex gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          setSelectedGoalId(goal.id);
+                          setIsContributionDialogOpen(true);
+                        }}
+                      >
+                        <Coins className="h-4 w-4 text-primary" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => onDelete(goal.id)}
+                      >
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </div>
                   </div>
                   <CardDescription className="flex items-center gap-2">
                     <TrendingUp className="h-3 w-3" />
                     {t("list.target", { amount: formatCurrency(goal.targetAmount) })}
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-4 flex-1">
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-muted-foreground">{t("list.current", { amount: formatCurrency(goal.currentAmount) })}</span>
@@ -259,7 +298,7 @@ export default function SavingGoalsPage() {
                     </div>
                   )}
                 </CardContent>
-                <CardFooter className="pt-0">
+                <CardFooter className="pt-0 flex flex-col items-start gap-2">
                   <div className="text-xs text-muted-foreground italic">
                     {goal.targetAmount - goal.currentAmount > 0 
                       ? t("list.remaining", { amount: formatCurrency(goal.targetAmount - goal.currentAmount) })
@@ -271,6 +310,37 @@ export default function SavingGoalsPage() {
           })
         )}
       </div>
+
+      <Dialog open={isContributionDialogOpen} onOpenChange={setIsContributionDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("addContribution")}</DialogTitle>
+            <DialogDescription>
+              {t("addContributionDesc")}
+            </DialogDescription>
+          </DialogHeader>
+          <Form {...contributionForm}>
+            <form onSubmit={contributionForm.handleSubmit(onContributionSubmit)} className="space-y-4">
+              <FormField
+                control={contributionForm.control}
+                name="amount"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("form.contributionAmount")}</FormLabel>
+                    <FormControl>
+                      <Input type="number" placeholder="0" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <DialogFooter>
+                <Button type="submit">{t("form.add")}</Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

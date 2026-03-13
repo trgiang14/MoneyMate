@@ -307,6 +307,8 @@
     "addGoal": "Thêm mục tiêu",
     "addNewGoal": "Thêm mục tiêu mới",
     "addDescription": "Đặt mục tiêu cụ thể để tiết kiệm tiền cho tương lai.",
+    "addContribution": "Thêm tiền tiết kiệm",
+    "addContributionDesc": "Nhập số tiền bạn muốn thêm vào mục tiêu này.",
     "form": {
       "name": "Tên mục tiêu",
       "namePlaceholder": "Ví dụ: Mua laptop, Đi du lịch...",
@@ -314,8 +316,10 @@
       "targetAmountPlaceholder": "Ví dụ: 20000000",
       "currentAmount": "Số tiền hiện có (VND)",
       "currentAmountPlaceholder": "Ví dụ: 5000000",
+      "contributionAmount": "Số tiền thêm vào (VND)",
       "deadline": "Hạn chót (Không bắt buộc)",
-      "save": "Lưu mục tiêu"
+      "save": "Lưu mục tiêu",
+      "add": "Thêm vào"
     },
     "list": {
       "loading": "Đang tải...",
@@ -332,7 +336,8 @@
       "fetchFailed": "Không thể tải danh sách mục tiêu",
       "nameRequired": "Tên mục tiêu không được để trống",
       "targetAmountMin": "Số tiền mục tiêu phải lớn hơn 0",
-      "currentAmountMin": "Số tiền hiện có không được âm"
+      "currentAmountMin": "Số tiền hiện có không được âm",
+      "contributionAmountMin": "Số tiền thêm vào phải lớn hơn 0"
     }
   },
   "Auth": {

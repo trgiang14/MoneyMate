@@ -485,6 +485,42 @@
       "backToList": "Quay lại danh sách nhóm"
     }
   },
+  "Settings": {
+    "title": "Cài đặt",
+    "description": "Quản lý tài khoản và cấu hình ứng dụng của bạn",
+    "tabs": {
+      "profile": "Hồ sơ",
+      "currency": "Tiền tệ",
+      "password": "Bảo mật"
+    },
+    "profile": {
+      "title": "Thông tin cá nhân",
+      "description": "Cập nhật tên hiển thị của bạn",
+      "name": "Họ và tên",
+      "namePlaceholder": "Tên của bạn",
+      "save": "Lưu thay đổi",
+      "saving": "Đang lưu..."
+    },
+    "currency": {
+      "title": "Đơn vị tiền tệ",
+      "description": "Chọn đơn vị tiền tệ chính để hiển thị trên toàn ứng dụng",
+      "label": "Đơn vị tiền tệ",
+      "placeholder": "Chọn đơn vị tiền tệ",
+      "convertOld": "Tự động quy đổi các giao dịch và ngân sách cũ theo tỷ giá hiện tại",
+      "convertNote": "* Lưu ý: Nếu chọn quy đổi, tất cả số tiền trong lịch sử giao dịch và ngân sách sẽ được nhân với tỷ giá hối đoái hiện tại."
+    },
+    "password": {
+      "title": "Đổi mật khẩu",
+      "description": "Đảm bảo mật khẩu của bạn đủ mạnh để bảo vệ tài khoản",
+      "current": "Mật khẩu hiện tại",
+      "new": "Mật khẩu mới",
+      "submit": "Đổi mật khẩu",
+      "submitting": "Đang xử lý..."
+    },
+    "messages": {
+      "error": "Đã có lỗi xảy ra!"
+    }
+  },
   "Badges": {
     "title": "Huy hiệu thành tựu",
     "description": "Theo dõi những cột mốc và thành tích tài chính của bạn",

@@ -485,6 +485,42 @@
       "backToList": "Back to group list"
     }
   },
+  "Settings": {
+    "title": "Settings",
+    "description": "Manage your account and app configuration",
+    "tabs": {
+      "profile": "Profile",
+      "currency": "Currency",
+      "password": "Security"
+    },
+    "profile": {
+      "title": "Personal Information",
+      "description": "Update your display name",
+      "name": "Full Name",
+      "namePlaceholder": "Your name",
+      "save": "Save Changes",
+      "saving": "Saving..."
+    },
+    "currency": {
+      "title": "Currency Unit",
+      "description": "Choose the main currency unit to display across the app",
+      "label": "Currency Unit",
+      "placeholder": "Select currency unit",
+      "convertOld": "Automatically convert old transactions and budgets at current rates",
+      "convertNote": "* Note: If conversion is selected, all amounts in transaction history and budgets will be multiplied by the current exchange rate."
+    },
+    "password": {
+      "title": "Change Password",
+      "description": "Ensure your password is strong enough to protect your account",
+      "current": "Current Password",
+      "new": "New Password",
+      "submit": "Change Password",
+      "submitting": "Processing..."
+    },
+    "messages": {
+      "error": "Something went wrong!"
+    }
+  },
   "Badges": {
     "title": "Achievement Badges",
     "description": "Track your financial milestones and achievements",

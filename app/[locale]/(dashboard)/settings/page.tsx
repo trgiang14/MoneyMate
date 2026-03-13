@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { toast } from "sonner";
 import { User, Lock, Coins } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -38,6 +39,7 @@ import { ProfileSchema, PasswordSchema } from "@/schemas";
 import { CURRENCIES } from "@/lib/currencies";
 
 export default function SettingsPage() {
+  const t = useTranslations("Settings");
   const [isPending, setIsPending] = useState(false);
   const [currency, setCurrency] = useState("VND");
   const [convertOld, setConvertOld] = useState(false);
@@ -75,7 +77,7 @@ export default function SettingsPage() {
         toast.success(result.success);
       }
     } catch (error) {
-      toast.error("Đã có lỗi xảy ra!");
+      toast.error(t("messages.error"));
     } finally {
       setIsPending(false);
     }
@@ -92,7 +94,7 @@ export default function SettingsPage() {
         passwordForm.reset();
       }
     } catch (error) {
-      toast.error("Đã có lỗi xảy ra!");
+      toast.error(t("messages.error"));
     } finally {
       setIsPending(false);
     }
@@ -109,7 +111,7 @@ export default function SettingsPage() {
         toast.success(result.success);
       }
     } catch (error) {
-      toast.error("Đã có lỗi xảy ra!");
+      toast.error(t("messages.error"));
     } finally {
       setIsPending(false);
     }
@@ -118,31 +120,31 @@ export default function SettingsPage() {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Cài đặt</h1>
+        <h1 className="text-3xl font-bold tracking-tight">{t("title")}</h1>
         <p className="text-muted-foreground">
-          Quản lý tài khoản và cấu hình ứng dụng của bạn
+          {t("description")}
         </p>
       </div>
 
       <Tabs defaultValue="profile" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="profile" className="flex items-center gap-2">
-            <User className="h-4 w-4" /> Hồ sơ
+            <User className="h-4 w-4" /> {t("tabs.profile")}
           </TabsTrigger>
           <TabsTrigger value="currency" className="flex items-center gap-2">
-            <Coins className="h-4 w-4" /> Tiền tệ
+            <Coins className="h-4 w-4" /> {t("tabs.currency")}
           </TabsTrigger>
           <TabsTrigger value="password" className="flex items-center gap-2">
-            <Lock className="h-4 w-4" /> Bảo mật
+            <Lock className="h-4 w-4" /> {t("tabs.password")}
           </TabsTrigger>
         </TabsList>
         
         <TabsContent value="profile" className="mt-6">
           <Card>
             <CardHeader>
-              <CardTitle>Thông tin cá nhân</CardTitle>
+              <CardTitle>{t("profile.title")}</CardTitle>
               <CardDescription>
-                Cập nhật tên hiển thị của bạn
+                {t("profile.description")}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -153,16 +155,16 @@ export default function SettingsPage() {
                     name="name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Họ và tên</FormLabel>
+                        <FormLabel>{t("profile.name")}</FormLabel>
                         <FormControl>
-                          <Input placeholder="Tên của bạn" {...field} disabled={isPending} />
+                          <Input placeholder={t("profile.namePlaceholder")} {...field} disabled={isPending} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                   <Button type="submit" disabled={isPending}>
-                    {isPending ? "Đang lưu..." : "Lưu thay đổi"}
+                    {isPending ? t("profile.saving") : t("profile.save")}
                   </Button>
                 </form>
               </Form>
@@ -173,15 +175,15 @@ export default function SettingsPage() {
         <TabsContent value="currency" className="mt-6">
           <Card>
             <CardHeader>
-              <CardTitle>Đơn vị tiền tệ</CardTitle>
+              <CardTitle>{t("currency.title")}</CardTitle>
               <CardDescription>
-                Chọn đơn vị tiền tệ chính để hiển thị trên toàn ứng dụng
+                {t("currency.description")}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                  Đơn vị tiền tệ
+                  {t("currency.label")}
                 </label>
                 <Select
                   value={currency}
@@ -189,7 +191,7 @@ export default function SettingsPage() {
                   disabled={isPending}
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Chọn đơn vị tiền tệ" />
+                    <SelectValue placeholder={t("currency.placeholder")} />
                   </SelectTrigger>
                   <SelectContent>
                     {CURRENCIES.map((c) => (
@@ -212,12 +214,12 @@ export default function SettingsPage() {
                   htmlFor="convertOld"
                   className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
                 >
-                  Tự động quy đổi các giao dịch và ngân sách cũ theo tỷ giá hiện tại
+                  {t("currency.convertOld")}
                 </label>
               </div>
 
               <p className="text-xs text-muted-foreground">
-                * Lưu ý: Nếu chọn quy đổi, tất cả số tiền trong lịch sử giao dịch và ngân sách sẽ được nhân với tỷ giá hối đoái hiện tại.
+                {t("currency.convertNote")}
               </p>
             </CardContent>
           </Card>
@@ -226,9 +228,9 @@ export default function SettingsPage() {
         <TabsContent value="password" className="mt-6">
           <Card>
             <CardHeader>
-              <CardTitle>Đổi mật khẩu</CardTitle>
+              <CardTitle>{t("password.title")}</CardTitle>
               <CardDescription>
-                Đảm bảo mật khẩu của bạn đủ mạnh để bảo vệ tài khoản
+                {t("password.description")}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -239,7 +241,7 @@ export default function SettingsPage() {
                     name="currentPassword"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Mật khẩu hiện tại</FormLabel>
+                        <FormLabel>{t("password.current")}</FormLabel>
                         <FormControl>
                           <Input type="password" placeholder="******" {...field} disabled={isPending} />
                         </FormControl>
@@ -252,7 +254,7 @@ export default function SettingsPage() {
                     name="newPassword"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Mật khẩu mới</FormLabel>
+                        <FormLabel>{t("password.new")}</FormLabel>
                         <FormControl>
                           <Input type="password" placeholder="******" {...field} disabled={isPending} />
                         </FormControl>
@@ -261,7 +263,7 @@ export default function SettingsPage() {
                     )}
                   />
                   <Button type="submit" disabled={isPending}>
-                    {isPending ? "Đang xử lý..." : "Đổi mật khẩu"}
+                    {isPending ? t("password.submitting") : t("password.submit")}
                   </Button>
                 </form>
               </Form>

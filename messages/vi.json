@@ -301,6 +301,40 @@
       "categoryRequired": "Vui lòng chọn danh mục"
     }
   },
+  "SavingGoals": {
+    "title": "Mục tiêu tiết kiệm",
+    "description": "Thiết lập và theo dõi tiến độ các khoản tiết kiệm của bạn",
+    "addGoal": "Thêm mục tiêu",
+    "addNewGoal": "Thêm mục tiêu mới",
+    "addDescription": "Đặt mục tiêu cụ thể để tiết kiệm tiền cho tương lai.",
+    "form": {
+      "name": "Tên mục tiêu",
+      "namePlaceholder": "Ví dụ: Mua laptop, Đi du lịch...",
+      "targetAmount": "Số tiền mục tiêu (VND)",
+      "targetAmountPlaceholder": "Ví dụ: 20000000",
+      "currentAmount": "Số tiền hiện có (VND)",
+      "currentAmountPlaceholder": "Ví dụ: 5000000",
+      "deadline": "Hạn chót (Không bắt buộc)",
+      "save": "Lưu mục tiêu"
+    },
+    "list": {
+      "loading": "Đang tải...",
+      "noGoals": "Chưa có mục tiêu nào",
+      "noGoalsDesc": "Hãy bắt đầu bằng cách thêm một mục tiêu tiết kiệm mới để theo dõi tiến độ của bạn.",
+      "target": "Mục tiêu: {amount}",
+      "current": "Hiện có: {amount}",
+      "deadline": "Hạn chót: {date}",
+      "remaining": "Bạn cần tiết kiệm thêm {amount}",
+      "completed": "🎉 Chúc mừng! Bạn đã hoàn thành mục tiêu!",
+      "deleteConfirm": "Bạn có chắc chắn muốn xóa mục tiêu này?"
+    },
+    "errors": {
+      "fetchFailed": "Không thể tải danh sách mục tiêu",
+      "nameRequired": "Tên mục tiêu không được để trống",
+      "targetAmountMin": "Số tiền mục tiêu phải lớn hơn 0",
+      "currentAmountMin": "Số tiền hiện có không được âm"
+    }
+  },
   "Auth": {
     "login": {
       "title": "Chào mừng quay trở lại",

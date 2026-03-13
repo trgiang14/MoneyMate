@@ -214,6 +214,57 @@
     "title": "MoneyMate - Smart Financial Management",
     "description": "Modern personal finance management application"
   },
+  "Statistics": {
+    "title": "Statistics",
+    "description": "Track and analyze your income and expenses over time",
+    "anomaly": {
+      "stable": "Stable Spending",
+      "stableDesc": "No unusual spending detected in the last 30 days.",
+      "warning": "Unusual Spending Warning",
+      "warningDesc": "Detected spending significantly higher than your monthly average.",
+      "timesAverage": "{times} times higher than average ({average})"
+    },
+    "habits": {
+      "title": "Spending Habits",
+      "description": "Analyze when you spend most frequently (last 3 months)",
+      "hourly": "By Hour",
+      "weekly": "By Day",
+      "totalSpending": "Total Spending",
+      "atTime": "At {label}",
+      "onDay": "Day: {label}",
+      "insight": "Insight:",
+      "insightDetail": "You usually spend the most around {hour} and on {day} every week.",
+      "noData": "Please enter more transactions for the system to analyze your habits."
+    },
+    "comparison": {
+      "title": "Last 6 Months Spending Comparison",
+      "income": "Income",
+      "expense": "Expense"
+    },
+    "chart": {
+      "title": "Income & Expense Chart",
+      "day": "Day",
+      "month": "Month",
+      "year": "Year",
+      "export": "Export Report",
+      "exportExcel": "Export Excel (.xlsx)",
+      "exportPDF": "Export PDF (.pdf)",
+      "totalIncome": "Total Income",
+      "totalExpense": "Total Expense",
+      "balance": "Balance",
+      "monthYear": "Month {date}",
+      "yearOnly": "Year {date}",
+      "last5Years": "Last 5 Years",
+      "income": "Income",
+      "expense": "Expense"
+    },
+    "pie": {
+      "income": "Income Sources",
+      "expense": "Spending Distribution",
+      "byCategory": "By Category",
+      "noData": "No data available"
+    }
+  },
   "Auth": {
     "login": {
       "title": "Welcome Back",

@@ -12,7 +12,7 @@ import {
 import { Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { getCategoryStats, Period } from "@/actions/stats";
-import { cn } from "@/lib/utils";
+import { useTranslations, useLocale } from "next-intl";
 
 interface CategoryPieChartProps {
   period: Period;
@@ -21,6 +21,8 @@ interface CategoryPieChartProps {
 }
 
 export function CategoryPieChart({ period, date, type }: CategoryPieChartProps) {
+  const t = useTranslations("Statistics.pie");
+  const locale = useLocale();
   const [data, setData] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -43,9 +45,9 @@ export function CategoryPieChart({ period, date, type }: CategoryPieChartProps) 
   }, [period, date, type]);
 
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("vi-VN", {
+    return new Intl.NumberFormat(locale === "vi" ? "vi-VN" : "en-US", {
       style: "currency",
-      currency: "VND",
+      currency: locale === "vi" ? "VND" : "USD",
       maximumFractionDigits: 0,
     }).format(value);
   };
@@ -68,9 +70,9 @@ export function CategoryPieChart({ period, date, type }: CategoryPieChartProps) 
   return (
     <Card className="flex flex-col">
       <CardHeader>
-        <CardTitle>{type === "INCOME" ? "Nguồn thu" : "Phân bổ chi tiêu"}</CardTitle>
+        <CardTitle>{type === "INCOME" ? t("income") : t("expense")}</CardTitle>
         <CardDescription>
-          Theo danh mục
+          {t("byCategory")}
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
@@ -81,7 +83,7 @@ export function CategoryPieChart({ period, date, type }: CategoryPieChartProps) 
             </div>
           ) : data.length === 0 ? (
             <div className="h-full w-full flex flex-col items-center justify-center text-muted-foreground">
-              <p>Chưa có dữ liệu</p>
+              <p>{t("noData")}</p>
             </div>
           ) : (
             <ResponsiveContainer width="100%" height="100%">

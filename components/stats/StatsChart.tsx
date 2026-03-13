@@ -12,7 +12,7 @@ import {
   ResponsiveContainer 
 } from "recharts";
 import { format, addMonths, subMonths, addYears, subYears } from "date-fns";
-import { vi } from "date-fns/locale";
+import { vi, enUS } from "date-fns/locale";
 import { ChevronLeft, ChevronRight, Loader2, Download } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -28,8 +28,12 @@ import { getStats, Period } from "@/actions/stats";
 import { cn } from "@/lib/utils";
 import { CategoryPieChart } from "./CategoryPieChart";
 import { exportToExcel, exportToPDF } from "@/lib/export";
+import { useTranslations, useLocale } from "next-intl";
 
 export function StatsChart() {
+  const t = useTranslations("Statistics.chart");
+  const locale = useLocale();
+  const dateLocale = locale === "vi" ? vi : enUS;
   const [period, setPeriod] = useState<Period>("day");
   const [date, setDate] = useState(new Date());
   const [data, setData] = useState<any[]>([]);
@@ -66,17 +70,17 @@ export function StatsChart() {
   };
 
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("vi-VN", {
+    return new Intl.NumberFormat(locale === "vi" ? "vi-VN" : "en-US", {
       style: "currency",
-      currency: "VND",
+      currency: locale === "vi" ? "VND" : "USD",
       maximumFractionDigits: 0,
     }).format(value);
   };
 
   const getTitle = () => {
-    if (period === "day") return `Tháng ${format(date, "MM/yyyy", { locale: vi })}`;
-    if (period === "month") return `Năm ${format(date, "yyyy", { locale: vi })}`;
-    if (period === "year") return "5 Năm gần nhất";
+    if (period === "day") return t("monthYear", { date: format(date, "MM/yyyy", { locale: dateLocale }) });
+    if (period === "month") return t("yearOnly", { date: format(date, "yyyy", { locale: dateLocale }) });
+    if (period === "year") return t("last5Years");
     return "";
   };
 
@@ -100,9 +104,9 @@ export function StatsChart() {
         <div className="flex items-center gap-4 w-full sm:w-auto">
           <Tabs value={period} onValueChange={(v) => setPeriod(v as Period)} className="w-full sm:w-auto">
             <TabsList className="grid w-full grid-cols-3 sm:w-auto">
-              <TabsTrigger value="day">Ngày</TabsTrigger>
-              <TabsTrigger value="month">Tháng</TabsTrigger>
-              <TabsTrigger value="year">Năm</TabsTrigger>
+              <TabsTrigger value="day">{t("day")}</TabsTrigger>
+              <TabsTrigger value="month">{t("month")}</TabsTrigger>
+              <TabsTrigger value="year">{t("year")}</TabsTrigger>
             </TabsList>
           </Tabs>
 
@@ -110,15 +114,15 @@ export function StatsChart() {
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="gap-2">
                 <Download className="h-4 w-4" />
-                <span className="hidden sm:inline">Xuất báo cáo</span>
+                <span className="hidden sm:inline">{t("export")}</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={handleExportExcel}>
-                Xuất Excel (.xlsx)
+                {t("exportExcel")}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={handleExportPDF}>
-                Xuất PDF (.pdf)
+                {t("exportPDF")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -141,7 +145,7 @@ export function StatsChart() {
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tổng thu nhập</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("totalIncome")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-emerald-600">
@@ -151,7 +155,7 @@ export function StatsChart() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tổng chi tiêu</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("totalExpense")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-destructive">
@@ -161,7 +165,7 @@ export function StatsChart() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Số dư</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("balance")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className={cn(
@@ -177,7 +181,7 @@ export function StatsChart() {
       {/* Main Bar Chart */}
       <Card className="col-span-4">
         <CardHeader>
-          <CardTitle>Biểu đồ thu chi</CardTitle>
+          <CardTitle>{t("title")}</CardTitle>
         </CardHeader>
         <CardContent className="pl-2">
           <div className="h-[400px] w-full">
@@ -202,16 +206,16 @@ export function StatsChart() {
                     tickLine={false}
                     axisLine={false}
                     tickFormatter={(value) => 
-                      new Intl.NumberFormat("vi-VN", { notation: "compact" }).format(value)
+                      new Intl.NumberFormat(locale === "vi" ? "vi-VN" : "en-US", { notation: "compact" }).format(value)
                     }
                   />
                   <Tooltip 
-                    formatter={(value: number | undefined) => [formatCurrency(value ?? 0), "VND"]}
+                    formatter={(value: number | undefined) => [formatCurrency(value ?? 0), locale === "vi" ? "VND" : "USD"]}
                     labelStyle={{ color: "#333" }}
                   />
                   <Legend />
-                  <Bar dataKey="income" name="Thu nhập" fill="#10b981" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="expense" name="Chi tiêu" fill="#ef4444" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="income" name={t("income")} fill="#10b981" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="expense" name={t("expense")} fill="#ef4444" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             )}

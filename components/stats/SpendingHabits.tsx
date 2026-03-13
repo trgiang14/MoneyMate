@@ -11,14 +11,15 @@ import {
   CartesianGrid, 
   Tooltip, 
   ResponsiveContainer,
-  Cell,
-  LineChart,
-  Line
+  Cell
 } from "recharts";
 import { Loader2, Clock, Calendar } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useTranslations, useLocale } from "next-intl";
 
 export function SpendingHabits() {
+  const t = useTranslations("Statistics.habits");
+  const locale = useLocale();
   const [data, setData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -47,23 +48,30 @@ export function SpendingHabits() {
   if (!data) return null;
 
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(value);
+    return new Intl.NumberFormat(locale === "vi" ? "vi-VN" : "en-US", { 
+      style: "currency", 
+      currency: locale === "vi" ? "VND" : "USD", 
+      maximumFractionDigits: 0 
+    }).format(value);
   };
+
+  const maxHourly = data.hourly.reduce((max: any, curr: any) => curr.amount > max.amount ? curr : max, data.hourly[0]);
+  const maxWeekly = data.weekly.reduce((max: any, curr: any) => curr.amount > max.amount ? curr : max, data.weekly[0]);
 
   return (
     <Card className="col-span-1 shadow-sm">
       <CardHeader>
-        <CardTitle className="text-xl font-bold">Thói quen chi tiêu</CardTitle>
-        <CardDescription>Phân tích thời điểm bạn thường xuyên chi tiêu nhất (3 tháng qua)</CardDescription>
+        <CardTitle className="text-xl font-bold">{t("title")}</CardTitle>
+        <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="hourly" className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-4">
             <TabsTrigger value="hourly" className="flex items-center gap-2">
-              <Clock className="h-4 w-4" /> Theo giờ
+              <Clock className="h-4 w-4" /> {t("hourly")}
             </TabsTrigger>
             <TabsTrigger value="weekly" className="flex items-center gap-2">
-              <Calendar className="h-4 w-4" /> Theo thứ
+              <Calendar className="h-4 w-4" /> {t("weekly")}
             </TabsTrigger>
           </TabsList>
 
@@ -81,8 +89,8 @@ export function SpendingHabits() {
                   hide 
                 />
                 <Tooltip 
-                  formatter={(value: number) => [formatCurrency(value), "Tổng chi"]}
-                  labelFormatter={(label) => `Lúc ${label}`}
+                  formatter={(value: number) => [formatCurrency(value), t("totalSpending")]}
+                  labelFormatter={(label) => t("atTime", { label })}
                   contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
                 />
                 <Bar dataKey="amount" radius={[4, 4, 0, 0]}>
@@ -112,8 +120,8 @@ export function SpendingHabits() {
                   hide 
                 />
                 <Tooltip 
-                  formatter={(value: number) => [formatCurrency(value), "Tổng chi"]}
-                  labelFormatter={(label) => `Thứ: ${label}`}
+                  formatter={(value: number) => [formatCurrency(value), t("totalSpending")]}
+                  labelFormatter={(label) => t("onDay", { label })}
                   contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
                 />
                 <Bar dataKey="amount" radius={[4, 4, 0, 0]}>
@@ -132,13 +140,13 @@ export function SpendingHabits() {
         
         <div className="mt-6 p-4 bg-muted/50 rounded-xl border border-border">
           <p className="text-sm font-medium flex items-center gap-2">
-            💡 <span className="text-foreground">Nhận xét:</span>
+            💡 <span className="text-foreground">{t("insight")}</span>
           </p>
           <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-            {data.hourly.reduce((max: any, curr: any) => curr.amount > max.amount ? curr : max, data.hourly[0]).amount > 0 ? (
-              <>Bạn thường chi tiêu nhiều nhất vào khoảng <b>{data.hourly.reduce((max: any, curr: any) => curr.amount > max.amount ? curr : max, data.hourly[0]).hour}</b> và vào <b>{data.weekly.reduce((max: any, curr: any) => curr.amount > max.amount ? curr : max, data.weekly[0]).day}</b> hàng tuần.</>
+            {maxHourly.amount > 0 ? (
+              t("insightDetail", { hour: maxHourly.hour, day: maxWeekly.day })
             ) : (
-              <>Hãy nhập thêm giao dịch để hệ thống phân tích thói quen của bạn.</>
+              t("noData")
             )}
           </p>
         </div>

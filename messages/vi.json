@@ -214,6 +214,57 @@
     "title": "MoneyMate - Quản lý tài chính thông minh",
     "description": "Ứng dụng quản lý thu chi cá nhân hiện đại"
   },
+  "Statistics": {
+    "title": "Thống kê",
+    "description": "Theo dõi và phân tích thu chi của bạn theo thời gian",
+    "anomaly": {
+      "stable": "Chi tiêu ổn định",
+      "stableDesc": "Không phát hiện chi tiêu bất thường trong 30 ngày qua.",
+      "warning": "Cảnh báo chi tiêu bất thường",
+      "warningDesc": "Phát hiện các khoản chi cao hơn đáng kể so với mức trung bình hàng tháng của bạn.",
+      "timesAverage": "Cao gấp {times} lần trung bình ({average})"
+    },
+    "habits": {
+      "title": "Thói quen chi tiêu",
+      "description": "Phân tích thời điểm bạn thường xuyên chi tiêu nhất (3 tháng qua)",
+      "hourly": "Theo giờ",
+      "weekly": "Theo thứ",
+      "totalSpending": "Tổng chi",
+      "atTime": "Lúc {label}",
+      "onDay": "Thứ: {label}",
+      "insight": "Nhận xét:",
+      "insightDetail": "Bạn thường chi tiêu nhiều nhất vào khoảng {hour} và vào {day} hàng tuần.",
+      "noData": "Hãy nhập thêm giao dịch để hệ thống phân tích thói quen của bạn."
+    },
+    "comparison": {
+      "title": "So sánh chi tiêu 6 tháng gần nhất",
+      "income": "Thu nhập",
+      "expense": "Chi tiêu"
+    },
+    "chart": {
+      "title": "Biểu đồ thu chi",
+      "day": "Ngày",
+      "month": "Tháng",
+      "year": "Năm",
+      "export": "Xuất báo cáo",
+      "exportExcel": "Xuất Excel (.xlsx)",
+      "exportPDF": "Xuất PDF (.pdf)",
+      "totalIncome": "Tổng thu nhập",
+      "totalExpense": "Tổng chi tiêu",
+      "balance": "Số dư",
+      "monthYear": "Tháng {date}",
+      "yearOnly": "Năm {date}",
+      "last5Years": "5 Năm gần nhất",
+      "income": "Thu nhập",
+      "expense": "Chi tiêu"
+    },
+    "pie": {
+      "income": "Nguồn thu",
+      "expense": "Phân bổ chi tiêu",
+      "byCategory": "Theo danh mục",
+      "noData": "Chưa có dữ liệu"
+    }
+  },
   "Auth": {
     "login": {
       "title": "Chào mừng quay trở lại",

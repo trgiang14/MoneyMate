@@ -5,10 +5,14 @@ import { AlertTriangle, Loader2, Info } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { detectAnomalies } from "@/actions/stats";
 import { format } from "date-fns";
-import { vi } from "date-fns/locale";
+import { vi, enUS } from "date-fns/locale";
 import { Badge } from "@/components/ui/badge";
+import { useTranslations, useLocale } from "next-intl";
 
 export function AnomalyDetection() {
+  const t = useTranslations("Statistics.anomaly");
+  const locale = useLocale();
+  const dateLocale = locale === "vi" ? vi : enUS;
   const [anomalies, setAnomalies] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -30,9 +34,9 @@ export function AnomalyDetection() {
   }, []);
 
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("vi-VN", {
+    return new Intl.NumberFormat(locale === "vi" ? "vi-VN" : "en-US", {
       style: "currency",
-      currency: "VND",
+      currency: locale === "vi" ? "VND" : "USD",
       maximumFractionDigits: 0,
     }).format(value);
   };
@@ -53,10 +57,10 @@ export function AnomalyDetection() {
         <CardHeader className="pb-2">
           <div className="flex items-center gap-2 text-emerald-700">
             <Info className="h-5 w-5" />
-            <CardTitle className="text-lg">Chi tiêu ổn định</CardTitle>
+            <CardTitle className="text-lg">{t("stable")}</CardTitle>
           </div>
           <CardDescription className="text-emerald-600">
-            Không phát hiện chi tiêu bất thường trong 30 ngày qua.
+            {t("stableDesc")}
           </CardDescription>
         </CardHeader>
       </Card>
@@ -68,10 +72,10 @@ export function AnomalyDetection() {
       <CardHeader>
         <div className="flex items-center gap-2 text-amber-600">
           <AlertTriangle className="h-5 w-5" />
-          <CardTitle className="text-lg">Cảnh báo chi tiêu bất thường</CardTitle>
+          <CardTitle className="text-lg">{t("warning")}</CardTitle>
         </div>
         <CardDescription>
-          Phát hiện các khoản chi cao hơn đáng kể so với mức trung bình hàng tháng của bạn.
+          {t("warningDesc")}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -84,12 +88,15 @@ export function AnomalyDetection() {
               <div className="flex items-center gap-2">
                 <span className="font-bold text-amber-900">{item.category?.name}</span>
                 <Badge variant="outline" className="text-[10px] bg-amber-50 text-amber-700 border-amber-200">
-                  {format(new Date(item.date), "dd/MM/yyyy")}
+                  {format(new Date(item.date), "dd/MM/yyyy", { locale: dateLocale })}
                 </Badge>
               </div>
               <p className="text-sm text-muted-foreground">{item.description}</p>
               <p className="text-xs text-amber-600 font-medium">
-                Cao gấp {(item.amount / item.average).toFixed(1)} lần trung bình ({formatCurrency(item.average)})
+                {t("timesAverage", { 
+                  times: (item.amount / item.average).toFixed(1),
+                  average: formatCurrency(item.average)
+                })}
               </p>
             </div>
             <div className="text-right">

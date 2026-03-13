@@ -9,15 +9,16 @@ import {
   CartesianGrid, 
   Tooltip, 
   Legend, 
-  ResponsiveContainer,
-  LineChart,
-  Line
+  ResponsiveContainer
 } from "recharts";
 import { Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getMonthlyComparison } from "@/actions/stats";
+import { useTranslations, useLocale } from "next-intl";
 
 export function MonthlyComparisonChart() {
+  const t = useTranslations("Statistics.comparison");
+  const locale = useLocale();
   const [data, setData] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -39,9 +40,9 @@ export function MonthlyComparisonChart() {
   }, []);
 
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("vi-VN", {
+    return new Intl.NumberFormat(locale === "vi" ? "vi-VN" : "en-US", {
       style: "currency",
-      currency: "VND",
+      currency: locale === "vi" ? "VND" : "USD",
       maximumFractionDigits: 0,
     }).format(value);
   };
@@ -49,7 +50,7 @@ export function MonthlyComparisonChart() {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>So sánh chi tiêu 6 tháng gần nhất</CardTitle>
+        <CardTitle>{t("title")}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="h-[400px] w-full">
@@ -74,7 +75,7 @@ export function MonthlyComparisonChart() {
                   tickLine={false}
                   axisLine={false}
                   tickFormatter={(value) => 
-                    new Intl.NumberFormat("vi-VN", { notation: "compact" }).format(value)
+                    new Intl.NumberFormat(locale === "vi" ? "vi-VN" : "en-US", { notation: "compact" }).format(value)
                   }
                 />
                 <Tooltip 
@@ -82,8 +83,8 @@ export function MonthlyComparisonChart() {
                   labelStyle={{ color: "#333" }}
                 />
                 <Legend />
-                <Bar dataKey="income" name="Thu nhập" fill="#10b981" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="expense" name="Chi tiêu" fill="#ef4444" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="income" name={t("income")} fill="#10b981" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="expense" name={t("expense")} fill="#ef4444" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           )}

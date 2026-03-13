@@ -131,7 +131,10 @@ export const checkAndAwardBadges = async () => {
 
   if (earnedBadges.length > 0) {
     revalidatePath("/dashboard");
-    return { success: `Chúc mừng! Bạn đã nhận được huy hiệu: ${earnedBadges.join(", ")}` };
+    return { 
+      success: `Chúc mừng! Bạn đã nhận được huy hiệu: ${earnedBadges.join(", ")}`,
+      earnedBadges 
+    };
   }
 
   return { success: "Đã kiểm tra huy hiệu" };

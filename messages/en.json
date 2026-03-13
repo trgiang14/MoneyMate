@@ -485,6 +485,33 @@
       "backToList": "Back to group list"
     }
   },
+  "Badges": {
+    "title": "Achievement Badges",
+    "description": "Track your financial milestones and achievements",
+    "collection": "Badge Collection ({earned}/{total})",
+    "collectionDesc": "Complete financial challenges to unlock all badges",
+    "loading": "Loading badges...",
+    "earnedAt": "Earned on {date}",
+    "congrats": "Congratulations! You've earned the badge: {badges}",
+    "items": {
+      "first-saving-goal": {
+        "name": "First Savings",
+        "description": "Complete your first saving goal"
+      },
+      "consistency-7-days": {
+        "name": "Diligent User",
+        "description": "Record expenses for 7 consecutive days"
+      },
+      "budget-master": {
+        "name": "Steel Discipline",
+        "description": "Stay within all budgets for a month"
+      },
+      "super-saver": {
+        "name": "Super Saver",
+        "description": "Save 50% of your total income in a month"
+      }
+    }
+  },
   "Auth": {
     "login": {
       "title": "Welcome Back",

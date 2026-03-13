@@ -485,6 +485,33 @@
       "backToList": "Quay lại danh sách nhóm"
     }
   },
+  "Badges": {
+    "title": "Huy hiệu thành tựu",
+    "description": "Theo dõi những cột mốc và thành tích tài chính của bạn",
+    "collection": "Bộ sưu tập huy hiệu ({earned}/{total})",
+    "collectionDesc": "Hoàn thành các thử thách tài chính để mở khóa toàn bộ huy hiệu",
+    "loading": "Đang tải huy hiệu...",
+    "earnedAt": "Đạt được ngày {date}",
+    "congrats": "Chúc mừng! Bạn đã nhận được huy hiệu: {badges}",
+    "items": {
+      "first-saving-goal": {
+        "name": "Tiết kiệm đầu tay",
+        "description": "Hoàn thành mục tiêu tiết kiệm đầu tiên của bạn"
+      },
+      "consistency-7-days": {
+        "name": "Người dùng chăm chỉ",
+        "description": "Nhập chi tiêu liên tiếp trong 7 ngày"
+      },
+      "budget-master": {
+        "name": "Kỷ luật thép",
+        "description": "Không vượt quá bất kỳ ngân sách nào trong một tháng"
+      },
+      "super-saver": {
+        "name": "Siêu tiết kiệm",
+        "description": "Tiết kiệm được 50% tổng thu nhập trong một tháng"
+      }
+    }
+  },
   "Auth": {
     "login": {
       "title": "Chào mừng quay trở lại",

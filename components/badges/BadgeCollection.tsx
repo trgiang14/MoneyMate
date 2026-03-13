@@ -7,7 +7,8 @@ import { getUserBadges, checkAndAwardBadges } from "@/actions/badges";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { format } from "date-fns";
-import { vi } from "date-fns/locale";
+import { vi, enUS } from "date-fns/locale";
+import { useTranslations, useLocale } from "next-intl";
 
 const ICON_MAP: Record<string, any> = {
   Target,
@@ -18,6 +19,10 @@ const ICON_MAP: Record<string, any> = {
 };
 
 export function BadgeCollection() {
+  const t = useTranslations("Badges");
+  const locale = useLocale();
+  const dateLocale = locale === "vi" ? vi : enUS;
+
   const [badgesWithStatus, setBadgesWithStatus] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -25,8 +30,22 @@ export function BadgeCollection() {
     try {
       // Đầu tiên kiểm tra và trao huy hiệu mới (nếu có)
       const checkResult = await checkAndAwardBadges();
-      if (checkResult.success && checkResult.success.includes("Chúc mừng")) {
-        toast.success(checkResult.success);
+      if (checkResult.success && checkResult.earnedBadges && checkResult.earnedBadges.length > 0) {
+        const badgeNames = checkResult.earnedBadges
+          .map((name: string) => {
+            // Tìm ID tương ứng với tên tiếng Việt để dịch
+            const badgeId = Object.entries({
+              "Tiết kiệm đầu tay": "first-saving-goal",
+              "Người dùng chăm chỉ": "consistency-7-days",
+              "Kỷ luật thép": "budget-master",
+              "Siêu tiết kiệm": "super-saver"
+            }).find(([vnName]) => vnName === name)?.[1];
+            
+            return badgeId ? t(`items.${badgeId}.name`) : name;
+          })
+          .join(", ");
+        
+        toast.success(t("congrats", { badges: badgeNames }));
       }
 
       // Sau đó lấy danh sách huy hiệu với trạng thái
@@ -44,7 +63,7 @@ export function BadgeCollection() {
   }, []);
 
   if (isLoading) {
-    return <div className="text-center py-4">Đang tải huy hiệu...</div>;
+    return <div className="text-center py-4">{t("loading")}</div>;
   }
 
   const earnedCount = badgesWithStatus.filter(b => b.isEarned).length;
@@ -54,16 +73,19 @@ export function BadgeCollection() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Trophy className="h-5 w-5 text-yellow-500" />
-          Bộ sưu tập huy hiệu ({earnedCount}/{badgesWithStatus.length})
+          {t("collection", { earned: earnedCount, total: badgesWithStatus.length })}
         </CardTitle>
         <CardDescription>
-          Hoàn thành các thử thách tài chính để mở khóa toàn bộ huy hiệu
+          {t("collectionDesc")}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {badgesWithStatus.map((item) => {
             const IconComponent = ICON_MAP[item.badge.icon] || Trophy;
+            const badgeName = t(`items.${item.badge.id}.name`, { defaultValue: item.badge.name });
+            const badgeDescription = t(`items.${item.badge.id}.description`, { defaultValue: item.badge.description });
+
             return (
               <div 
                 key={item.badge.id} 
@@ -94,16 +116,16 @@ export function BadgeCollection() {
                   "text-sm font-bold leading-tight",
                   !item.isEarned ? "text-muted-foreground" : "text-foreground"
                 )}>
-                  {item.badge.name}
+                  {badgeName}
                 </p>
                 
                 <p className="text-[10px] text-muted-foreground mt-1 line-clamp-2 px-1">
-                  {item.badge.description}
+                  {badgeDescription}
                 </p>
 
                 {item.isEarned && item.earnedAt && (
                   <p className="text-[9px] text-emerald-600 mt-2 font-medium">
-                    Đạt được ngày {format(new Date(item.earnedAt), "dd/MM/yyyy", { locale: vi })}
+                    {t("earnedAt", { date: format(new Date(item.earnedAt), "dd/MM/yyyy", { locale: dateLocale }) })}
                   </p>
                 )}
               </div>

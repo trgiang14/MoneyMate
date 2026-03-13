@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations, useLocale } from "next-intl";
 import { useState, useEffect } from "react";
 import { 
   Plus, 
@@ -21,7 +22,7 @@ import {
   Calculator
 } from "lucide-react";
 import { format } from "date-fns";
-import { vi } from "date-fns/locale";
+import { vi, enUS } from "date-fns/locale";
 import { toast } from "sonner";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -72,6 +73,10 @@ import { getCategories } from "@/actions/categories";
 import { cn } from "@/lib/utils";
 
 export default function GroupDetailPage() {
+  const t = useTranslations("Groups");
+  const tCat = useTranslations("Categories");
+  const locale = useLocale();
+  const dateLocale = locale === "vi" ? vi : enUS;
   const params = useParams();
   const groupId = params.id as string;
 
@@ -133,7 +138,7 @@ export default function GroupDetailPage() {
       setBalances(balancesData);
       setCategories(catData.filter((c: any) => c.type === "EXPENSE"));
     } catch (error) {
-      toast.error("Không thể tải dữ liệu nhóm");
+      toast.error(t("errors.fetchDetailFailed"));
     } finally {
       setIsLoading(false);
     }
@@ -152,7 +157,7 @@ export default function GroupDetailPage() {
     } else if (values.splitType === "PERCENTAGE") {
       const totalPercent = values.splits.reduce((sum, s) => sum + (s.percentage || 0), 0);
       if (Math.abs(totalPercent - 100) > 0.1) {
-        toast.error("Tổng tỷ lệ phải bằng 100%");
+        toast.error(t("errors.totalPercentError"));
         return;
       }
       finalSplits = values.splits.map(s => ({ 
@@ -162,7 +167,7 @@ export default function GroupDetailPage() {
     } else if (values.splitType === "EXACT") {
       const totalExact = values.splits.reduce((sum, s) => sum + (s.amount || 0), 0);
       if (Math.abs(totalExact - values.amount) > 1) {
-        toast.error("Tổng số tiền chia phải bằng tổng số tiền giao dịch");
+        toast.error(t("errors.totalAmountError"));
         return;
       }
     }
@@ -183,7 +188,7 @@ export default function GroupDetailPage() {
   };
 
   const onDelete = async (id: string) => {
-    if (confirm("Bạn có chắc chắn muốn xóa giao dịch này?")) {
+    if (confirm(t("deleteConfirm"))) {
       const result = await deleteGroupTransaction(id, groupId);
       if (result.error) {
         toast.error(result.error);
@@ -195,7 +200,7 @@ export default function GroupDetailPage() {
   };
 
   const onRemoveMember = async (userId: string) => {
-    if (confirm("Bạn có chắc chắn muốn xóa thành viên này khỏi nhóm?")) {
+    if (confirm(t("leaveConfirm"))) {
       const result = await removeMember(groupId, userId);
       if (result.error) {
         toast.error(result.error);
@@ -225,9 +230,9 @@ export default function GroupDetailPage() {
   if (!group) {
     return (
       <div className="text-center py-12">
-        <h2 className="text-2xl font-bold">Không tìm thấy nhóm</h2>
+        <h2 className="text-2xl font-bold">{t("errors.groupNotFound")}</h2>
         <Link href="/groups">
-          <Button variant="link">Quay lại danh sách nhóm</Button>
+          <Button variant="link">{t("errors.backToList")}</Button>
         </Link>
       </div>
     );
@@ -243,21 +248,21 @@ export default function GroupDetailPage() {
         </Link>
         <div>
           <h2 className="text-3xl font-bold tracking-tight">{group.name}</h2>
-          <p className="text-muted-foreground">{group.description}</p>
+          <p className="text-muted-foreground">{group.description || t("noDescription")}</p>
         </div>
         <div className="ml-auto flex gap-2">
           <Dialog open={isManageMembersOpen} onOpenChange={setIsManageMembersOpen}>
             <DialogTrigger asChild>
               <Button variant="outline">
                 <Users className="mr-2 h-4 w-4" />
-                Thành viên
+                {t("manageMembers")}
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Quản lý thành viên</DialogTitle>
+                <DialogTitle>{t("manageMembers")}</DialogTitle>
                 <DialogDescription>
-                  Danh sách thành viên trong nhóm. Mã mời: <code className="bg-muted px-1 rounded">{group.inviteCode}</code>
+                  {t("membersList", { code: group.inviteCode })}
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4 py-4">
@@ -293,14 +298,14 @@ export default function GroupDetailPage() {
             <DialogTrigger asChild>
               <Button>
                 <Plus className="mr-2 h-4 w-4" />
-                Thêm chi tiêu
+                {t("addExpense")}
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[550px] max-h-[90vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle>Chi tiêu nhóm mới</DialogTitle>
+                <DialogTitle>{t("newExpenseTitle")}</DialogTitle>
                 <DialogDescription>
-                  Nhập khoản chi và chọn cách thức chia tiền.
+                  {t("newExpenseDesc")}
                 </DialogDescription>
               </DialogHeader>
               <Form {...form}>
@@ -311,7 +316,7 @@ export default function GroupDetailPage() {
                       name="amount"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Số tiền</FormLabel>
+                          <FormLabel>{t("amount")}</FormLabel>
                           <FormControl>
                             <Input type="number" placeholder="0" {...field} />
                           </FormControl>
@@ -324,17 +329,17 @@ export default function GroupDetailPage() {
                       name="categoryId"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Danh mục</FormLabel>
+                          <FormLabel>{t("category")}</FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
                               <SelectTrigger>
-                                <SelectValue placeholder="Chọn danh mục" />
+                                <SelectValue placeholder={t("categoryPlaceholder")} />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
                               {categories.map((category) => (
                                 <SelectItem key={category.id} value={category.id}>
-                                  {category.name}
+                                  {tCat(`default.${category.name}`, { defaultValue: category.name })}
                                 </SelectItem>
                               ))}
                             </SelectContent>
@@ -350,11 +355,11 @@ export default function GroupDetailPage() {
                     name="payerId"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Người thanh toán</FormLabel>
+                        <FormLabel>{t("payer")}</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
                             <SelectTrigger>
-                              <SelectValue placeholder="Ai đã trả tiền?" />
+                              <SelectValue placeholder={t("payerPlaceholder")} />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
@@ -375,9 +380,9 @@ export default function GroupDetailPage() {
                     name="description"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Mô tả</FormLabel>
+                        <FormLabel>{t("descriptionLabel")}</FormLabel>
                         <FormControl>
-                          <Input placeholder="Ví dụ: Ăn tối, Tiền điện..." {...field} />
+                          <Input placeholder={t("descriptionPlaceholder")} {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -385,7 +390,7 @@ export default function GroupDetailPage() {
                   />
 
                   <div className="space-y-3">
-                    <FormLabel>Cách chia tiền</FormLabel>
+                    <FormLabel>{t("splitMethod")}</FormLabel>
                     <Tabs 
                       defaultValue="EQUAL" 
                       value={splitType} 
@@ -393,13 +398,13 @@ export default function GroupDetailPage() {
                     >
                       <TabsList className="grid w-full grid-cols-3">
                         <TabsTrigger value="EQUAL" className="flex items-center gap-1">
-                          <Equal className="h-3 w-3" /> Chia đều
+                          <Equal className="h-3 w-3" /> {t("splitEqual")}
                         </TabsTrigger>
                         <TabsTrigger value="EXACT" className="flex items-center gap-1">
-                          <Calculator className="h-3 w-3" /> Số tiền
+                          <Calculator className="h-3 w-3" /> {t("splitExact")}
                         </TabsTrigger>
                         <TabsTrigger value="PERCENTAGE" className="flex items-center gap-1">
-                          <Percent className="h-3 w-3" /> Tỷ lệ
+                          <Percent className="h-3 w-3" /> {t("splitPercentage")}
                         </TabsTrigger>
                       </TabsList>
                     </Tabs>
@@ -452,7 +457,7 @@ export default function GroupDetailPage() {
                   </div>
 
                   <DialogFooter>
-                    <Button type="submit" className="w-full">Lưu chi tiêu</Button>
+                    <Button type="submit" className="w-full">{t("saveExpense")}</Button>
                   </DialogFooter>
                 </form>
               </Form>
@@ -467,14 +472,14 @@ export default function GroupDetailPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <CreditCard className="h-5 w-5 text-primary" />
-                Lịch sử chi tiêu nhóm
+                {t("history")}
               </CardTitle>
             </CardHeader>
             <CardContent>
               {transactions.length === 0 ? (
                 <div className="text-center py-12 text-muted-foreground">
                   <Info className="h-12 w-12 mx-auto mb-4 opacity-20" />
-                  <p>Chưa có giao dịch nào trong nhóm này.</p>
+                  <p>{t("noTransactions")}</p>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -487,14 +492,16 @@ export default function GroupDetailPage() {
                         <div>
                           <p className="font-bold">{t.description}</p>
                           <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                            <span>{t.payer.name} đã trả</span>
+                            <span>{t("paidBy", { name: t.payer.name })}</span>
                             <span>•</span>
-                            <span>{format(new Date(t.date), "dd/MM/yyyy", { locale: vi })}</span>
+                            <span>{format(new Date(t.date), "dd/MM/yyyy", { locale: dateLocale })}</span>
                             <span>•</span>
-                            <Badge variant="outline" className="text-[10px]">{t.category.name}</Badge>
+                            <Badge variant="outline" className="text-[10px]">
+                              {tCat(`default.${t.category.name}`, { defaultValue: t.category.name })}
+                            </Badge>
                           </div>
                           <div className="mt-2 flex flex-wrap gap-1">
-                            <span className="text-[10px] text-muted-foreground mr-1">Chia cho:</span>
+                            <span className="text-[10px] text-muted-foreground mr-1">{t("splitFor")}</span>
                             {t.splits.map((s: any) => (
                               <Badge key={s.id} variant="secondary" className="text-[9px] px-1 py-0">
                                 {s.user.name} ({formatCurrency(s.amount)})
@@ -524,10 +531,10 @@ export default function GroupDetailPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Users className="h-5 w-5 text-primary" />
-                Số dư thành viên
+                {t("balances")}
               </CardTitle>
               <CardDescription>
-                Ai đang nợ ai bao nhiêu?
+                {t("balanceDesc")}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -548,7 +555,7 @@ export default function GroupDetailPage() {
                       {b.balance >= 0 ? "+" : ""}{formatCurrency(b.balance)}
                     </p>
                     <p className="text-[10px] text-muted-foreground">
-                      {b.balance >= 0 ? "Được nhận lại" : "Phải trả thêm"}
+                      {b.balance >= 0 ? t("getBack") : t("payMore")}
                     </p>
                   </div>
                 </div>
@@ -556,7 +563,7 @@ export default function GroupDetailPage() {
             </CardContent>
             <CardFooter className="bg-slate-50 text-[11px] text-muted-foreground p-3 flex gap-2">
               <AlertCircle className="h-3 w-3 shrink-0" />
-              <p>Số dư dương (+) nghĩa là người đó đã trả nhiều hơn phần của mình. Số dư âm (-) nghĩa là người đó đang nợ nhóm.</p>
+              <p>{t("balanceInfo")}</p>
             </CardFooter>
           </Card>
         </div>

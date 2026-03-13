@@ -483,26 +483,26 @@ export default function GroupDetailPage() {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {transactions.map((t) => (
-                    <div key={t.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-slate-50 transition-colors">
+                  {transactions.map((transaction) => (
+                    <div key={transaction.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-slate-50 transition-colors">
                       <div className="flex items-start gap-4">
                         <div className="p-2 bg-primary/10 rounded-full">
                           <CreditCard className="h-5 w-5 text-primary" />
                         </div>
                         <div>
-                          <p className="font-bold">{t.description}</p>
+                          <p className="font-bold">{transaction.description}</p>
                           <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                            <span>{t("paidBy", { name: t.payer.name })}</span>
+                            <span>{t("paidBy", { name: transaction.payer.name })}</span>
                             <span>•</span>
-                            <span>{format(new Date(t.date), "dd/MM/yyyy", { locale: dateLocale })}</span>
+                            <span>{format(new Date(transaction.date), "dd/MM/yyyy", { locale: dateLocale })}</span>
                             <span>•</span>
                             <Badge variant="outline" className="text-[10px]">
-                              {tCat(`default.${t.category?.name}`, { defaultValue: t.category?.name })}
+                              {tCat(`default.${transaction.category?.name}`, { defaultValue: transaction.category?.name })}
                             </Badge>
                           </div>
                           <div className="mt-2 flex flex-wrap gap-1">
                             <span className="text-[10px] text-muted-foreground mr-1">{t("splitFor")}</span>
-                            {t.splits.map((s: any) => (
+                            {transaction.splits.map((s: any) => (
                               <Badge key={s.id} variant="secondary" className="text-[9px] px-1 py-0">
                                 {s.user.name} ({formatCurrency(s.amount)})
                               </Badge>
@@ -512,9 +512,9 @@ export default function GroupDetailPage() {
                       </div>
                       <div className="flex items-center gap-4">
                         <div className="text-right">
-                          <p className="text-lg font-bold text-destructive">-{formatCurrency(t.amount)}</p>
+                          <p className="text-lg font-bold text-destructive">-{formatCurrency(transaction.amount)}</p>
                         </div>
-                        <Button variant="ghost" size="icon" onClick={() => onDelete(t.id)}>
+                        <Button variant="ghost" size="icon" onClick={() => onDelete(transaction.id)}>
                           <Trash2 className="h-4 w-4 text-destructive" />
                         </Button>
                       </div>

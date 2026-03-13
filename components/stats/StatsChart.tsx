@@ -70,9 +70,9 @@ export function StatsChart() {
   };
 
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat(locale === "vi" ? "vi-VN" : "en-US", {
+    return new Intl.NumberFormat("vi-VN", {
       style: "currency",
-      currency: locale === "vi" ? "VND" : "USD",
+      currency: "VND",
       maximumFractionDigits: 0,
     }).format(value);
   };
@@ -206,11 +206,11 @@ export function StatsChart() {
                     tickLine={false}
                     axisLine={false}
                     tickFormatter={(value) => 
-                      new Intl.NumberFormat(locale === "vi" ? "vi-VN" : "en-US", { notation: "compact" }).format(value)
+                      new Intl.NumberFormat("vi-VN", { notation: "compact" }).format(value)
                     }
                   />
                   <Tooltip 
-                    formatter={(value: number | undefined) => [formatCurrency(value ?? 0), locale === "vi" ? "VND" : "USD"]}
+                    formatter={(value: number | undefined) => [formatCurrency(value ?? 0), "VND"]}
                     labelStyle={{ color: "#333" }}
                   />
                   <Legend />

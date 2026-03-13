@@ -40,9 +40,9 @@ export function MonthlyComparisonChart() {
   }, []);
 
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat(locale === "vi" ? "vi-VN" : "en-US", {
+    return new Intl.NumberFormat("vi-VN", {
       style: "currency",
-      currency: locale === "vi" ? "VND" : "USD",
+      currency: "VND",
       maximumFractionDigits: 0,
     }).format(value);
   };
@@ -69,15 +69,15 @@ export function MonthlyComparisonChart() {
                   tickLine={false} 
                   axisLine={false} 
                 />
-                <YAxis
-                  stroke="#888888"
-                  fontSize={12}
-                  tickLine={false}
-                  axisLine={false}
-                  tickFormatter={(value) => 
-                    new Intl.NumberFormat(locale === "vi" ? "vi-VN" : "en-US", { notation: "compact" }).format(value)
-                  }
-                />
+                  <YAxis
+                    stroke="#888888"
+                    fontSize={12}
+                    tickLine={false}
+                    axisLine={false}
+                    tickFormatter={(value) => 
+                      new Intl.NumberFormat("vi-VN", { notation: "compact" }).format(value)
+                    }
+                  />
                 <Tooltip 
                   formatter={(value: number) => [formatCurrency(value), ""]}
                   labelStyle={{ color: "#333" }}

@@ -48,9 +48,9 @@ export function SpendingHabits() {
   if (!data) return null;
 
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat(locale === "vi" ? "vi-VN" : "en-US", { 
+    return new Intl.NumberFormat("vi-VN", { 
       style: "currency", 
-      currency: locale === "vi" ? "VND" : "USD", 
+      currency: "VND", 
       maximumFractionDigits: 0 
     }).format(value);
   };

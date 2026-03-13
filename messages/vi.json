@@ -340,6 +340,88 @@
       "contributionAmountMin": "Số tiền thêm vào phải lớn hơn 0"
     }
   },
+  "Automation": {
+    "title": "Tự động hóa",
+    "description": "Quản lý các khoản thu chi định kỳ, hóa đơn và nhắc nhở.",
+    "runAutomation": "Chạy quét định kỳ",
+    "processing": "Đang xử lý...",
+    "automationSuccess": "Đã xử lý xong! Tạo mới {count} giao dịch.",
+    "automationError": "Lỗi khi chạy tự động hóa",
+    "fetchError": "Không thể tải dữ liệu",
+    "tabs": {
+      "recurring": "Định kỳ",
+      "bill": "Hóa đơn",
+      "reminder": "Nhắc nhở"
+    },
+    "recurring": {
+      "title": "Khoản thu chi định kỳ",
+      "add": "Thêm định kỳ",
+      "dialogTitle": "Thêm khoản định kỳ",
+      "dialogDescription": "Tạo một lịch trình thu hoặc chi tự động.",
+      "type": "Loại",
+      "income": "Thu nhập",
+      "expense": "Chi phí",
+      "amount": "Số tiền",
+      "category": "Danh mục",
+      "categoryPlaceholder": "Chọn danh mục",
+      "frequency": "Tần suất",
+      "startDate": "Ngày bắt đầu",
+      "description": "Ghi chú",
+      "descriptionPlaceholder": "Ví dụ: Tiền nhà hàng tháng",
+      "save": "Lưu",
+      "noData": "Chưa có khoản thu chi định kỳ nào.",
+      "nextRun": "Tiếp theo: {date}",
+      "deleteConfirm": "Bạn có chắc chắn muốn xóa khoản định kỳ này?",
+      "frequencies": {
+        "DAILY": "Hàng ngày",
+        "WEEKLY": "Hàng tuần",
+        "MONTHLY": "Hàng tháng",
+        "YEARLY": "Hàng năm"
+      }
+    },
+    "bill": {
+      "title": "Hóa đơn cố định",
+      "add": "Thêm hóa đơn",
+      "dialogTitle": "Thêm hóa đơn",
+      "dialogDescription": "Quản lý các hóa đơn cố định hàng tháng (điện, nước, tiền trọ...).",
+      "name": "Tên hóa đơn",
+      "namePlaceholder": "Ví dụ: Tiền điện",
+      "amount": "Số tiền ước tính",
+      "dueDate": "Ngày đến hạn (hàng tháng)",
+      "category": "Danh mục",
+      "description": "Ghi chú (tùy chọn)",
+      "descriptionPlaceholder": "Ghi chú thêm...",
+      "save": "Lưu",
+      "noData": "Chưa có hóa đơn nào.",
+      "dueOn": "Ngày {day}",
+      "noDescription": "Không có ghi chú",
+      "deleteConfirm": "Bạn có chắc chắn muốn xóa hóa đơn này?"
+    },
+    "reminder": {
+      "title": "Nhắc nhở nhập chi tiêu",
+      "add": "Thêm nhắc nhở",
+      "dialogTitle": "Thêm nhắc nhở",
+      "dialogDescription": "Nhận thông báo nhắc nhở nhập chi tiêu vào khung giờ cố định.",
+      "name": "Tiêu đề",
+      "namePlaceholder": "Ví dụ: Nhập chi tiêu cuối ngày",
+      "time": "Giờ nhắc nhở",
+      "repeat": "Lặp lại vào",
+      "description": "Ghi chú (tùy chọn)",
+      "descriptionPlaceholder": "Đừng quên nhập các khoản chi hôm nay nhé!",
+      "save": "Lưu",
+      "noData": "Chưa có nhắc nhở nào.",
+      "deleteConfirm": "Bạn có chắc chắn muốn xóa nhắc nhở này?",
+      "days": {
+        "0": "CN",
+        "1": "T2",
+        "2": "T3",
+        "3": "T4",
+        "4": "T5",
+        "5": "T6",
+        "6": "T7"
+      }
+    }
+  },
   "Auth": {
     "login": {
       "title": "Chào mừng quay trở lại",

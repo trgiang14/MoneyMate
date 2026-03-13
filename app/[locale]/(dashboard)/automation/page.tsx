@@ -3,10 +3,12 @@
 import { useState, useEffect } from "react";
 import { Plus, Trash2, Calendar, Clock, Bell, Repeat as RepeatIcon, CreditCard } from "lucide-react";
 import { format } from "date-fns";
+import { vi, enUS } from "date-fns/locale";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { useTranslations, useLocale } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -61,17 +63,22 @@ import {
 } from "@/actions/bills";
 import { getCategories } from "@/actions/categories";
 
-const DAYS_OF_WEEK = [
-  { id: 1, label: "T2" },
-  { id: 2, label: "T3" },
-  { id: 3, label: "T4" },
-  { id: 4, label: "T5" },
-  { id: 5, label: "T6" },
-  { id: 6, label: "T7" },
-  { id: 0, label: "CN" },
-];
-
 export default function AutomationPage() {
+  const t = useTranslations("Automation");
+  const tCat = useTranslations("Categories");
+  const locale = useLocale();
+  const dateLocale = locale === "vi" ? vi : enUS;
+
+  const DAYS_OF_WEEK = [
+    { id: 1, label: t("reminder.days.1") },
+    { id: 2, label: t("reminder.days.2") },
+    { id: 3, label: t("reminder.days.3") },
+    { id: 4, label: t("reminder.days.4") },
+    { id: 5, label: t("reminder.days.5") },
+    { id: 6, label: t("reminder.days.6") },
+    { id: 0, label: t("reminder.days.0") },
+  ];
+
   const [activeTab, setActiveTab] = useState("recurring");
   const [recurringTransactions, setRecurringTransactions] = useState<any[]>([]);
   const [reminders, setReminders] = useState<any[]>([]);
@@ -134,7 +141,7 @@ export default function AutomationPage() {
       setBills(billData);
       setCategories(catData);
     } catch (error) {
-      toast.error("Không thể tải dữ liệu");
+      toast.error(t("fetchError"));
     } finally {
       setIsLoading(false);
     }
@@ -181,7 +188,7 @@ export default function AutomationPage() {
   };
 
   const onDeleteRecurring = async (id: string) => {
-    if (confirm("Bạn có chắc chắn muốn xóa khoản định kỳ này?")) {
+    if (confirm(t("recurring.deleteConfirm"))) {
       const result = await deleteRecurringTransaction(id);
       if (result.error) {
         toast.error(result.error);
@@ -193,7 +200,7 @@ export default function AutomationPage() {
   };
 
   const onDeleteReminder = async (id: string) => {
-    if (confirm("Bạn có chắc chắn muốn xóa nhắc nhở này?")) {
+    if (confirm(t("reminder.deleteConfirm"))) {
       const result = await deleteReminder(id);
       if (result.error) {
         toast.error(result.error);
@@ -205,7 +212,7 @@ export default function AutomationPage() {
   };
 
   const onDeleteBill = async (id: string) => {
-    if (confirm("Bạn có chắc chắn muốn xóa hóa đơn này?")) {
+    if (confirm(t("bill.deleteConfirm"))) {
       const result = await deleteBill(id);
       if (result.error) {
         toast.error(result.error);
@@ -250,29 +257,22 @@ export default function AutomationPage() {
     setIsProcessing(true);
     try {
       const result = await processRecurringTransactions();
-      toast.success(`Đã xử lý xong! Tạo mới ${result.created} giao dịch.`);
+      toast.success(t("automationSuccess", { count: result.created }));
       fetchData();
     } catch (error) {
-      toast.error("Lỗi khi chạy tự động hóa");
+      toast.error(t("automationError"));
     } finally {
       setIsProcessing(false);
     }
-  };
-
-  const frequencyLabels: Record<string, string> = {
-    DAILY: "Hàng ngày",
-    WEEKLY: "Hàng tuần",
-    MONTHLY: "Hàng tháng",
-    YEARLY: "Hàng năm",
   };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Tự động hóa</h2>
+          <h2 className="text-3xl font-bold tracking-tight">{t("title")}</h2>
           <p className="text-muted-foreground">
-            Quản lý các khoản thu chi định kỳ, hóa đơn và nhắc nhở.
+            {t("description")}
           </p>
         </div>
         <div className="flex gap-2">
@@ -282,7 +282,7 @@ export default function AutomationPage() {
             disabled={isProcessing}
           >
             <Clock className="mr-2 h-4 w-4" />
-            {isProcessing ? "Đang xử lý..." : "Chạy quét định kỳ"}
+            {isProcessing ? t("processing") : t("runAutomation")}
           </Button>
         </div>
       </div>
@@ -291,33 +291,33 @@ export default function AutomationPage() {
         <TabsList className="grid w-full grid-cols-3 max-w-[600px]">
           <TabsTrigger value="recurring" className="flex items-center gap-2">
             <RepeatIcon className="h-4 w-4" />
-            Định kỳ
+            {t("tabs.recurring")}
           </TabsTrigger>
           <TabsTrigger value="bill" className="flex items-center gap-2">
             <CreditCard className="h-4 w-4" />
-            Hóa đơn
+            {t("tabs.bill")}
           </TabsTrigger>
           <TabsTrigger value="reminder" className="flex items-center gap-2">
             <Bell className="h-4 w-4" />
-            Nhắc nhở
+            {t("tabs.reminder")}
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="recurring" className="space-y-4 pt-4">
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-medium">Khoản thu chi định kỳ</h3>
+            <h3 className="text-lg font-medium">{t("recurring.title")}</h3>
             <Dialog open={isRecurringDialogOpen} onOpenChange={setIsRecurringDialogOpen}>
               <DialogTrigger asChild>
                 <Button size="sm">
                   <Plus className="mr-2 h-4 w-4" />
-                  Thêm định kỳ
+                  {t("recurring.add")}
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                  <DialogTitle>Thêm khoản định kỳ</DialogTitle>
+                  <DialogTitle>{t("recurring.dialogTitle")}</DialogTitle>
                   <DialogDescription>
-                    Tạo một lịch trình thu hoặc chi tự động.
+                    {t("recurring.dialogDescription")}
                   </DialogDescription>
                 </DialogHeader>
                 <Form {...recurringForm}>
@@ -327,16 +327,16 @@ export default function AutomationPage() {
                       name="type"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Loại</FormLabel>
+                          <FormLabel>{t("recurring.type")}</FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
                               <SelectTrigger>
-                                <SelectValue placeholder="Chọn loại" />
+                                <SelectValue placeholder={t("recurring.type")} />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="INCOME">Thu nhập</SelectItem>
-                              <SelectItem value="EXPENSE">Chi phí</SelectItem>
+                              <SelectItem value="INCOME">{t("recurring.income")}</SelectItem>
+                              <SelectItem value="EXPENSE">{t("recurring.expense")}</SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />
@@ -348,7 +348,7 @@ export default function AutomationPage() {
                       name="amount"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Số tiền</FormLabel>
+                          <FormLabel>{t("recurring.amount")}</FormLabel>
                           <FormControl>
                             <Input type="number" placeholder="0" {...field} />
                           </FormControl>
@@ -361,11 +361,11 @@ export default function AutomationPage() {
                       name="categoryId"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Danh mục</FormLabel>
+                          <FormLabel>{t("recurring.category")}</FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
                               <SelectTrigger>
-                                <SelectValue placeholder="Chọn danh mục" />
+                                <SelectValue placeholder={t("recurring.categoryPlaceholder")} />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
@@ -373,7 +373,7 @@ export default function AutomationPage() {
                                 .filter(c => c.type === recurringForm.watch("type"))
                                 .map((category) => (
                                   <SelectItem key={category.id} value={category.id}>
-                                    {category.name}
+                                    {tCat(`default.${category.name}`, { defaultValue: category.name })}
                                   </SelectItem>
                                 ))}
                             </SelectContent>
@@ -387,18 +387,18 @@ export default function AutomationPage() {
                       name="frequency"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Tần suất</FormLabel>
+                          <FormLabel>{t("recurring.frequency")}</FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
                               <SelectTrigger>
-                                <SelectValue placeholder="Chọn tần suất" />
+                                <SelectValue placeholder={t("recurring.frequency")} />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="DAILY">Hàng ngày</SelectItem>
-                              <SelectItem value="WEEKLY">Hàng tuần</SelectItem>
-                              <SelectItem value="MONTHLY">Hàng tháng</SelectItem>
-                              <SelectItem value="YEARLY">Hàng năm</SelectItem>
+                              <SelectItem value="DAILY">{t("recurring.frequencies.DAILY")}</SelectItem>
+                              <SelectItem value="WEEKLY">{t("recurring.frequencies.WEEKLY")}</SelectItem>
+                              <SelectItem value="MONTHLY">{t("recurring.frequencies.MONTHLY")}</SelectItem>
+                              <SelectItem value="YEARLY">{t("recurring.frequencies.YEARLY")}</SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />
@@ -410,7 +410,7 @@ export default function AutomationPage() {
                       name="startDate"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Ngày bắt đầu</FormLabel>
+                          <FormLabel>{t("recurring.startDate")}</FormLabel>
                           <FormControl>
                             <Input 
                               type="date" 
@@ -427,16 +427,16 @@ export default function AutomationPage() {
                       name="description"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Ghi chú</FormLabel>
+                          <FormLabel>{t("recurring.description")}</FormLabel>
                           <FormControl>
-                            <Input placeholder="Ví dụ: Tiền nhà hàng tháng" {...field} />
+                            <Input placeholder={t("recurring.descriptionPlaceholder")} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
                     <DialogFooter>
-                      <Button type="submit" className="w-full">Lưu</Button>
+                      <Button type="submit" className="w-full">{t("recurring.save")}</Button>
                     </DialogFooter>
                   </form>
                 </Form>
@@ -446,11 +446,11 @@ export default function AutomationPage() {
 
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {isLoading ? (
-              <p>Đang tải...</p>
+              <p>{t("recurring.noData")}</p>
             ) : recurringTransactions.length === 0 ? (
               <div className="col-span-full flex flex-col items-center justify-center p-8 border-2 border-dashed rounded-lg text-muted-foreground">
                 <Calendar className="h-12 w-12 mb-4 opacity-20" />
-                <p>Chưa có khoản thu chi định kỳ nào.</p>
+                <p>{t("recurring.noData")}</p>
               </div>
             ) : (
               recurringTransactions.map((item) => (
@@ -458,7 +458,7 @@ export default function AutomationPage() {
                   <CardHeader className="pb-2">
                     <div className="flex items-center justify-between">
                       <Badge variant={item.type === "INCOME" ? "success" : "destructive"}>
-                        {item.type === "INCOME" ? "Thu nhập" : "Chi phí"}
+                        {item.type === "INCOME" ? t("recurring.income") : t("recurring.expense")}
                       </Badge>
                       <div className="flex items-center gap-2">
                         <Switch 
@@ -474,7 +474,7 @@ export default function AutomationPage() {
                       {item.amount.toLocaleString('vi-VN')} ₫
                     </CardTitle>
                     <CardDescription className="flex items-center gap-1">
-                      {item.category?.name} • {frequencyLabels[item.frequency]}
+                      {tCat(`default.${item.category?.name}`, { defaultValue: item.category?.name })} • {t(`recurring.frequencies.${item.frequency}`)}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -482,7 +482,7 @@ export default function AutomationPage() {
                       <p className="font-medium">{item.description}</p>
                       <div className="flex items-center text-muted-foreground gap-1">
                         <Clock className="h-3 w-3" />
-                        <span>Tiếp theo: {format(new Date(item.nextRunDate), "dd/MM/yyyy")}</span>
+                        <span>{t("recurring.nextRun", { date: format(new Date(item.nextRunDate), "dd/MM/yyyy") })}</span>
                       </div>
                     </div>
                   </CardContent>
@@ -494,19 +494,19 @@ export default function AutomationPage() {
 
         <TabsContent value="bill" className="space-y-4 pt-4">
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-medium">Hóa đơn cố định</h3>
+            <h3 className="text-lg font-medium">{t("bill.title")}</h3>
             <Dialog open={isBillDialogOpen} onOpenChange={setIsBillDialogOpen}>
               <DialogTrigger asChild>
                 <Button size="sm">
                   <Plus className="mr-2 h-4 w-4" />
-                  Thêm hóa đơn
+                  {t("bill.add")}
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                  <DialogTitle>Thêm hóa đơn</DialogTitle>
+                  <DialogTitle>{t("bill.dialogTitle")}</DialogTitle>
                   <DialogDescription>
-                    Quản lý các hóa đơn cố định hàng tháng (điện, nước, tiền trọ...).
+                    {t("bill.dialogDescription")}
                   </DialogDescription>
                 </DialogHeader>
                 <Form {...billForm}>
@@ -516,9 +516,9 @@ export default function AutomationPage() {
                       name="name"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Tên hóa đơn</FormLabel>
+                          <FormLabel>{t("bill.name")}</FormLabel>
                           <FormControl>
-                            <Input placeholder="Ví dụ: Tiền điện" {...field} />
+                            <Input placeholder={t("bill.namePlaceholder")} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -529,7 +529,7 @@ export default function AutomationPage() {
                       name="amount"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Số tiền ước tính</FormLabel>
+                          <FormLabel>{t("bill.amount")}</FormLabel>
                           <FormControl>
                             <Input type="number" placeholder="0" {...field} />
                           </FormControl>
@@ -542,7 +542,7 @@ export default function AutomationPage() {
                       name="dueDate"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Ngày đến hạn (hàng tháng)</FormLabel>
+                          <FormLabel>{t("bill.dueDate")}</FormLabel>
                           <FormControl>
                             <Input type="number" min="1" max="31" {...field} />
                           </FormControl>
@@ -555,11 +555,11 @@ export default function AutomationPage() {
                       name="categoryId"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Danh mục</FormLabel>
+                          <FormLabel>{t("bill.category")}</FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
                               <SelectTrigger>
-                                <SelectValue placeholder="Chọn danh mục" />
+                                <SelectValue placeholder={t("recurring.categoryPlaceholder")} />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
@@ -567,7 +567,7 @@ export default function AutomationPage() {
                                 .filter(c => c.type === "EXPENSE")
                                 .map((category) => (
                                   <SelectItem key={category.id} value={category.id}>
-                                    {category.name}
+                                    {tCat(`default.${category.name}`, { defaultValue: category.name })}
                                   </SelectItem>
                                 ))}
                             </SelectContent>
@@ -581,16 +581,16 @@ export default function AutomationPage() {
                       name="description"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Ghi chú (tùy chọn)</FormLabel>
+                          <FormLabel>{t("bill.description")}</FormLabel>
                           <FormControl>
-                            <Input placeholder="Ghi chú thêm..." {...field} />
+                            <Input placeholder={t("bill.descriptionPlaceholder")} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
                     <DialogFooter>
-                      <Button type="submit" className="w-full">Lưu</Button>
+                      <Button type="submit" className="w-full">{t("bill.save")}</Button>
                     </DialogFooter>
                   </form>
                 </Form>
@@ -600,18 +600,18 @@ export default function AutomationPage() {
 
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {isLoading ? (
-              <p>Đang tải...</p>
+              <p>{t("bill.noData")}</p>
             ) : bills.length === 0 ? (
               <div className="col-span-full flex flex-col items-center justify-center p-8 border-2 border-dashed rounded-lg text-muted-foreground">
                 <CreditCard className="h-12 w-12 mb-4 opacity-20" />
-                <p>Chưa có hóa đơn nào.</p>
+                <p>{t("bill.noData")}</p>
               </div>
             ) : (
               bills.map((item) => (
                 <Card key={item.id} className={item.isActive ? "" : "opacity-60"}>
                   <CardHeader className="pb-2">
                     <div className="flex items-center justify-between">
-                      <Badge variant="outline">Ngày {item.dueDate}</Badge>
+                      <Badge variant="outline">{t("bill.dueOn", { day: item.dueDate })}</Badge>
                       <div className="flex items-center gap-2">
                         <Switch 
                           checked={item.isActive} 
@@ -626,12 +626,12 @@ export default function AutomationPage() {
                       {item.amount.toLocaleString('vi-VN')} ₫
                     </CardTitle>
                     <CardDescription>
-                      {item.name} • {item.category?.name}
+                      {item.name} • {tCat(`default.${item.category?.name}`, { defaultValue: item.category?.name })}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="text-sm">
-                      <p className="text-muted-foreground">{item.description || "Không có ghi chú"}</p>
+                      <p className="text-muted-foreground">{item.description || t("bill.noDescription")}</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -642,19 +642,19 @@ export default function AutomationPage() {
 
         <TabsContent value="reminder" className="space-y-4 pt-4">
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-medium">Nhắc nhở nhập chi tiêu</h3>
+            <h3 className="text-lg font-medium">{t("reminder.title")}</h3>
             <Dialog open={isReminderDialogOpen} onOpenChange={setIsReminderDialogOpen}>
               <DialogTrigger asChild>
                 <Button size="sm">
                   <Plus className="mr-2 h-4 w-4" />
-                  Thêm nhắc nhở
+                  {t("reminder.add")}
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                  <DialogTitle>Thêm nhắc nhở</DialogTitle>
+                  <DialogTitle>{t("reminder.dialogTitle")}</DialogTitle>
                   <DialogDescription>
-                    Nhận thông báo nhắc nhở nhập chi tiêu vào khung giờ cố định.
+                    {t("reminder.dialogDescription")}
                   </DialogDescription>
                 </DialogHeader>
                 <Form {...reminderForm}>
@@ -664,9 +664,9 @@ export default function AutomationPage() {
                       name="title"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Tiêu đề</FormLabel>
+                          <FormLabel>{t("reminder.name")}</FormLabel>
                           <FormControl>
-                            <Input placeholder="Ví dụ: Nhập chi tiêu cuối ngày" {...field} />
+                            <Input placeholder={t("reminder.namePlaceholder")} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -677,7 +677,7 @@ export default function AutomationPage() {
                       name="time"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Giờ nhắc nhở</FormLabel>
+                          <FormLabel>{t("reminder.time")}</FormLabel>
                           <FormControl>
                             <Input type="time" {...field} />
                           </FormControl>
@@ -690,7 +690,7 @@ export default function AutomationPage() {
                       name="daysOfWeek"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Lặp lại vào</FormLabel>
+                          <FormLabel>{t("reminder.repeat")}</FormLabel>
                           <div className="flex flex-wrap gap-2">
                             {DAYS_OF_WEEK.map((day) => (
                               <div key={day.id} className="flex items-center space-x-2">
@@ -724,16 +724,16 @@ export default function AutomationPage() {
                       name="description"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Ghi chú (tùy chọn)</FormLabel>
+                          <FormLabel>{t("reminder.description")}</FormLabel>
                           <FormControl>
-                            <Input placeholder="Đừng quên nhập các khoản chi hôm nay nhé!" {...field} />
+                            <Input placeholder={t("reminder.descriptionPlaceholder")} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
                     <DialogFooter>
-                      <Button type="submit" className="w-full">Lưu</Button>
+                      <Button type="submit" className="w-full">{t("reminder.save")}</Button>
                     </DialogFooter>
                   </form>
                 </Form>
@@ -743,11 +743,11 @@ export default function AutomationPage() {
 
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {isLoading ? (
-              <p>Đang tải...</p>
+              <p>{t("reminder.noData")}</p>
             ) : reminders.length === 0 ? (
               <div className="col-span-full flex flex-col items-center justify-center p-8 border-2 border-dashed rounded-lg text-muted-foreground">
                 <Bell className="h-12 w-12 mb-4 opacity-20" />
-                <p>Chưa có nhắc nhở nào.</p>
+                <p>{t("reminder.noData")}</p>
               </div>
             ) : (
               reminders.map((item) => (

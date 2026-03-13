@@ -265,6 +265,31 @@
       "noData": "No data available"
     }
   },
+  "Budgets": {
+    "title": "Budgets",
+    "description": "Manage spending limits for {month}/{year}",
+    "setupBudget": "Setup Budget",
+    "setupDescription": "Set a spending limit for a category this month.",
+    "category": "Spending Category",
+    "categoryPlaceholder": "Select category",
+    "amount": "Budget Amount (VND)",
+    "amountPlaceholder": "e.g., 5000000",
+    "save": "Save Setup",
+    "loading": "Loading...",
+    "noBudgets": "No budgets yet",
+    "noBudgetsDesc": "Start financial planning by setting up budgets for your spending categories.",
+    "limit": "Limit: {amount}",
+    "spent": "Spent: {amount}",
+    "remaining": "Remaining: {amount}",
+    "overBudget": "Over budget!",
+    "nearLimit": "Near limit!",
+    "deleteConfirm": "Are you sure you want to delete this budget?",
+    "errors": {
+      "fetchFailed": "Unable to load data",
+      "amountMin": "Amount must be greater than 0",
+      "categoryRequired": "Please select a category"
+    }
+  },
   "Auth": {
     "login": {
       "title": "Welcome Back",

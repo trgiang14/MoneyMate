@@ -265,6 +265,31 @@
       "noData": "Chưa có dữ liệu"
     }
   },
+  "Budgets": {
+    "title": "Ngân sách",
+    "description": "Quản lý hạn mức chi tiêu cho tháng {month}/{year}",
+    "setupBudget": "Thiết lập ngân sách",
+    "setupDescription": "Đặt hạn mức chi tiêu cho một danh mục trong tháng này.",
+    "category": "Danh mục chi tiêu",
+    "categoryPlaceholder": "Chọn danh mục",
+    "amount": "Số tiền hạn mức (VND)",
+    "amountPlaceholder": "Ví dụ: 5000000",
+    "save": "Lưu thiết lập",
+    "loading": "Đang tải...",
+    "noBudgets": "Chưa có ngân sách nào",
+    "noBudgetsDesc": "Hãy bắt đầu lập kế hoạch tài chính bằng cách thiết lập ngân sách cho các danh mục chi tiêu của bạn.",
+    "limit": "Hạn mức: {amount}",
+    "spent": "Đã chi: {amount}",
+    "remaining": "Còn lại: {amount}",
+    "overBudget": "Đã vượt ngân sách!",
+    "nearLimit": "Sắp chạm hạn mức!",
+    "deleteConfirm": "Bạn có chắc chắn muốn xóa ngân sách này?",
+    "errors": {
+      "fetchFailed": "Không thể tải dữ liệu",
+      "amountMin": "Số tiền phải lớn hơn 0",
+      "categoryRequired": "Vui lòng chọn danh mục"
+    }
+  },
   "Auth": {
     "login": {
       "title": "Chào mừng quay trở lại",

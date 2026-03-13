@@ -1,10 +1,11 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { Plus, Trash2, Wallet, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
-import { vi } from "date-fns/locale";
+import { vi, enUS } from "date-fns/locale";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -46,15 +47,11 @@ import * as z from "zod";
 import { getBudgets, upsertBudget, deleteBudget } from "@/actions/budgets";
 import { getCategories } from "@/actions/categories";
 import { cn } from "@/lib/utils";
-
-const BudgetSchema = z.object({
-  amount: z.coerce.number().min(1, "Số tiền phải lớn hơn 0"),
-  month: z.number().min(1).max(12),
-  year: z.number(),
-  categoryId: z.string().min(1, "Vui lòng chọn danh mục"),
-});
+import { useLocale } from "next-intl";
 
 export default function BudgetsPage() {
+  const t = useTranslations("Budgets");
+  const locale = useLocale();
   const [budgets, setBudgets] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -63,6 +60,13 @@ export default function BudgetsPage() {
 
   const month = currentDate.getMonth() + 1;
   const year = currentDate.getFullYear();
+
+  const BudgetSchema = z.object({
+    amount: z.coerce.number().min(1, t("errors.amountMin")),
+    month: z.number().min(1).max(12),
+    year: z.number(),
+    categoryId: z.string().min(1, t("errors.categoryRequired")),
+  });
 
   const form = useForm<z.infer<typeof BudgetSchema>>({
     resolver: zodResolver(BudgetSchema),
@@ -84,7 +88,7 @@ export default function BudgetsPage() {
       setBudgets(budgetsData);
       setCategories(categoriesData.filter((c: any) => c.type === "EXPENSE"));
     } catch (error) {
-      toast.error("Không thể tải dữ liệu");
+      toast.error(t("errors.fetchFailed"));
     } finally {
       setIsLoading(false);
     }
@@ -112,7 +116,7 @@ export default function BudgetsPage() {
   };
 
   const onDelete = async (id: string) => {
-    if (confirm("Bạn có chắc chắn muốn xóa ngân sách này?")) {
+    if (confirm(t("deleteConfirm"))) {
       const result = await deleteBudget(id);
       if (result.error) {
         toast.error(result.error);
@@ -141,22 +145,22 @@ export default function BudgetsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Ngân sách</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t("title")}</h1>
           <p className="text-muted-foreground">
-            Quản lý hạn mức chi tiêu cho tháng {month}/{year}
+            {t("description", { month, year })}
           </p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button>
-              <Plus className="mr-2 h-4 w-4" /> Thiết lập ngân sách
+              <Plus className="mr-2 h-4 w-4" /> {t("setupBudget")}
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Thiết lập ngân sách</DialogTitle>
+              <DialogTitle>{t("setupBudget")}</DialogTitle>
               <DialogDescription>
-                Đặt hạn mức chi tiêu cho một danh mục trong tháng này.
+                {t("setupDescription")}
               </DialogDescription>
             </DialogHeader>
             <Form {...form}>
@@ -166,14 +170,14 @@ export default function BudgetsPage() {
                   name="categoryId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Danh mục chi tiêu</FormLabel>
+                      <FormLabel>{t("category")}</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Chọn danh mục" />
+                            <SelectValue placeholder={t("categoryPlaceholder")} />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -193,16 +197,16 @@ export default function BudgetsPage() {
                   name="amount"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Số tiền hạn mức (VND)</FormLabel>
+                      <FormLabel>{t("amount")}</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="Ví dụ: 5000000" {...field} />
+                        <Input type="number" placeholder={t("amountPlaceholder")} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
                 <DialogFooter>
-                  <Button type="submit">Lưu thiết lập</Button>
+                  <Button type="submit">{t("save")}</Button>
                 </DialogFooter>
               </form>
             </Form>
@@ -212,14 +216,14 @@ export default function BudgetsPage() {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {isLoading ? (
-          <p>Đang tải...</p>
+          <p>{t("loading")}</p>
         ) : budgets.length === 0 ? (
           <Card className="col-span-full py-12">
             <div className="flex flex-col items-center justify-center text-center">
               <Wallet className="h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-medium">Chưa có ngân sách nào</h3>
+              <h3 className="text-lg font-medium">{t("noBudgets")}</h3>
               <p className="text-muted-foreground max-w-sm mx-auto">
-                Hãy bắt đầu lập kế hoạch tài chính bằng cách thiết lập ngân sách cho các danh mục chi tiêu của bạn.
+                {t("noBudgetsDesc")}
               </p>
             </div>
           </Card>
@@ -241,13 +245,13 @@ export default function BudgetsPage() {
                   </Button>
                 </div>
                 <CardDescription>
-                  Hạn mức: {formatCurrency(budget.amount)}
+                  {t("limit", { amount: formatCurrency(budget.amount) })}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Đã chi: {formatCurrency(budget.spent)}</span>
+                    <span className="text-muted-foreground">{t("spent", { amount: formatCurrency(budget.spent) })}</span>
                     <span className={cn(
                       "font-medium",
                       budget.percent >= 100 ? "text-destructive" : 
@@ -267,16 +271,16 @@ export default function BudgetsPage() {
                 {budget.percent >= 100 ? (
                   <div className="flex items-center gap-2 text-xs text-destructive font-medium bg-destructive/10 p-2 rounded">
                     <AlertTriangle className="h-3 w-3" />
-                    Đã vượt ngân sách!
+                    {t("overBudget")}
                   </div>
                 ) : budget.percent >= 80 ? (
                   <div className="flex items-center gap-2 text-xs text-yellow-600 font-medium bg-yellow-50 p-2 rounded">
                     <AlertTriangle className="h-3 w-3" />
-                    Sắp chạm hạn mức!
+                    {t("nearLimit")}
                   </div>
                 ) : (
                   <div className="text-xs text-muted-foreground">
-                    Còn lại: {formatCurrency(budget.remaining)}
+                    {t("remaining", { amount: formatCurrency(budget.remaining) })}
                   </div>
                 )}
               </CardContent>

@@ -163,7 +163,18 @@
       "Khác": "Khác",
       "Lương": "Lương",
       "Thưởng": "Thưởng",
-      "Đầu tư": "Đầu tư"
+      "Đầu tư": "Đầu tư",
+      "Food & Drinks": "Ăn uống",
+      "Transportation": "Di chuyển",
+      "Shopping": "Mua sắm",
+      "Entertainment": "Giải trí",
+      "Health": "Sức khỏe",
+      "Education": "Giáo dục",
+      "Bills": "Hóa đơn",
+      "Others": "Khác",
+      "Salary": "Lương",
+      "Bonus": "Thưởng",
+      "Investment": "Đầu tư"
     }
   },
   "Transactions": {

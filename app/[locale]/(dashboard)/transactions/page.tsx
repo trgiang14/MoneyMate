@@ -56,6 +56,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 
 export default function TransactionsPage() {
   const t = useTranslations("Transactions");
+  const tCat = useTranslations("Categories");
   const locale = useLocale();
   const dateLocale = locale === "vi" ? vi : enUS;
 
@@ -236,7 +237,7 @@ export default function TransactionsPage() {
                         <SelectContent>
                           {filteredCategories.map((cat) => (
                             <SelectItem key={cat.id} value={cat.id}>
-                              {t(`default.${cat.name}`, { defaultValue: cat.name })}
+                              {tCat(`default.${cat.name}`, { defaultValue: cat.name })}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -339,7 +340,7 @@ export default function TransactionsPage() {
                   <SelectItem value="all">{t("filters.allCategories")}</SelectItem>
                   {categories.map((cat) => (
                     <SelectItem key={cat.id} value={cat.id}>
-                      {t(`default.${cat.name}`, { defaultValue: cat.name })}
+                      {tCat(`default.${cat.name}`, { defaultValue: cat.name })}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -434,7 +435,7 @@ export default function TransactionsPage() {
                           className="w-2 h-2 rounded-full" 
                           style={{ backgroundColor: transaction.category?.color || '#94a3b8' }}
                         />
-                        {t(`default.${transaction.category?.name}`, { defaultValue: transaction.category?.name })}
+                        {tCat(`default.${transaction.category?.name}`, { defaultValue: transaction.category?.name })}
                       </div>
                     </TableCell>
                     <TableCell className="max-w-[200px] truncate">
